@@ -2,99 +2,148 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Theo Farrell - MSci Natural Sciences (Computer Science & Philosophy) @ Durham University">
-    <meta name="author" content="Theo Farrell">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Theo Farrell</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <meta name="description"
+        content="Theo Farrell — Durham University MSci Natural Sciences, AI safety researcher, NeurIPS author." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <!-- js-yaml for parsing publications.yaml at runtime -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"
+        integrity="sha512-CSBhVREyzHAjAFfBlIBakjoRUKp5h7VSweP0InR/pAJyptH7peuhCsqAI/snV+TwZmXZqoUklpXp6R6wMnYf5Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
-    <div class="container">
-        <header class="profile">
-            <h1 class="name">Theo Farrell</h1>
-            <p class="tagline">MSci Natural Sciences (Computer Science & Philosophy) @ Durham University</p>
+
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <div class="page-wrap" id="main">
+
+        <!-- Header / Identity -->
+        <header class="identity">
+            <div class="portrait-wrap">
+                <img class="portrait" src="images/theocool.jpeg" alt="Theo Farrell" />
+            </div>
+            <h1 class="display-name">Theo<br /><em>Farrell</em></h1>
+            <div class="rule"></div>
+            <p class="bio">MSci Natural Sciences (Computer Science &amp; Philosophy) at Durham University<br />
+                AI safety researcher &amp; group organiser</p>
         </header>
 
-        <main class="links">
-            <a href="https://theosdoor.github.io/resume/" class="link-card" target="_blank" rel="noopener noreferrer">
-                <div class="link-icon logo-icon"><img src="images/icons/resume.svg" alt="Resume"></div>
-                <div class="link-content">
-                    <h2 class="link-title">Resume</h2>
-                    <p class="link-description">View my CV</p>
-                </div>
+        <!-- Links -->
+        <nav class="link-list" aria-label="Links">
+
+            <a class="card" href="https://theosdoor.github.io/resume/" target="_blank" rel="noopener">
+                <span class="card-icon">
+                    <img src="images/icons/resume.svg" alt="" />
+                </span>
+                <span class="card-body">
+                    <span class="card-title">Curriculum Vitae</span>
+                    <span class="card-sub">View my full CV</span>
+                </span>
+                <span class="card-arrow">→</span>
             </a>
 
-            <a href="https://www.linkedin.com/in/theofarrell/" class="link-card" target="_blank"
-                rel="noopener noreferrer">
-                <div class="link-icon logo-icon"><img src="images/icons/linkedin.svg" alt="LinkedIn"></div>
-                <div class="link-content">
-                    <h2 class="link-title">LinkedIn</h2>
-                    <p class="link-description">Connect with me!</p>
-                </div>
+            <a class="card" href="https://www.linkedin.com/in/theofarrell/" target="_blank" rel="noopener">
+                <span class="card-icon">
+                    <img src="images/icons/linkedin.svg" alt="" />
+                </span>
+                <span class="card-body">
+                    <span class="card-title">LinkedIn</span>
+                    <span class="card-sub">Connect with me</span>
+                </span>
+                <span class="card-arrow">→</span>
             </a>
 
-            <a href="https://github.com/Theosdoor" class="link-card" target="_blank" rel="noopener noreferrer">
-                <div class="link-icon logo-icon"><img src="images/icons/github.svg" alt="GitHub"></div>
-                <div class="link-content">
-                    <h2 class="link-title">GitHub</h2>
-                    <p class="link-description">Check out my code</p>
-                </div>
+            <a class="card" href="https://github.com/Theosdoor" target="_blank" rel="noopener">
+                <span class="card-icon">
+                    <img src="images/icons/github.svg" alt="" />
+                </span>
+                <span class="card-body">
+                    <span class="card-title">GitHub</span>
+                    <span class="card-sub">Browse my code</span>
+                </span>
+                <span class="card-arrow">→</span>
             </a>
 
-            <a href="https://scholar.google.com/citations?hl=en&user=wbiptScAAAAJ" class="link-card" target="_blank"
-                rel="noopener noreferrer">
-                <div class="link-icon logo-icon"><img src="images/icons/gscholar.svg" alt="Google Scholar"></div>
-                <div class="link-content">
-                    <h2 class="link-title">Google Scholar</h2>
-                    <p class="link-description">View my publications</p>
-                </div>
+            <a class="card" href="https://scholar.google.com/citations?hl=en&user=wbiptScAAAAJ" target="_blank"
+                rel="noopener">
+                <span class="card-icon">
+                    <img src="images/icons/gscholar.svg" alt="" />
+                </span>
+                <span class="card-body">
+                    <span class="card-title">Google Scholar</span>
+                    <span class="card-sub">Research &amp; publications</span>
+                </span>
+                <span class="card-arrow">→</span>
             </a>
 
-            <!-- <a href="https://durhamaisafety.github.io" class="link-card" target="_blank" rel="noopener noreferrer">
-                <div class="link-icon logo-icon"><img src="images/DAISI-logo.svg" alt="DAISI Logo"></div>
-                <div class="link-content">
-                    <h2 class="link-title">Durham AI Safety Initiative</h2>
-                    <p class="link-description">Our research group</p>
-                </div>
-            </a> -->
-            <!-- ignore daisi for now -->
-        </main>
+        </nav>
 
-        <section class="publications">
-            <h2 class="section-title">Publications</h2>
-
-            <article class="publication">
-                <h3 class="pub-title">Order by Scale: Relative‑Magnitude Relational Composition in Attention‑Only
-                    Transformers</h3>
-                <p class="pub-authors">Farrell, Theo, Patrick Leask, and Noura Al Moubayed</p>
-                <p class="pub-venue">Socially Responsible and Trustworthy Foundation Models at NeurIPS 2025</p>
-                <a href="https://openreview.net/forum?id=vWRVzNtk7W" class="pub-link" target="_blank"
-                    rel="noopener noreferrer"><img src="images/icons/external-link.svg" alt="" class="pub-link-icon">
-                    View on OpenReview</a>
-            </article>
-
-            <article class="publication">
-                <h3 class="pub-title">Challenges of Evaluating LLM Safety for User Welfare</h3>
-                <p class="pub-authors">Kempermann, Manon, Sai Suresh Macharla Vasu, Mahalakshmi Raveenthiran, Theo
-                    Farrell, and Ingmar Weber</p>
-                <p class="pub-venue">arXiv:2512.10687 [cs.AI], 2025</p>
-                <a href="https://arxiv.org/abs/2512.10687" class="pub-link" target="_blank"
-                    rel="noopener noreferrer"><img src="images/icons/external-link.svg" alt="" class="pub-link-icon">
-                    View on arXiv</a>
-            </article>
+        <!-- Publications — rendered from publications.yaml -->
+        <section class="publications" id="publications" aria-live="polite">
+            <h2 class="section-label">Publications</h2>
+            <div id="pub-list">
+                <p class="pub-loading">Loading publications…</p>
+            </div>
         </section>
 
         <footer class="footer">
-            <p>&copy; 2025 Theo Farrell</p>
+            <p>theo.farrell99@outlook.com · Manchester, UK</p>
         </footer>
+
     </div>
+
+    <script>
+        (async () => {
+            const container = document.getElementById('pub-list');
+
+            // Escape any HTML in text to prevent XSS
+            const esc = str => str.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+            try {
+                const res = await fetch('content/pubs.yaml');
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const text = await res.text();
+                const data = jsyaml.load(text);
+                const owner = data.owner;
+
+                // Sort newest first
+                const pubs = [...data.publications].sort((a, b) => b.year - a.year);
+
+                container.innerHTML = pubs.map(pub => {
+                    // Format author list, bolding the owner wherever they appear
+                    const authors = pub.authors.map(a =>
+                        a === owner || a.includes(owner.split(' ')[0]) && a.includes(owner.split(' ').at(-1))
+                            ? `<strong>${esc(a)}</strong>`
+                            : esc(a)
+                    ).join(', ');
+
+                    return `
+                    <article class="pub">
+                        <h3 class="pub-title">${esc(pub.title)}</h3>
+                        <p class="pub-meta">${authors}</p>
+                        <p class="pub-venue">${esc(pub.venue)}</p>
+                        <a class="pub-link" href="${esc(pub.url)}" target="_blank" rel="noopener">
+                            <img src="images/icons/external-link.svg" alt="" class="pub-link-icon" />
+                            ${esc(pub.link_label || 'View paper')}
+                        </a>
+                    </article>`;
+                }).join('');
+
+            } catch (err) {
+                console.error('Failed to load publications:', err);
+                container.innerHTML = '<p class="pub-error">Could not load publications. Please try again later.</p>';
+            }
+        })();
+    </script>
+
 </body>
 
 </html>
