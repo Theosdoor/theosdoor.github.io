@@ -6,7 +6,7 @@ owner: "Theo Farrell"
 publications:
   - title: "Order by Scale: Relative-Magnitude Relational Composition in Attention-Only Transformers"
     authors:
-      - "Farrell Theo"
+      - "Theo Farrell"
       - "Patrick Leask"
       - "Noura Al Moubayed"
     venue: "39th Conference on Neural Information Processing Systems (NeurIPS 2025) Workshop: ResponsibleFM"
