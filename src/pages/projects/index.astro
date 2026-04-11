@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/global.css';
+import projectsData from '../../../content/projects.yaml';
+
+interface Project {
+  title: string;
+  description: string;
+  url?: string;
+  tags?: string[];
+  year?: number;
+}
+
+const projects: Project[] = projectsData.projects ?? [];
+---
+
+<Base
+  title="Projects — Theo Farrell"
+  description="Projects by Theo Farrell — AI safety researcher and developer."
+  ogUrl="https://theosdoor.github.io/projects/"
+>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="page-wrap" id="main" tabindex="-1">
+    <section class="publications">
+      <h1 class="section-label">Projects</h1>
+      {
+        projects.length === 0 ? (
+          <p class="pub-loading">No projects yet — check back soon.</p>
+        ) : (
+          projects.map((p) => (
+            <article class="pub">
+              <h2 class="pub-title">{p.title}</h2>
+              <p class="pub-meta">{p.description}</p>
+              {p.url && (
+                <a class="pub-link" href={p.url} target="_blank" rel="noopener">
+                  View project →
+                </a>
+              )}
+            </article>
+          ))
+        )
+      }
+    </section>
+  </div>
+</Base>
