@@ -165,6 +165,7 @@ const allTools = [
     languages: new Set<string>(),
     tools: new Set<string>(),
     sort: 'featured',
+    text: '',
   };
 
   /* ── helpers ── */
@@ -179,7 +180,11 @@ const allTools = [
       [...state.languages].some(l => elLangs.includes(l));
     const toolOk = state.tools.size === 0 ||
       [...state.tools].some(t => elTools.includes(t));
-    return roleOk && catOk && langOk && toolOk;
+    const q = state.text.toLowerCase();
+    const textOk = q === '' ||
+      (article.querySelector('.pub-title')?.textContent ?? '').toLowerCase().includes(q) ||
+      (article.querySelector('.pub-meta')?.textContent ?? '').toLowerCase().includes(q);
+    return roleOk && catOk && langOk && toolOk && textOk;
   }
 
   function getYear(el: Element) {
@@ -193,9 +198,84 @@ const allTools = [
     return div;
   }
 
+  /* ── URL state sync ── */
+
+  function syncToUrl() {
+    const params = new URLSearchParams();
+    if (state.role !== 'all') params.set('role', state.role);
+    if (state.category !== 'all') params.set('category', state.category);
+    if (state.languages.size > 0) params.set('lang', [...state.languages].join(','));
+    if (state.tools.size > 0) params.set('tool', [...state.tools].join(','));
+    if (state.sort !== 'featured') params.set('sort', state.sort);
+    if (state.text) params.set('q', state.text);
+    const qs = params.toString();
+    history.replaceState(null, '', qs ? '?' + qs : location.pathname);
+  }
+
+  function restoreFromUrl() {
+    const params = new URLSearchParams(location.search);
+
+    const role = params.get('role');
+    if (role === 'lead' || role === 'contributor') {
+      state.role = role;
+      document.querySelectorAll('[data-filter-role]').forEach(b =>
+        b.classList.toggle('proj-pill--active',
+          (b as HTMLElement).dataset.filterRole === role)
+      );
+    }
+
+    const category = params.get('category');
+    if (category === 'research' || category === 'side-project') {
+      state.category = category;
+      document.querySelectorAll('[data-filter-category]').forEach(b =>
+        b.classList.toggle('proj-pill--active',
+          (b as HTMLElement).dataset.filterCategory === category)
+      );
+    }
+
+    const lang = params.get('lang');
+    if (lang) {
+      lang.split(',').forEach(l => state.languages.add(l));
+      const anyLang = document.querySelector('[data-filter-lang="any"]');
+      anyLang?.classList.remove('proj-tag-chip--active');
+      state.languages.forEach(l => {
+        document.querySelector(`[data-filter-lang="${l}"]`)
+          ?.classList.add('proj-tag-chip--active');
+      });
+    }
+
+    const tool = params.get('tool');
+    if (tool) {
+      tool.split(',').forEach(t => state.tools.add(t));
+      const anyTool = document.querySelector('[data-filter-tool="any"]');
+      anyTool?.classList.remove('proj-tag-chip--active');
+      state.tools.forEach(t => {
+        document.querySelector(`[data-filter-tool="${t}"]`)
+          ?.classList.add('proj-tag-chip--active');
+      });
+    }
+
+    const sort = params.get('sort');
+    if (sort === 'recent') {
+      state.sort = 'recent';
+      document.querySelectorAll('[data-sort]').forEach(b =>
+        b.classList.toggle('proj-pill--active',
+          (b as HTMLElement).dataset.sort === 'recent')
+      );
+    }
+
+    const q = params.get('q');
+    if (q) {
+      state.text = q;
+      const searchInput = document.getElementById('proj-search') as HTMLInputElement | null;
+      if (searchInput) searchInput.value = q;
+    }
+  }
+
   /* ── main render ── */
 
   function filterAndRender() {
+    syncToUrl();
     // Remove existing group headings
     list!.querySelectorAll('.proj-group-heading').forEach(h => h.remove());
 
@@ -356,7 +436,14 @@ const allTools = [
   setupTagGroup('filter-lang', state.languages);
   setupTagGroup('filter-tool', state.tools);
 
+  const searchInput = document.getElementById('proj-search') as HTMLInputElement | null;
+  searchInput?.addEventListener('input', () => {
+    state.text = searchInput!.value.trim();
+    filterAndRender();
+  });
+
   /* ── initial render ── */
+  restoreFromUrl();
   filterAndRender();
 })();
 </script>
