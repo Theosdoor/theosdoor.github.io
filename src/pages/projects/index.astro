@@ -7,11 +7,20 @@ interface Project {
   title: string;
   description: string;
   url?: string;
-  tags?: string[];
-  year?: number;
+  role: 'lead' | 'contributor';
+  category: 'research' | 'side-project';
+  featured?: boolean;
+  year?: number | null;
+  languages?: string[];
+  tools?: string[];
 }
 
 const projects: Project[] = projectsData.projects ?? [];
+
+const allLanguages = [...new Set(projects.flatMap(p => p.languages ?? []))].sort();
+const allTools = [
+  ...new Set(projects.flatMap(p => (p.tools ?? []).filter(Boolean)))
+].sort();
 ---
 
 <Base
@@ -24,23 +33,119 @@ const projects: Project[] = projectsData.projects ?? [];
   <div class="page-wrap" id="main" tabindex="-1">
     <section class="publications">
       <h1 class="section-label">Projects</h1>
-      {
-        projects.length === 0 ? (
-          <p class="pub-loading">No projects yet — check back soon.</p>
-        ) : (
-          projects.map((p) => (
-            <article class="pub">
-              <h2 class="pub-title">{p.title}</h2>
-              <p class="pub-meta">{p.description}</p>
-              {p.url && (
-                <a class="pub-link" href={p.url} target="_blank" rel="noopener">
-                  View project →
-                </a>
-              )}
-            </article>
-          ))
-        )
-      }
+
+      {projects.length === 0 ? (
+        <p class="pub-loading">No projects yet — check back soon.</p>
+      ) : (
+        <>
+          <div class="proj-toolbar-wrap">
+            <div class="proj-toolbar">
+              <button
+                class="proj-filter-btn"
+                id="proj-filter-btn"
+                aria-expanded="false"
+                aria-controls="proj-filter-panel"
+              >Filter ▾</button>
+              <button
+                class="proj-sort-btn"
+                id="proj-sort-btn"
+                aria-expanded="false"
+                aria-controls="proj-sort-panel"
+              >Sort ▾</button>
+              <input
+                class="proj-search"
+                id="proj-search"
+                type="search"
+                placeholder="Search…"
+                aria-label="Search projects"
+              />
+            </div>
+
+            <div class="proj-dropdown" id="proj-filter-panel" hidden>
+              <div class="proj-filter-section">
+                <span class="proj-filter-label">Role</span>
+                <div class="proj-pills">
+                  <button class="proj-pill proj-pill--active" data-filter-role="all">All</button>
+                  <button class="proj-pill" data-filter-role="lead">Lead</button>
+                  <button class="proj-pill" data-filter-role="contributor">Contributor</button>
+                </div>
+              </div>
+
+              <div class="proj-filter-section">
+                <span class="proj-filter-label">Category</span>
+                <div class="proj-pills">
+                  <button class="proj-pill proj-pill--active" data-filter-category="all">All</button>
+                  <button class="proj-pill" data-filter-category="research">Research</button>
+                  <button class="proj-pill" data-filter-category="side-project">Side project</button>
+                </div>
+              </div>
+
+              <div class="proj-filter-section">
+                <span class="proj-filter-label">Languages</span>
+                <div class="proj-tag-chips">
+                  <button class="proj-tag-chip proj-tag-chip--active" data-filter-lang="any">Any</button>
+                  {allLanguages.map(lang => (
+                    <button class="proj-tag-chip" data-filter-lang={lang.toLowerCase()}>{lang}</button>
+                  ))}
+                </div>
+                <span class="proj-filter-label">Tools</span>
+                <div class="proj-tag-chips">
+                  <button class="proj-tag-chip proj-tag-chip--active" data-filter-tool="any">Any</button>
+                  {allTools.map(tool => (
+                    <button class="proj-tag-chip" data-filter-tool={tool.toLowerCase()}>{tool}</button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div class="proj-dropdown" id="proj-sort-panel" hidden>
+              <div class="proj-filter-section">
+                <span class="proj-filter-label">Sort by</span>
+                <div class="proj-pills">
+                  <button class="proj-pill proj-pill--active" data-sort="featured">Featured</button>
+                  <button class="proj-pill" data-sort="recent">Most recent</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="proj-list" id="proj-list">
+            {projects.map(p => (
+              <article
+                class="pub proj"
+                data-role={p.role}
+                data-category={p.category}
+                data-featured={p.featured ? 'true' : 'false'}
+                data-year={String(p.year ?? 0)}
+                data-languages={(p.languages ?? []).map(l => l.toLowerCase()).join(',')}
+                data-tools={(p.tools ?? []).filter(Boolean).map(t => t.toLowerCase()).join(',')}
+              >
+                <h2 class="pub-title">{p.title}</h2>
+                <p class="pub-meta">{p.description}</p>
+                <div class="proj-chips">
+                  <span class="proj-chip">{p.role}</span>
+                  <span class="proj-chip">{p.category}</span>
+                </div>
+                {((p.languages ?? []).length > 0 || (p.tools ?? []).filter(Boolean).length > 0) && (
+                  <div class="proj-tags">
+                    {(p.languages ?? []).map(lang => (
+                      <span class="proj-tag">{lang}</span>
+                    ))}
+                    {(p.tools ?? []).filter(Boolean).map(tool => (
+                      <span class="proj-tag">{tool}</span>
+                    ))}
+                  </div>
+                )}
+                {p.url && (
+                  <a class="pub-link" href={p.url} target="_blank" rel="noopener">
+                    View project →
+                  </a>
+                )}
+              </article>
+            ))}
+          </div>
+        </>
+      )}
     </section>
   </div>
 </Base>
