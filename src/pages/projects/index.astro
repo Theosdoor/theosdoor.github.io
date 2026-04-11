@@ -151,4 +151,207 @@ const allTools = [
       )}
     </section>
   </div>
+
+<script>
+(function () {
+  const list = document.getElementById('proj-list');
+  if (!list) return;
+
+  const allArticles = [...list.querySelectorAll('.proj')];
+
+  const state = {
+    role: 'all',
+    category: 'all',
+    languages: new Set<string>(),
+    tools: new Set<string>(),
+    sort: 'featured',
+  };
+
+  /* ── helpers ── */
+
+  function matches(el: Element) {
+    const article = el as HTMLElement;
+    const roleOk = state.role === 'all' || article.dataset.role === state.role;
+    const catOk = state.category === 'all' || article.dataset.category === state.category;
+    const elLangs = article.dataset.languages ? article.dataset.languages.split(',') : [];
+    const elTools = article.dataset.tools ? article.dataset.tools.split(',') : [];
+    const langOk = state.languages.size === 0 ||
+      [...state.languages].some(l => elLangs.includes(l));
+    const toolOk = state.tools.size === 0 ||
+      [...state.tools].some(t => elTools.includes(t));
+    return roleOk && catOk && langOk && toolOk;
+  }
+
+  function getYear(el: Element) {
+    return parseInt((el as HTMLElement).dataset.year || '0', 10) || 0;
+  }
+
+  function makeHeading(text: string) {
+    const div = document.createElement('div');
+    div.className = 'proj-group-heading';
+    div.textContent = text;
+    return div;
+  }
+
+  /* ── main render ── */
+
+  function filterAndRender() {
+    // Remove existing group headings
+    list!.querySelectorAll('.proj-group-heading').forEach(h => h.remove());
+
+    const visible = allArticles.filter(matches);
+    const hidden = allArticles.filter(el => !matches(el));
+
+    if (state.sort === 'featured') {
+      const featured = visible.filter(el => (el as HTMLElement).dataset.featured === 'true');
+      const rest = visible
+        .filter(el => (el as HTMLElement).dataset.featured !== 'true')
+        .sort((a, b) => {
+          const yearDiff = getYear(b) - getYear(a);
+          if (yearDiff !== 0) return yearDiff;
+          return (a.querySelector('.pub-title')?.textContent ?? '')
+            .localeCompare(b.querySelector('.pub-title')?.textContent ?? '');
+        });
+
+      // Re-append in order: featured, rest, hidden
+      [...featured, ...rest, ...hidden].forEach(el => list!.appendChild(el));
+
+      // Set visibility
+      visible.forEach(el => { (el as HTMLElement).hidden = false; });
+      hidden.forEach(el => { (el as HTMLElement).hidden = true; });
+
+      // Inject heading before first featured item
+      if (featured.length > 0) {
+        list!.insertBefore(makeHeading('Highlighted'), featured[0]);
+      }
+    } else {
+      // Sort all visible: year desc, featured-first within year, then alpha
+      const sorted = [...visible].sort((a, b) => {
+        const yearDiff = getYear(b) - getYear(a);
+        if (yearDiff !== 0) return yearDiff;
+        const aFeat = (a as HTMLElement).dataset.featured === 'true' ? 1 : 0;
+        const bFeat = (b as HTMLElement).dataset.featured === 'true' ? 1 : 0;
+        if (bFeat !== aFeat) return bFeat - aFeat;
+        return (a.querySelector('.pub-title')?.textContent ?? '')
+          .localeCompare(b.querySelector('.pub-title')?.textContent ?? '');
+      });
+
+      [...sorted, ...hidden].forEach(el => list!.appendChild(el));
+
+      visible.forEach(el => { (el as HTMLElement).hidden = false; });
+      hidden.forEach(el => { (el as HTMLElement).hidden = true; });
+
+      // Inject year headings
+      let currentYear: string | null = null;
+      sorted.forEach(el => {
+        const year = (el as HTMLElement).dataset.year ?? '0';
+        const displayYear = year === '0' ? '—' : year;
+        if (year !== currentYear) {
+          currentYear = year;
+          list!.insertBefore(makeHeading(displayYear), el);
+        }
+      });
+    }
+
+    updateFilterIndicator();
+  }
+
+  /* ── filter indicator ── */
+
+  function updateFilterIndicator() {
+    const btn = document.getElementById('proj-filter-btn');
+    const isActive =
+      state.role !== 'all' ||
+      state.category !== 'all' ||
+      state.languages.size > 0 ||
+      state.tools.size > 0;
+    btn?.classList.toggle('proj-filter-btn--active', isActive);
+  }
+
+  /* ── dropdown open/close ── */
+
+  function closeAllDropdowns() {
+    document.querySelectorAll('.proj-dropdown').forEach(p => {
+      (p as HTMLElement).hidden = true;
+    });
+    document.querySelectorAll('.proj-filter-btn, .proj-sort-btn')
+      .forEach(b => b.setAttribute('aria-expanded', 'false'));
+  }
+
+  function setupDropdown(btnId: string, panelId: string) {
+    const btn = document.getElementById(btnId);
+    const panel = document.getElementById(panelId);
+    if (!btn || !panel) return;
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = !(panel as HTMLElement).hidden;
+      closeAllDropdowns();
+      if (!isOpen) {
+        (panel as HTMLElement).hidden = false;
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  }
+
+  document.addEventListener('click', closeAllDropdowns);
+
+  setupDropdown('proj-filter-btn', 'proj-filter-panel');
+  setupDropdown('proj-sort-btn', 'proj-sort-panel');
+
+  /* ── single-select pill toggles ── */
+
+  function setupPillGroup(attr: string, stateKey: 'role' | 'category' | 'sort') {
+    // Convert kebab-case attr to camelCase for dataset access
+    const datasetKey = attr.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
+    document.querySelectorAll(`[data-${attr}]`).forEach(btn => {
+      btn.addEventListener('click', () => {
+        state[stateKey] = (btn as HTMLElement).dataset[datasetKey] as string;
+        document.querySelectorAll(`[data-${attr}]`).forEach(b =>
+          b.classList.toggle('proj-pill--active', b === btn)
+        );
+        filterAndRender();
+      });
+    });
+  }
+
+  setupPillGroup('filter-role', 'role');
+  setupPillGroup('filter-category', 'category');
+  setupPillGroup('sort', 'sort');
+
+  /* ── multi-select tag chips ── */
+
+  function setupTagGroup(attr: string, stateSet: Set<string>) {
+    const datasetKey = attr.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
+    document.querySelectorAll(`[data-${attr}]`).forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = (btn as HTMLElement).dataset[datasetKey] as string;
+        if (val === 'any') {
+          stateSet.clear();
+          document.querySelectorAll(`[data-${attr}]`).forEach(b =>
+            b.classList.toggle('proj-tag-chip--active',
+              (b as HTMLElement).dataset[datasetKey] === 'any')
+          );
+        } else {
+          if (stateSet.has(val)) {
+            stateSet.delete(val);
+          } else {
+            stateSet.add(val);
+          }
+          const anyChip = document.querySelector(`[data-${attr}="any"]`);
+          anyChip?.classList.toggle('proj-tag-chip--active', stateSet.size === 0);
+          btn.classList.toggle('proj-tag-chip--active', stateSet.has(val));
+        }
+        filterAndRender();
+      });
+    });
+  }
+
+  setupTagGroup('filter-lang', state.languages);
+  setupTagGroup('filter-tool', state.tools);
+
+  /* ── initial render ── */
+  filterAndRender();
+})();
+</script>
 </Base>
