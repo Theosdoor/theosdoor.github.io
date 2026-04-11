@@ -1,1 +1,153 @@
-projects: []
+projects:
+  - title: "Order by Scale"
+    description: "Implementation of research on relative-magnitude relational composition in attention-only transformers"
+    url: "https://github.com/Theosdoor/order-by-scale"
+    image: "https://raw.githubusercontent.com/Theosdoor/order-by-scale/main/figures/attn-flow.png"
+    role: lead
+    category: research
+    featured: true
+    year: 2025
+    languages: [Python]
+    tools: [TransformerLens, PyTorch]
+
+  - title: "Stance Classification"
+    description: "NLP project implementing transformer-based models for detecting argumentative stances in text"
+    url: "https://github.com/Theosdoor/stance-classification"
+    image: "https://raw.githubusercontent.com/Theosdoor/stance-classification/main/results/exp4_test_final.png"
+    role: lead
+    category: coursework
+    year: 2026
+    languages: [Python]
+    tools: [PyTorch, Transformers]
+
+  - title: "Bipedal Walking with RL"
+    description: "Reinforcement learning implementation for training bipedal agents to walk"
+    url: "https://github.com/Theosdoor/Bipedal-Walking-with-RL"
+    image: "https://raw.githubusercontent.com/Theosdoor/Bipedal-Walking-with-RL/main/hardcore_env/hardcore-video,episode=959,score=326.gif"
+    role: lead
+    category: coursework
+    featured: true
+    year: 2025
+    languages: [Python]
+    tools: [Gymnasium]
+
+  - title: "Ghost Marks in the Machine"
+    description: "Research project investigating watermarking LLM code output"
+    url: "https://github.com/DurhamAISafety/ghost-marks-in-the-machine"
+    image: images/projects/ghost-marks.png
+    role: lead
+    category: side-project
+    featured: true
+    year: 2025
+    languages: [Python]
+    tools: [Transformers, PyTorch]
+
+  - title: "Challenges of Evaluating LLM Safety for User Welfare"
+    description: "Challenges of Evaluating LLM Safety for User Welfare — Code & Dataset"
+    url: "https://github.com/theaLilott/context_eval"
+    image: images/projects/context_eval.png
+    role: contributor
+    category: research
+    year: 2026
+    languages: [Python]
+    tools: [Openrouter]
+
+  - title: "Hands2Text"
+    description: "Hackathon project converting sign language to text using computer vision and machine learning (DurHack 2023)"
+    url: "https://github.com/Theosdoor/Hands2Text-Durhack-23"
+    image: ~
+    role: lead
+    category: side-project
+    year: 2023
+    languages: [Python]
+    tools: [OpenCV, TensorFlow]
+
+  - title: "Durham AI Safety Initiative Website"
+    description: "Organisation website with information on DAISI initiatives and research"
+    url: "https://github.com/DurhamAISafety/durhamaisafety.github.io"
+    image: images/projects/daisi_site.png
+    role: lead
+    category: side-project
+    year: 2026
+    languages: [HTML, JavaScript]
+    tools: [Astro, Tailwind]
+
+  - title: "Cryptography Coursework"
+    description: "Algorithm and protocol implementation and analysis"
+    url: "https://github.com/Theosdoor/Cryptography-Coursework"
+    image: ~
+    role: lead
+    category: coursework
+    year: 2025
+    languages: [Python]
+    tools: []
+
+  - title: "Natural Computing Algorithms"
+    description: "Exploration of bio-inspired and nature-based computational algorithms including cuckoo search and negative selection"
+    url: "https://github.com/Theosdoor/Natural-Computing-Algorithms"
+    image: ~
+    role: lead
+    category: coursework
+    year: 2024
+    languages: [Python]
+    tools: [NumPy]
+
+  - title: "Image Processing"
+    description: "Computer vision and image processing techniques"
+    url: "https://github.com/Theosdoor/Image-Processing"
+    image: "https://raw.githubusercontent.com/Theosdoor/Image-Processing/main/figure1.png"
+    role: lead
+    category: coursework
+    year: 2024
+    languages: [Python]
+    tools: [OpenCV]
+
+  - title: "Data Compression Coursework"
+    description: "Implementation of data compression algorithms including Huffman coding, LZW, and run-length encoding"
+    url: "https://github.com/Theosdoor/Data-Compression-Coursework"
+    image: ~
+    role: lead
+    category: coursework
+    year: 2025
+    languages: [Python]
+    tools: []
+
+  - title: "Data Cleaning and Analysis"
+    description: "Data preprocessing, cleaning, and statistical analysis"
+    url: "https://github.com/Theosdoor/Data-Cleaning-and-Analysis-Coursework"
+    image: ~
+    role: lead
+    category: coursework
+    year: 2023
+    languages: [Python]
+    tools: [Pandas, NumPy, Seaborn]
+
+  - title: "Metaheuristics and TSP"
+    description: "Implementation and comparison of metaheuristic algorithms (genetic algorithm and ant colony optimisation) for the Travelling Salesman Problem"
+    url: "https://github.com/Theosdoor/Metaheuristics-and-TSP"
+    image: ~
+    role: lead
+    category: coursework
+    year: 2024
+    languages: [Python]
+    tools: []
+
+  - title: "KNN vs Logistic Regression"
+    description: "Comparison of K-Nearest Neighbours and Logistic Regression classifiers on various datasets"
+    url: "https://github.com/Theosdoor/KNN-vs-Logistic-Regression"
+    image: ~
+    role: lead
+    category: coursework
+    year: 2024
+    languages: [Python]
+    tools: [scikit-learn]
+
+  - title: "EPQ Calculator"
+    description: "First major programming project — a calculator application for learning fundamentals"
+    url: "https://github.com/Theosdoor/EPQ_Calculator"
+    image: "https://raw.githubusercontent.com/Theosdoor/EPQ_Calculator/refs/heads/master/Calculator.png"
+    role: lead
+    category: coursework
+    year: 2021
+    languages: ["C#"]
+    tools: [Unity]

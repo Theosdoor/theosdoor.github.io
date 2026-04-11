@@ -15,6 +15,15 @@
     class="tab-btn"
     role="tab"
     aria-selected="false"
+    aria-controls="panel-projects"
+    id="tab-projects"
+  >
+    Projects
+  </button>
+  <button
+    class="tab-btn"
+    role="tab"
+    aria-selected="false"
     aria-controls="panel-chat"
     id="tab-chat"
   >
@@ -28,7 +37,15 @@
     const panels = document.querySelectorAll<HTMLElement>('[role="tabpanel"]');
 
     function panelFromHash(hash: string): string {
-      return hash === '#chat' ? 'panel-chat' : 'panel-home';
+      if (hash === '#projects') return 'panel-projects';
+      if (hash === '#chat') return 'panel-chat';
+      return 'panel-home';
+    }
+
+    function hashFromPanel(panelId: string): string {
+      if (panelId === 'panel-projects') return '#projects';
+      if (panelId === 'panel-chat') return '#chat';
+      return '';
     }
 
     function activate(panelId: string): void {
@@ -48,7 +65,7 @@
     tabs.forEach((tab) => {
       tab.addEventListener('click', () => {
         const panelId = tab.getAttribute('aria-controls')!;
-        const hash = panelId === 'panel-chat' ? '#chat' : '';
+        const hash = hashFromPanel(panelId);
         if (location.hash !== hash) {
           history.pushState({ panelId }, '', hash || location.pathname);
         }
