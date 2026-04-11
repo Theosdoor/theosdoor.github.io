@@ -200,7 +200,7 @@ const allTools = [
     list!.querySelectorAll('.proj-group-heading').forEach(h => h.remove());
 
     const visible = allArticles.filter(matches);
-    const hidden = allArticles.filter(el => !matches(el));
+    const hidden = allArticles.filter(el => !visible.includes(el));
 
     if (state.sort === 'featured') {
       const featured = visible.filter(el => (el as HTMLElement).dataset.featured === 'true');
@@ -253,6 +253,7 @@ const allTools = [
       });
     }
 
+    list!.dataset.empty = visible.length === 0 ? 'true' : 'false';
     updateFilterIndicator();
   }
 
@@ -295,6 +296,11 @@ const allTools = [
   }
 
   document.addEventListener('click', closeAllDropdowns);
+
+  // Stop clicks inside panels from bubbling to document (would close on every chip click)
+  document.querySelectorAll('.proj-dropdown').forEach(panel => {
+    panel.addEventListener('click', (e) => e.stopPropagation());
+  });
 
   setupDropdown('proj-filter-btn', 'proj-filter-panel');
   setupDropdown('proj-sort-btn', 'proj-sort-panel');

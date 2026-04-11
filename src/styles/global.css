@@ -684,7 +684,7 @@ strong {
     margin-top: 0;
 }
 
-.proj-list:empty::after {
+.proj-list[data-empty="true"]::before {
     content: 'No projects match the current filters.';
     font-size: 0.72rem;
     letter-spacing: 0.06em;
