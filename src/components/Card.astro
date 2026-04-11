@@ -1,0 +1,21 @@
+---
+interface Props {
+  href: string;
+  icon: string;
+  title: string;
+  sub: string;
+}
+
+const { href, icon, title, sub } = Astro.props;
+---
+
+<a class="card" href={href} target="_blank" rel="noopener">
+  <span class="card-icon">
+    <img src={icon} alt="" />
+  </span>
+  <span class="card-body">
+    <span class="card-title">{title}</span>
+    <span class="card-sub">{sub}</span>
+  </span>
+  <span class="card-arrow" aria-hidden="true">→</span>
+</a>
