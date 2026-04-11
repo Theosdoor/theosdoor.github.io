@@ -8,6 +8,13 @@
     <meta name="description"
         content="Theo Farrell — Durham University MSci Natural Sciences, AI safety researcher & group organiser" />
     <meta name="google-site-verification" content="BD22yCN98mhUEUuWtahSEQ18Jsti83oPb6WgG3LuCCw" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="Theo Farrell" />
+    <meta property="og:description" content="Theo Farrell — Durham University MSci Natural Sciences, AI safety researcher &amp; group organiser" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://theosdoor.github.io/" />
+    <meta property="og:image" content="https://theosdoor.github.io/images/theocool.jpeg" />
+    <meta name="twitter:card" content="summary" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -26,7 +33,7 @@
 
     <a class="skip-link" href="#main">Skip to main content</a>
 
-    <div class="page-wrap" id="main">
+    <div class="page-wrap" id="main" tabindex="-1">
 
         <!-- Tab navigation -->
         <nav class="tab-nav" role="tablist" aria-label="Page sections">
@@ -61,7 +68,7 @@
                         <span class="card-title">Curriculum Vitae</span>
                         <span class="card-sub">View my full CV</span>
                     </span>
-                    <span class="card-arrow">→</span>
+                    <span class="card-arrow" aria-hidden="true">→</span>
                 </a>
 
                 <a class="card" href="https://www.linkedin.com/in/theofarrell/" target="_blank" rel="noopener">
@@ -72,7 +79,7 @@
                         <span class="card-title">LinkedIn</span>
                         <span class="card-sub">Connect with me</span>
                     </span>
-                    <span class="card-arrow">→</span>
+                    <span class="card-arrow" aria-hidden="true">→</span>
                 </a>
 
                 <a class="card" href="https://github.com/Theosdoor" target="_blank" rel="noopener">
@@ -83,7 +90,7 @@
                         <span class="card-title">GitHub</span>
                         <span class="card-sub">Browse my code</span>
                     </span>
-                    <span class="card-arrow">→</span>
+                    <span class="card-arrow" aria-hidden="true">→</span>
                 </a>
 
                 <a class="card" href="https://scholar.google.com/citations?hl=en&user=wbiptScAAAAJ" target="_blank"
@@ -95,7 +102,7 @@
                         <span class="card-title">Google Scholar</span>
                         <span class="card-sub">Research &amp; publications</span>
                     </span>
-                    <span class="card-arrow">→</span>
+                    <span class="card-arrow" aria-hidden="true">→</span>
                 </a>
 
             </nav>
@@ -182,20 +189,39 @@
             const tabs = document.querySelectorAll('.tab-btn');
             const panels = document.querySelectorAll('[role="tabpanel"]');
 
+            function panelFromHash(hash) {
+                return hash === '#chat' ? 'panel-chat' : 'panel-home';
+            }
+
+            function activate(panelId) {
+                tabs.forEach(t => {
+                    const isActive = t.getAttribute('aria-controls') === panelId;
+                    t.classList.toggle('tab-btn--active', isActive);
+                    t.setAttribute('aria-selected', String(isActive));
+                });
+                panels.forEach(p => {
+                    if (p.id === panelId) p.removeAttribute('hidden');
+                    else p.setAttribute('hidden', '');
+                });
+            }
+
+            // Activate on load without adding a history entry
+            activate(panelFromHash(location.hash));
+
+            // Tab clicks — push a history entry so back button works
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
-                    const target = document.getElementById(tab.getAttribute('aria-controls'));
-
-                    // Deactivate all
-                    tabs.forEach(t => { t.classList.remove('tab-btn--active'); t.setAttribute('aria-selected', 'false'); });
-                    panels.forEach(p => p.setAttribute('hidden', ''));
-
-                    // Activate selected
-                    tab.classList.add('tab-btn--active');
-                    tab.setAttribute('aria-selected', 'true');
-                    target.removeAttribute('hidden');
+                    const panelId = tab.getAttribute('aria-controls');
+                    const hash = panelId === 'panel-chat' ? '#chat' : '';
+                    if (location.hash !== hash) {
+                        history.pushState({ panelId }, '', hash || location.pathname);
+                    }
+                    activate(panelId);
                 });
             });
+
+            // Back / forward navigation
+            window.addEventListener('popstate', () => activate(panelFromHash(location.hash)));
         })();
     </script>
 

@@ -273,8 +273,6 @@ strong {
     opacity: 0;
     transform: translateX(-6px);
     transition: opacity 0.2s, transform 0.2s;
-    /* Visible to screen readers as decorative — hide from a11y tree */
-    aria-hidden: true;
 }
 
 .card:hover .card-arrow,
