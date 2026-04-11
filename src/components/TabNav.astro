@@ -1,0 +1,63 @@
+---
+---
+
+<nav class="tab-nav" role="tablist" aria-label="Page sections">
+  <button
+    class="tab-btn tab-btn--active"
+    role="tab"
+    aria-selected="true"
+    aria-controls="panel-home"
+    id="tab-home"
+  >
+    Home
+  </button>
+  <button
+    class="tab-btn"
+    role="tab"
+    aria-selected="false"
+    aria-controls="panel-chat"
+    id="tab-chat"
+  >
+    Let's chat!
+  </button>
+</nav>
+
+<script>
+  (() => {
+    const tabs = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
+    const panels = document.querySelectorAll<HTMLElement>('[role="tabpanel"]');
+
+    function panelFromHash(hash: string): string {
+      return hash === '#chat' ? 'panel-chat' : 'panel-home';
+    }
+
+    function activate(panelId: string): void {
+      tabs.forEach((t) => {
+        const isActive = t.getAttribute('aria-controls') === panelId;
+        t.classList.toggle('tab-btn--active', isActive);
+        t.setAttribute('aria-selected', String(isActive));
+      });
+      panels.forEach((p) => {
+        if (p.id === panelId) p.removeAttribute('hidden');
+        else p.setAttribute('hidden', '');
+      });
+    }
+
+    activate(panelFromHash(location.hash));
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const panelId = tab.getAttribute('aria-controls')!;
+        const hash = panelId === 'panel-chat' ? '#chat' : '';
+        if (location.hash !== hash) {
+          history.pushState({ panelId }, '', hash || location.pathname);
+        }
+        activate(panelId);
+      });
+    });
+
+    window.addEventListener('popstate', () =>
+      activate(panelFromHash(location.hash))
+    );
+  })();
+</script>
