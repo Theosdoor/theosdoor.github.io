@@ -1,1 +1,138 @@
-projects: []
+projects:
+  - title: "Order by Scale"
+    description: "Implementation of research on relative-magnitude relational composition in attention-only transformers"
+    url: "https://github.com/Theosdoor/order-by-scale"
+    role: lead
+    category: research
+    featured: true
+    year: ~
+    languages: [Python]
+    tools: [PyTorch]
+
+  - title: "Stance Classification"
+    description: "NLP project implementing transformer-based models for detecting argumentative stances in text"
+    url: "https://github.com/Theosdoor/stance-classification"
+    role: lead
+    category: research
+    featured: true
+    year: ~
+    languages: [Python]
+    tools: [BERT, Transformers]
+
+  - title: "Bipedal Walking with RL"
+    description: "Reinforcement learning implementation for training bipedal agents to walk"
+    url: "https://github.com/Theosdoor/Bipedal-Walking-with-RL"
+    role: lead
+    category: research
+    featured: true
+    year: ~
+    languages: [Python]
+    tools: [Gymnasium]
+
+  - title: "Ghost Marks in the Machine"
+    description: "Research project investigating watermarking LLM code output"
+    url: "https://github.com/DurhamAISafety/ghost-marks-in-the-machine"
+    role: contributor
+    category: research
+    year: ~
+    languages: [Python]
+    tools: [LLMs]
+
+  - title: "Context Eval"
+    description: "Evaluation framework for testing language models on context understanding and reasoning tasks"
+    url: "https://github.com/theaLilott/context_eval"
+    role: contributor
+    category: research
+    year: ~
+    languages: [Python]
+    tools: [Transformers]
+
+  - title: "Hands2Text"
+    description: "Hackathon project converting sign language to text using computer vision and machine learning (DurHack 2023)"
+    url: "https://github.com/Theosdoor/Hands2Text-Durhack-23"
+    role: contributor
+    category: side-project
+    year: 2023
+    languages: [Python]
+    tools: [OpenCV]
+
+  - title: "Durham AI Safety Initiative Website"
+    description: "Organisation website with information on DAISI initiatives and research"
+    url: "https://github.com/DurhamAISafety/durhamaisafety.github.io"
+    role: contributor
+    category: side-project
+    year: ~
+    languages: [HTML, JavaScript]
+    tools: []
+
+  - title: "Cryptography Coursework"
+    description: "Algorithm and protocol implementation and analysis"
+    url: "https://github.com/Theosdoor/Cryptography-Coursework"
+    role: lead
+    category: research
+    year: ~
+    languages: [Python, "C++"]
+    tools: []
+
+  - title: "Natural Computing Algorithms"
+    description: "Exploration of bio-inspired and nature-based computational algorithms including cuckoo search and negative selection"
+    url: "https://github.com/Theosdoor/Natural-Computing-Algorithms"
+    role: lead
+    category: research
+    year: ~
+    languages: [Python]
+    tools: []
+
+  - title: "Image Processing"
+    description: "Computer vision and image processing techniques"
+    url: "https://github.com/Theosdoor/Image-Processing"
+    role: lead
+    category: side-project
+    year: ~
+    languages: [Python]
+    tools: [OpenCV]
+
+  - title: "Data Compression Coursework"
+    description: "Implementation of data compression algorithms including Huffman coding, LZW, and run-length encoding"
+    url: "https://github.com/Theosdoor/Data-Compression-Coursework"
+    role: lead
+    category: research
+    year: ~
+    languages: [Python]
+    tools: []
+
+  - title: "Data Cleaning and Analysis"
+    description: "Data preprocessing, cleaning, and statistical analysis"
+    url: "https://github.com/Theosdoor/Data-Cleaning-and-Analysis-Coursework"
+    role: lead
+    category: research
+    year: ~
+    languages: [Python]
+    tools: [pandas, NumPy]
+
+  - title: "Metaheuristics and TSP"
+    description: "Implementation and comparison of metaheuristic algorithms (genetic algorithm and ant colony optimisation) for the Travelling Salesman Problem"
+    url: "https://github.com/Theosdoor/Metaheuristics-and-TSP"
+    role: lead
+    category: research
+    year: ~
+    languages: [Python]
+    tools: []
+
+  - title: "KNN vs Logistic Regression"
+    description: "Comparison of K-Nearest Neighbours and Logistic Regression classifiers on various datasets"
+    url: "https://github.com/Theosdoor/KNN-vs-Logistic-Regression"
+    role: lead
+    category: research
+    year: ~
+    languages: [Python]
+    tools: [scikit-learn]
+
+  - title: "EPQ Calculator"
+    description: "First major programming project — a calculator application for learning fundamentals"
+    url: "https://github.com/Theosdoor/EPQ_Calculator"
+    role: lead
+    category: side-project
+    year: ~
+    languages: ["C#"]
+    tools: []
