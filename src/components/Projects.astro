@@ -16,9 +16,11 @@ interface Project {
 
 interface Props {
   urlSync?: boolean;
+  headingLevel?: 'h1' | 'h2';
 }
 
-const { urlSync = false } = Astro.props;
+const { urlSync = false, headingLevel = 'h2' } = Astro.props;
+const Heading = headingLevel;
 
 const projects: Project[] = projectsData.projects ?? [];
 
@@ -29,7 +31,7 @@ const allTools = [
 ---
 
 <section class="publications">
-  <h2 class="section-label">Projects</h2>
+  <Heading class="section-label">Projects</Heading>
 
   {projects.length === 0 ? (
     <p class="pub-loading">No projects yet — check back soon.</p>
@@ -126,7 +128,7 @@ const allTools = [
           >
             <div class="proj-card-img">
               {p.image
-                ? <img src={p.image} alt="" loading="lazy" />
+                ? <img src={p.image} alt={p.title} loading="lazy" />
                 : <div class="proj-card-placeholder">{p.title[0]}</div>
               }
             </div>
@@ -374,6 +376,8 @@ const allTools = [
       .forEach(b => b.setAttribute('aria-expanded', 'false'));
   }
 
+  let lastFocusedBtn: HTMLElement | null = null;
+
   function setupDropdown(btnId: string, panelId: string) {
     const btn = document.getElementById(btnId);
     const panel = document.getElementById(panelId);
@@ -384,13 +388,32 @@ const allTools = [
       const isOpen = !(panel as HTMLElement).hidden;
       closeAllDropdowns();
       if (!isOpen) {
+        lastFocusedBtn = btn;
         (panel as HTMLElement).hidden = false;
         btn.setAttribute('aria-expanded', 'true');
+        const firstFocusable = panel.querySelector<HTMLElement>('button, [href], input, [tabindex]:not([tabindex="-1"])');
+        firstFocusable?.focus();
+      }
+    });
+
+    panel.addEventListener('keydown', (e) => {
+      if ((e as KeyboardEvent).key === 'Escape') {
+        closeAllDropdowns();
+        lastFocusedBtn?.focus();
       }
     });
   }
 
-  document.addEventListener('click', closeAllDropdowns);
+  document.addEventListener('click', () => {
+    closeAllDropdowns();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAllDropdowns();
+      lastFocusedBtn?.focus();
+    }
+  });
 
   document.querySelectorAll('.proj-dropdown').forEach(panel => {
     panel.addEventListener('click', (e) => e.stopPropagation());
