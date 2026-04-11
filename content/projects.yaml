@@ -55,7 +55,7 @@ projects:
   - title: "Hands2Text"
     description: "Hackathon project converting sign language to text using computer vision and machine learning (DurHack 2023)"
     url: "https://github.com/Theosdoor/Hands2Text-Durhack-23"
-    image: ~
+    image: /images/projects/hands2text.png
     role: lead
     category: side-project
     year: 2023
@@ -75,7 +75,7 @@ projects:
   - title: "Cryptography Coursework"
     description: "Algorithm and protocol implementation and analysis"
     url: "https://github.com/Theosdoor/Cryptography-Coursework"
-    image: ~
+    image: /images/projects/crypto.png
     role: lead
     category: coursework
     year: 2025
@@ -105,7 +105,7 @@ projects:
   - title: "Data Compression Coursework"
     description: "Implementation of data compression algorithms including Huffman coding, LZW, and run-length encoding"
     url: "https://github.com/Theosdoor/Data-Compression-Coursework"
-    image: ~
+    image: /images/projects/datacomp.png
     role: lead
     category: coursework
     year: 2025
@@ -115,7 +115,7 @@ projects:
   - title: "Data Cleaning and Analysis"
     description: "Data preprocessing, cleaning, and statistical analysis"
     url: "https://github.com/Theosdoor/Data-Cleaning-and-Analysis-Coursework"
-    image: ~
+    image: /images/projects/data-analy.png
     role: lead
     category: coursework
     year: 2023
@@ -135,7 +135,7 @@ projects:
   - title: "KNN vs Logistic Regression"
     description: "Comparison of K-Nearest Neighbours and Logistic Regression classifiers on various datasets"
     url: "https://github.com/Theosdoor/KNN-vs-Logistic-Regression"
-    image: ~
+    image: /images/projects/ml-cswk.png
     role: lead
     category: coursework
     year: 2024

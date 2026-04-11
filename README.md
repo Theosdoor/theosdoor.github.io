@@ -13,7 +13,6 @@ Personal website built with [Astro](https://astro.build), deployed to GitHub Pag
 Requires Node 24 (see `.nvmrc`).
 
 ```sh
-nvm use
 npm install
 npm run dev       # localhost:4321
 npm run build     # output to dist/
