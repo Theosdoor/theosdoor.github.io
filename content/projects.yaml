@@ -5,7 +5,7 @@ projects:
     role: lead
     category: research
     featured: true
-    year: ~
+    year: 2025
     languages: [Python]
     tools: [PyTorch]
 
@@ -15,7 +15,7 @@ projects:
     role: lead
     category: research
     featured: true
-    year: ~
+    year: 2026
     languages: [Python]
     tools: [BERT, Transformers]
 
@@ -25,7 +25,7 @@ projects:
     role: lead
     category: research
     featured: true
-    year: ~
+    year: 2025
     languages: [Python]
     tools: [Gymnasium]
 
@@ -34,16 +34,16 @@ projects:
     url: "https://github.com/DurhamAISafety/ghost-marks-in-the-machine"
     role: contributor
     category: research
-    year: ~
+    year: 2025
     languages: [Python]
     tools: [LLMs]
 
-  - title: "Context Eval"
-    description: "Evaluation framework for testing language models on context understanding and reasoning tasks"
+  - title: "Challenges of Evaluating LLM Safety for User Welfare"
+    description: "Challenges of Evaluating LLM Safety for User Welfare — Code & Dataset"
     url: "https://github.com/theaLilott/context_eval"
     role: contributor
     category: research
-    year: ~
+    year: 2026
     languages: [Python]
     tools: [Transformers]
 
@@ -61,7 +61,7 @@ projects:
     url: "https://github.com/DurhamAISafety/durhamaisafety.github.io"
     role: contributor
     category: side-project
-    year: ~
+    year: 2026
     languages: [HTML, JavaScript]
     tools: []
 
@@ -70,7 +70,7 @@ projects:
     url: "https://github.com/Theosdoor/Cryptography-Coursework"
     role: lead
     category: research
-    year: ~
+    year: 2025
     languages: [Python, "C++"]
     tools: []
 
@@ -79,7 +79,7 @@ projects:
     url: "https://github.com/Theosdoor/Natural-Computing-Algorithms"
     role: lead
     category: research
-    year: ~
+    year: 2024
     languages: [Python]
     tools: []
 
@@ -88,7 +88,7 @@ projects:
     url: "https://github.com/Theosdoor/Image-Processing"
     role: lead
     category: side-project
-    year: ~
+    year: 2024
     languages: [Python]
     tools: [OpenCV]
 
@@ -97,7 +97,7 @@ projects:
     url: "https://github.com/Theosdoor/Data-Compression-Coursework"
     role: lead
     category: research
-    year: ~
+    year: 2025
     languages: [Python]
     tools: []
 
@@ -106,7 +106,7 @@ projects:
     url: "https://github.com/Theosdoor/Data-Cleaning-and-Analysis-Coursework"
     role: lead
     category: research
-    year: ~
+    year: 2023
     languages: [Python]
     tools: [pandas, NumPy]
 
@@ -115,7 +115,7 @@ projects:
     url: "https://github.com/Theosdoor/Metaheuristics-and-TSP"
     role: lead
     category: research
-    year: ~
+    year: 2024
     languages: [Python]
     tools: []
 
@@ -124,7 +124,7 @@ projects:
     url: "https://github.com/Theosdoor/KNN-vs-Logistic-Regression"
     role: lead
     category: research
-    year: ~
+    year: 2024
     languages: [Python]
     tools: [scikit-learn]
 
@@ -133,6 +133,6 @@ projects:
     url: "https://github.com/Theosdoor/EPQ_Calculator"
     role: lead
     category: side-project
-    year: ~
+    year: 2021
     languages: ["C#"]
     tools: []
