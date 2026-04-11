@@ -1,20 +1,7 @@
-:root {
-  --ink: #1c1a17;
-  --parchment: #f5f0e8;
-  --cream: #faf7f2;
-  --copper: #a0522d;
-  --copper-light: #c8763e;
-  --rule: rgba(28, 26, 23, 0.15);
-  --grid: rgba(28, 26, 23, 0.045);
-  --sidebar-w: 260px;
-}
+@import './tokens.css';
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+:root {
+  --sidebar-w: 260px;
 }
 
 html,
@@ -27,7 +14,7 @@ body {
   flex-direction: row;
   background: var(--parchment);
   color: var(--ink);
-  font-family: 'DM Mono', monospace;
+  font-family: var(--mono);
   background-image:
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
@@ -157,7 +144,7 @@ aside::before {
 }
 
 .sidebar-name {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--serif);
   font-weight: 300;
   font-size: 1.9rem;
   line-height: 1.1;
@@ -273,7 +260,7 @@ aside::before {
   text-decoration: none;
   color: var(--ink);
   background: var(--copper);
-  font-family: 'DM Mono', monospace;
+  font-family: var(--mono);
   font-size: 0.6rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -416,7 +403,7 @@ iframe {
   }
 
   .mobile-name {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: var(--serif);
     font-weight: 300;
     font-size: 1.2rem;
     color: var(--parchment);
@@ -431,7 +418,7 @@ iframe {
     margin-left: auto;
     text-decoration: none;
     color: var(--copper);
-    font-family: 'DM Mono', monospace;
+    font-family: var(--mono);
     font-size: 0.6rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;

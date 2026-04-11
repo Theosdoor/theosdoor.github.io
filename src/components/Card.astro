@@ -4,12 +4,13 @@ interface Props {
   icon: string;
   title: string;
   sub: string;
+  external?: boolean;
 }
 
-const { href, icon, title, sub } = Astro.props;
+const { href, icon, title, sub, external = true } = Astro.props;
 ---
 
-<a class="card" href={href} target="_blank" rel="noopener">
+<a class="card" href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
   <span class="card-icon">
     <img src={icon} alt="" />
   </span>
