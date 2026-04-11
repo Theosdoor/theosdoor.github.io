@@ -1,3 +1,86 @@
 ---
+import Base from '../layouts/Base.astro';
+import Card from '../components/Card.astro';
+import TabNav from '../components/TabNav.astro';
+import Publications from '../components/Publications.astro';
+import '../styles/global.css';
 ---
-<html><body><p>placeholder</p></body></html>
+
+<Base
+  title="Theo Farrell"
+  description="Theo Farrell — Durham University MSci Natural Sciences, AI safety researcher & group organiser"
+  ogUrl="https://theosdoor.github.io/"
+>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="page-wrap" id="main" tabindex="-1">
+    <TabNav />
+
+    <!-- HOME PANEL -->
+    <div id="panel-home" role="tabpanel" aria-labelledby="tab-home">
+      <header class="identity">
+        <div class="portrait-wrap">
+          <img class="portrait" src="/images/theocool.jpeg" alt="Theo Farrell" />
+        </div>
+        <h1 class="display-name">Theo<br /><em>Farrell</em></h1>
+        <div class="rule"></div>
+        <p class="bio">
+          MSci Natural Sciences (Computer Science &amp; Philosophy) at Durham University<br />
+          AI safety researcher &amp; group organiser
+        </p>
+      </header>
+
+      <nav class="link-list" aria-label="Links">
+        <Card
+          href="https://theosdoor.github.io/cv/"
+          icon="/images/icons/resume.svg"
+          title="Curriculum Vitae"
+          sub="View my full CV"
+        />
+        <Card
+          href="https://www.linkedin.com/in/theofarrell/"
+          icon="/images/icons/linkedin.svg"
+          title="LinkedIn"
+          sub="Connect with me"
+        />
+        <Card
+          href="https://github.com/Theosdoor"
+          icon="/images/icons/github.svg"
+          title="GitHub"
+          sub="Browse my code"
+        />
+        <Card
+          href="https://scholar.google.com/citations?hl=en&user=wbiptScAAAAJ"
+          icon="/images/icons/gscholar.svg"
+          title="Google Scholar"
+          sub="Research &amp; publications"
+        />
+      </nav>
+
+      <Publications />
+
+      <footer class="footer">
+        <p>theo.farrell99 'at' outlook.com · Manchester, UK · 2026</p>
+      </footer>
+    </div>
+
+    <!-- CHAT PANEL -->
+    <div id="panel-chat" role="tabpanel" aria-labelledby="tab-chat" hidden>
+      <div class="chat-intro">
+        <h2 class="section-label">Let's chat!</h2>
+        <p class="bio">Pick a time that works for you and I'll see you there.</p>
+      </div>
+      <div class="zcal-wrap">
+        <iframe
+          src="https://zcal.co/i/pLX_Nnsl?embed=1&embedType=iframe"
+          loading="lazy"
+          style="border:none;"
+          id="zcal-invite"
+          scrolling="yes"
+          title="Schedule a meeting with Theo Farrell"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</Base>
