@@ -1,0 +1,46 @@
+---
+import pubsData from '../../content/pubs.yaml';
+
+const owner: string = pubsData.owner;
+const [ownerFirst, ...ownerRest] = owner.split(' ');
+const ownerLast = ownerRest.at(-1) ?? '';
+
+interface Pub {
+  title: string;
+  authors: string[];
+  venue: string;
+  year: number;
+  url: string;
+  link_label?: string;
+}
+
+const pubs: Pub[] = [...pubsData.publications].sort((a: Pub, b: Pub) => b.year - a.year);
+
+function formatAuthors(authors: string[]): string {
+  return authors
+    .map((a) => {
+      const isOwner =
+        a === owner ||
+        (a.includes(ownerFirst) && a.includes(ownerLast));
+      return isOwner ? `<strong>${a}</strong>` : a;
+    })
+    .join(', ');
+}
+---
+
+<section class="publications" id="publications" aria-live="polite">
+  <h2 class="section-label">Publications</h2>
+  {
+    pubs.map((pub) => (
+      <article class="pub">
+        <h3 class="pub-title">{pub.title}</h3>
+        <p class="pub-meta" set:html={formatAuthors(pub.authors)} />
+        <p class="pub-venue">{pub.venue}</p>
+        <a class="pub-link" href={pub.url} target="_blank" rel="noopener">
+          <img src="/images/icons/external-link.svg" alt="" class="pub-link-icon" />
+          {pub.link_label ?? 'View paper'}
+        </a>
+      </article>
+    ))
+  }
+</section>
