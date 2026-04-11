@@ -1,0 +1,92 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/cv.css';
+---
+
+<Base
+  title="Theo Farrell CV"
+  description="Curriculum Vitae of Theo Farrell — Durham University MSci Natural Sciences, AI safety researcher, NeurIPS author."
+  ogUrl="https://theosdoor.github.io/cv/"
+>
+  <script slot="head" is:inline>
+    if (localStorage.getItem('sidebarHidden') === 'true') {
+      document.documentElement.classList.add('sidebar-hidden-init');
+    }
+  </script>
+
+  <aside>
+    <div>
+      <p class="sidebar-label">Curriculum Vitae</p>
+      <h1 class="sidebar-name">Theo<br /><em>Farrell</em></h1>
+      <div class="divider"></div>
+
+      <div class="sidebar-meta">
+        <span class="label">Location</span>
+        Manchester, UK
+
+        <span class="label">Phone</span>
+        (+44) 7596 102384
+
+        <span class="label">Email</span>
+        <a href="mailto:theo.farrell99@outlook.com">theo.farrell99 'at' outlook.com</a>
+      </div>
+
+      <div class="social-links">
+        <a class="social-link" href="https://www.linkedin.com/in/theofarrell/" target="_blank" rel="noopener" title="LinkedIn">
+          <img src="/cv/icons/linkedin.svg" alt="LinkedIn" />
+        </a>
+        <a class="social-link" href="https://github.com/Theosdoor" target="_blank" rel="noopener" title="GitHub">
+          <img src="/cv/icons/github.svg" alt="GitHub" />
+        </a>
+        <a class="social-link" href="https://scholar.google.com/citations?hl=en&user=wbiptScAAAAJ" target="_blank" rel="noopener" title="Google Scholar">
+          <img src="/cv/icons/gscholar.svg" alt="Google Scholar" />
+        </a>
+        <a class="social-link" href="https://theosdoor.github.io" target="_blank" rel="noopener" title="Website">
+          <img src="/cv/icons/globe.svg" alt="Website" />
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <a class="dl-btn" href="/cv/TheoFarrell_CV.pdf" download>
+        <span class="dl-icon"></span>
+        Download PDF
+      </a>
+      <p class="build-stamp">Built from LaTeX source · auto-deployed</p>
+    </div>
+  </aside>
+
+  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar" aria-expanded="true">
+    <svg class="chevron" viewBox="0 0 6 10" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <polyline points="5,1 1,5 5,9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+
+  <main>
+    <div class="top-bar">
+      <div class="mobile-header">
+        <span class="mobile-name">Theo <em>Farrell</em></span>
+        <a class="mobile-dl" href="/cv/TheoFarrell_CV.pdf" download>&#8595; PDF</a>
+      </div>
+    </div>
+    <iframe src="/cv/TheoFarrell_CV.pdf" title="Theo Farrell — Curriculum Vitae"></iframe>
+  </main>
+
+  <script>
+    const toggle = document.getElementById('sidebarToggle')!;
+    const body = document.body;
+
+    if (localStorage.getItem('sidebarHidden') === 'true') {
+      body.classList.add('sidebar-hidden');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Expand sidebar');
+    }
+
+    toggle.addEventListener('click', () => {
+      const hidden = body.classList.toggle('sidebar-hidden');
+      toggle.setAttribute('aria-expanded', String(!hidden));
+      toggle.setAttribute('aria-label', hidden ? 'Expand sidebar' : 'Collapse sidebar');
+      localStorage.setItem('sidebarHidden', String(hidden));
+    });
+  </script>
+</Base>
