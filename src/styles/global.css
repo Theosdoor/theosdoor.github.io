@@ -712,6 +712,8 @@ strong {
     letter-spacing: 0.08em;
 }
 
-.proj-search:focus {
+.proj-search:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-offset);
     border-color: var(--copper-light);
 }
