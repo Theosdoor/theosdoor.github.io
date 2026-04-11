@@ -233,26 +233,36 @@ const allTools = [
       );
     }
 
+    const validLangs = new Set(
+      [...document.querySelectorAll('[data-filter-lang]')]
+        .map(el => (el as HTMLElement).dataset.filterLang!)
+        .filter(v => v !== 'any')
+    );
     const lang = params.get('lang');
     if (lang) {
-      lang.split(',').forEach(l => state.languages.add(l));
-      const anyLang = document.querySelector('[data-filter-lang="any"]');
-      anyLang?.classList.remove('proj-tag-chip--active');
-      state.languages.forEach(l => {
-        document.querySelector(`[data-filter-lang="${l}"]`)
-          ?.classList.add('proj-tag-chip--active');
-      });
+      lang.split(',').filter(l => validLangs.has(l)).forEach(l => state.languages.add(l));
+      if (state.languages.size > 0) {
+        document.querySelector('[data-filter-lang="any"]')?.classList.remove('proj-tag-chip--active');
+        state.languages.forEach(l => {
+          document.querySelector(`[data-filter-lang="${l}"]`)?.classList.add('proj-tag-chip--active');
+        });
+      }
     }
 
+    const validTools = new Set(
+      [...document.querySelectorAll('[data-filter-tool]')]
+        .map(el => (el as HTMLElement).dataset.filterTool!)
+        .filter(v => v !== 'any')
+    );
     const tool = params.get('tool');
     if (tool) {
-      tool.split(',').forEach(t => state.tools.add(t));
-      const anyTool = document.querySelector('[data-filter-tool="any"]');
-      anyTool?.classList.remove('proj-tag-chip--active');
-      state.tools.forEach(t => {
-        document.querySelector(`[data-filter-tool="${t}"]`)
-          ?.classList.add('proj-tag-chip--active');
-      });
+      tool.split(',').filter(t => validTools.has(t)).forEach(t => state.tools.add(t));
+      if (state.tools.size > 0) {
+        document.querySelector('[data-filter-tool="any"]')?.classList.remove('proj-tag-chip--active');
+        state.tools.forEach(t => {
+          document.querySelector(`[data-filter-tool="${t}"]`)?.classList.add('proj-tag-chip--active');
+        });
+      }
     }
 
     const sort = params.get('sort');
@@ -264,7 +274,7 @@ const allTools = [
       );
     }
 
-    const q = params.get('q');
+    const q = params.get('q')?.trim();
     if (q) {
       state.text = q;
       const searchInput = document.getElementById('proj-search') as HTMLInputElement | null;
@@ -280,7 +290,8 @@ const allTools = [
     list!.querySelectorAll('.proj-group-heading').forEach(h => h.remove());
 
     const visible = allArticles.filter(matches);
-    const hidden = allArticles.filter(el => !visible.includes(el));
+    const visibleSet = new Set(visible);
+    const hidden = allArticles.filter(el => !visibleSet.has(el));
 
     if (state.sort === 'featured') {
       const featured = visible.filter(el => (el as HTMLElement).dataset.featured === 'true');
@@ -345,7 +356,8 @@ const allTools = [
       state.role !== 'all' ||
       state.category !== 'all' ||
       state.languages.size > 0 ||
-      state.tools.size > 0;
+      state.tools.size > 0 ||
+      state.text !== '';
     btn?.classList.toggle('proj-filter-btn--active', isActive);
   }
 
