@@ -397,21 +397,33 @@ const allTools = [
     });
 
     panel.addEventListener('keydown', (e) => {
-      if ((e as KeyboardEvent).key === 'Escape') {
+      if (e.key === 'Escape') {
         closeAllDropdowns();
-        lastFocusedBtn?.focus();
+        const btn = lastFocusedBtn;
+        lastFocusedBtn = null;
+        btn?.focus();
       }
     });
   }
 
+  function isAnyDropdownOpen() {
+    return [...document.querySelectorAll('.proj-dropdown')]
+      .some(p => !(p as HTMLElement).hidden);
+  }
+
   document.addEventListener('click', () => {
-    closeAllDropdowns();
+    if (isAnyDropdownOpen()) {
+      closeAllDropdowns();
+      lastFocusedBtn = null;
+    }
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
+    if (e.key === 'Escape' && isAnyDropdownOpen()) {
       closeAllDropdowns();
-      lastFocusedBtn?.focus();
+      const btn = lastFocusedBtn;
+      lastFocusedBtn = null;
+      btn?.focus();
     }
   });
 
