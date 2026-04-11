@@ -6,17 +6,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Start a local dev server:
 ```bash
-npx serve
+npm run dev
 ```
 
-No build step — the site is static HTML/CSS/JS deployed directly to GitHub Pages.
+Build: `npm run build` (outputs to `dist/`)
+
+The site is built with Astro and deployed to GitHub Pages via the `.github/workflows/deploy.yml` workflow.
 
 ## Architecture
 
-This is a single-page personal website with two routes:
+This is a personal website built with Astro, with three routes:
 
-- **`/` (`index.html`)** — Main page with tab-based navigation (Home / Let's chat). The Home panel has a portrait, link cards, and a Publications section. The Chat panel embeds a zcal scheduling iframe.
-- **`/resume/` (`resume/index.html`)** — CV viewer: a collapsible sidebar (state persisted via `localStorage`) alongside an `<iframe>` rendering `resume/TheoFarrell_CV.pdf`.
+- **`/` (`src/pages/index.astro`)** — Main page with tab-based navigation (Home / Let's chat). The Home panel has a portrait, link cards, and a Publications section. The Chat panel embeds a zcal scheduling iframe.
+- **`/cv/` (`src/pages/cv/index.astro`)** — CV viewer: a collapsible sidebar (state persisted via `localStorage`) alongside an `<iframe>` rendering `TheoFarrell_CV.pdf`.
+- **`/projects/` (`src/pages/projects/index.astro`)** — Projects page, currently a stub.
 
 ### Publications system
 
@@ -35,9 +38,7 @@ To add a publication, edit `content/pubs.yaml` only — no HTML changes needed.
 
 ### Design tokens
 
-All colours and fonts are CSS custom properties in `style.css`:
+All colours and fonts are CSS custom properties in `src/styles/global.css`:
 - `--ink`, `--parchment`, `--cream`, `--copper`, `--copper-light` — colour palette
 - `--serif` (Cormorant Garamond), `--mono` (DM Mono) — typefaces
 - `--rule`, `--grid`, `--text-muted` — subtle UI values
-
-The resume page has its own `resume/styles.css` with separate (but visually consistent) tokens.
