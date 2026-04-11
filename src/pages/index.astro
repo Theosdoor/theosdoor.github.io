@@ -14,11 +14,12 @@ import '../styles/global.css';
 >
   <a class="skip-link" href="#main">Skip to main content</a>
 
-  <div class="page-wrap" id="main" tabindex="-1">
+  <div id="main" tabindex="-1">
     <TabNav />
 
     <!-- HOME PANEL -->
     <div id="panel-home" role="tabpanel" aria-labelledby="tab-home">
+      <div class="page-wrap">
       <header class="identity">
         <div class="portrait-wrap">
           <img class="portrait" src="/images/theocool.jpeg" alt="Theo Farrell" />
@@ -64,30 +65,35 @@ import '../styles/global.css';
       <footer class="footer">
         <p>theo.farrell99 'at' outlook.com · Manchester, UK · 2026</p>
       </footer>
-    </div>
+      </div><!-- /.page-wrap -->
+    </div><!-- /#panel-home -->
 
     <!-- PROJECTS PANEL -->
     <div id="panel-projects" role="tabpanel" aria-labelledby="tab-projects" hidden>
-      <Projects />
+      <div class="proj-page-wrap">
+        <Projects />
+      </div>
     </div>
 
     <!-- CHAT PANEL -->
     <div id="panel-chat" role="tabpanel" aria-labelledby="tab-chat" hidden>
-      <div class="chat-intro">
-        <h2 class="section-label">Let's chat!</h2>
-        <p class="bio">Pick a time that works for you and I'll see you there.</p>
-      </div>
-      <div class="zcal-wrap">
-        <!-- don't load lazily -->
-        <iframe
-          src="https://zcal.co/i/pLX_Nnsl?embed=1&embedType=iframe" 
-          style="border:none;"
-          id="zcal-invite"
-          scrolling="yes"
-          title="Schedule a meeting with Theo Farrell"
-          allowfullscreen
-        ></iframe>
-      </div>
-    </div>
-  </div>
+      <div class="page-wrap">
+        <div class="chat-intro">
+          <h2 class="section-label">Let's chat!</h2>
+          <p class="bio">Pick a time that works for you and I'll see you there.</p>
+        </div>
+        <div class="zcal-wrap">
+          <!-- don't load lazily -->
+          <iframe
+            src="https://zcal.co/i/pLX_Nnsl?embed=1&embedType=iframe"
+            style="border:none;"
+            id="zcal-invite"
+            scrolling="yes"
+            title="Schedule a meeting with Theo Farrell"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div><!-- /.page-wrap -->
+    </div><!-- /#panel-chat -->
+  </div><!-- /#main -->
 </Base>

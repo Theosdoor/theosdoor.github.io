@@ -7,7 +7,7 @@ interface Project {
   url?: string;
   image?: string | null;
   role: 'lead' | 'contributor';
-  category: 'research' | 'side-project';
+  category: 'research' | 'side-project' | 'coursework';
   featured?: boolean;
   year?: number | null;
   languages?: string[];
@@ -73,6 +73,7 @@ const allTools = [
             <div class="proj-pills">
               <button class="proj-pill proj-pill--active" data-filter-category="all">All</button>
               <button class="proj-pill" data-filter-category="research">Research</button>
+              <button class="proj-pill" data-filter-category="coursework">Coursework</button>
               <button class="proj-pill" data-filter-category="side-project">Side project</button>
             </div>
           </div>
@@ -136,6 +137,16 @@ const allTools = [
                 <span class="proj-chip">{p.role}</span>
                 <span class="proj-chip">{p.category}</span>
               </div>
+              {((p.languages ?? []).length > 0 || (p.tools ?? []).filter(Boolean).length > 0) && (
+                <div class="proj-tags">
+                  {(p.languages ?? []).map(l => (
+                    <span class="proj-tag">{l}</span>
+                  ))}
+                  {(p.tools ?? []).filter(Boolean).map(t => (
+                    <span class="proj-tag">{t}</span>
+                  ))}
+                </div>
+              )}
             </div>
           </a>
         ))}
@@ -220,7 +231,7 @@ const allTools = [
     }
 
     const category = params.get('category');
-    if (category === 'research' || category === 'side-project') {
+    if (category === 'research' || category === 'side-project' || category === 'coursework') {
       state.category = category;
       document.querySelectorAll('[data-filter-category]').forEach(b =>
         b.classList.toggle('proj-pill--active',
