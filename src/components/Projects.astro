@@ -195,9 +195,9 @@ const allTools = [
     return parseInt((el as HTMLElement).dataset.year || '0', 10) || 0;
   }
 
-  function makeHeading(text: string) {
+  function makeHeading(text: string, type: 'featured' | 'year' = 'year') {
     const div = document.createElement('div');
-    div.className = 'proj-group-heading';
+    div.className = `proj-group-heading proj-group-heading--${type}`;
     div.textContent = text;
     return div;
   }
@@ -315,7 +315,10 @@ const allTools = [
       hidden.forEach(el => { (el as HTMLElement).hidden = true; });
 
       if (featured.length > 0) {
-        list!.insertBefore(makeHeading('Highlighted'), featured[0]);
+        list!.insertBefore(makeHeading('Highlighted', 'featured'), featured[0]);
+      }
+      if (rest.length > 0) {
+        list!.insertBefore(makeHeading('Other projects', 'featured'), rest[0]);
       }
     } else {
       const sorted = [...visible].sort((a, b) => {
