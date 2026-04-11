@@ -71,7 +71,8 @@ strong {
 }
 
 .proj-page-wrap {
-    width: min(960px, calc(100vw - 3rem));
+    width: 100%;
+    max-width: 960px;
     margin-inline: auto;
 }
 
@@ -659,7 +660,7 @@ strong {
 
 .proj-list {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 0.75rem;
 }
 
@@ -818,4 +819,29 @@ strong {
     outline: var(--focus-ring);
     outline-offset: var(--focus-offset);
     border-color: var(--copper-light);
+}
+
+/* ── Projects mobile ── */
+
+@media (max-width: 600px) {
+    .proj-page-wrap {
+        padding-inline: 1.25rem;
+    }
+
+    .proj-toolbar {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .proj-search {
+        width: 100%;
+        order: -1;
+    }
+
+    .proj-dropdown {
+        position: static;
+        min-width: unset;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
 }

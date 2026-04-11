@@ -67,7 +67,7 @@
         const panelId = tab.getAttribute('aria-controls')!;
         const hash = hashFromPanel(panelId);
         if (location.hash !== hash) {
-          history.pushState({ panelId }, '', hash || location.pathname);
+          history.pushState({ panelId }, '', hash || (location.pathname + location.search));
         }
         activate(panelId);
       });

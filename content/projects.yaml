@@ -34,7 +34,7 @@ projects:
   - title: "Ghost Marks in the Machine"
     description: "Research project investigating watermarking LLM code output"
     url: "https://github.com/DurhamAISafety/ghost-marks-in-the-machine"
-    image: images/projects/ghost-marks.png
+    image: /images/projects/ghost-marks.png
     role: lead
     category: side-project
     featured: true
@@ -45,7 +45,7 @@ projects:
   - title: "Challenges of Evaluating LLM Safety for User Welfare"
     description: "Challenges of Evaluating LLM Safety for User Welfare — Code & Dataset"
     url: "https://github.com/theaLilott/context_eval"
-    image: images/projects/context_eval.png
+    image: /images/projects/context_eval.png
     role: contributor
     category: research
     year: 2026
@@ -65,7 +65,7 @@ projects:
   - title: "Durham AI Safety Initiative Website"
     description: "Organisation website with information on DAISI initiatives and research"
     url: "https://github.com/DurhamAISafety/durhamaisafety.github.io"
-    image: images/projects/daisi_site.png
+    image: /images/projects/daisi_site.png
     role: lead
     category: side-project
     year: 2026
