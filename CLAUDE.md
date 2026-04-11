@@ -23,7 +23,7 @@ This is a personal website built with Astro, with three routes:
 
 ### Publications system
 
-Publications are fetched at runtime from `content/pubs.yaml` using the `js-yaml` CDN library. The YAML schema is:
+Publications are parsed at **build time** from `content/pubs.yaml` via `@rollup/plugin-yaml` (imported in `src/components/Publications.astro`). No CDN or runtime fetch involved. The YAML schema is:
 ```yaml
 owner: "Theo Farrell"   # name to bold in author lists
 publications:
