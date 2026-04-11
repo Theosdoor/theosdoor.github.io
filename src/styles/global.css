@@ -512,3 +512,206 @@ strong {
         padding: 2rem 1rem 3.5rem;
     }
 }
+
+/* ── PROJECTS ── */
+
+.proj-toolbar-wrap {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.proj-toolbar {
+    display: flex;
+    gap: 1.2rem;
+}
+
+.proj-filter-btn,
+.proj-sort-btn {
+    font-family: var(--mono);
+    font-size: 0.67rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    padding: 0 0 1px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.proj-filter-btn:hover,
+.proj-sort-btn:hover,
+.proj-filter-btn[aria-expanded="true"],
+.proj-sort-btn[aria-expanded="true"] {
+    color: var(--copper);
+    border-color: var(--copper-light);
+}
+
+.proj-filter-btn--active {
+    border-color: var(--copper);
+    color: var(--copper);
+}
+
+.proj-dropdown {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    left: 0;
+    background: var(--parchment);
+    border: 1px solid var(--rule);
+    padding: 1rem;
+    z-index: 100;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.proj-filter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.proj-filter-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.proj-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.proj-pill {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--rule);
+    padding: 0.2rem 0.55rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.proj-pill:hover {
+    color: var(--ink);
+    border-color: var(--copper-light);
+}
+
+.proj-pill--active {
+    color: var(--copper);
+    border-color: var(--copper);
+}
+
+.proj-tag-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.proj-tag-chip {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--rule);
+    padding: 0.15rem 0.4rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.proj-tag-chip:hover {
+    color: var(--ink);
+    border-color: var(--copper-light);
+}
+
+.proj-tag-chip--active {
+    color: var(--copper);
+    border-color: var(--copper);
+}
+
+.proj-chips {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.45rem;
+}
+
+.proj-chip {
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--copper);
+    border: 1px solid var(--copper-light);
+    padding: 0.1rem 0.35rem;
+}
+
+.proj-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-bottom: 0.65rem;
+}
+
+.proj-tag {
+    font-size: 0.56rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    border: 1px solid var(--rule);
+    padding: 0.1rem 0.35rem;
+}
+
+.proj-group-heading {
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 1.2rem 0 0.5rem;
+    border-top: 1px solid var(--rule);
+    margin-top: 0.25rem;
+}
+
+.proj-group-heading:first-child {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+}
+
+.proj-list:empty::after {
+    content: 'No projects match the current filters.';
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    display: block;
+    padding: 1rem 0;
+}
+
+.proj-search {
+    font-family: var(--mono);
+    font-size: 0.67rem;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    padding: 0 0 1px;
+    width: 140px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.proj-search::placeholder {
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+}
+
+.proj-search:focus {
+    border-color: var(--copper-light);
+}
