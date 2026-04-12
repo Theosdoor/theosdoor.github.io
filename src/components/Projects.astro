@@ -128,7 +128,9 @@ const allTools = [
           >
             <div class="proj-card-img">
               {p.image
-                ? <img src={p.image} alt={p.title} loading="lazy" />
+                ? (p.image.endsWith('.mp4') || p.image.endsWith('.gif')
+                    ? <video src={p.image} autoplay loop muted playsinline aria-label={p.title} />
+                    : <img src={p.image} alt={p.title} loading="lazy" />)
                 : <div class="proj-card-placeholder">{p.title[0]}</div>
               }
             </div>

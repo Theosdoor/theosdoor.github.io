@@ -2,7 +2,7 @@ projects:
   - title: "Order by Scale"
     description: "Implementation of research on relative-magnitude relational composition in attention-only transformers"
     url: "https://github.com/Theosdoor/order-by-scale"
-    image: "https://raw.githubusercontent.com/Theosdoor/order-by-scale/main/figures/attn-flow.png"
+    image: /images/projects/order-by-scale.png
     role: lead
     category: research
     featured: true
@@ -13,7 +13,7 @@ projects:
   - title: "Stance Classification"
     description: "NLP project implementing transformer-based models for detecting argumentative stances in text"
     url: "https://github.com/Theosdoor/stance-classification"
-    image: "https://raw.githubusercontent.com/Theosdoor/stance-classification/main/results/exp4_test_final.png"
+    image: /images/projects/stance-classification.png
     role: lead
     category: coursework
     year: 2026
@@ -23,7 +23,7 @@ projects:
   - title: "Bipedal Walking with RL"
     description: "Reinforcement learning implementation for training bipedal agents to walk"
     url: "https://github.com/Theosdoor/Bipedal-Walking-with-RL"
-    image: "https://raw.githubusercontent.com/Theosdoor/Bipedal-Walking-with-RL/main/hardcore_env/hardcore-video,episode=959,score=326.gif"
+    image: /images/projects/bipedal-rl.mp4
     role: lead
     category: coursework
     featured: true
@@ -95,7 +95,7 @@ projects:
   - title: "Image Processing"
     description: "Computer vision and image processing techniques"
     url: "https://github.com/Theosdoor/Image-Processing"
-    image: "https://raw.githubusercontent.com/Theosdoor/Image-Processing/main/figure1.png"
+    image: /images/projects/image-processing.png
     role: lead
     category: coursework
     year: 2024
@@ -145,7 +145,7 @@ projects:
   - title: "EPQ Calculator"
     description: "First major programming project — a calculator application for learning fundamentals"
     url: "https://github.com/Theosdoor/EPQ_Calculator"
-    image: "https://raw.githubusercontent.com/Theosdoor/EPQ_Calculator/refs/heads/master/Calculator.png"
+    image: /images/projects/epq-calculator.png
     role: lead
     category: coursework
     year: 2021

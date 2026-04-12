@@ -685,11 +685,17 @@ strong {
     background: var(--parchment);
 }
 
-.proj-card-img img {
+.proj-card-img img,
+.proj-card-img video {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+}
+
+.proj-card-img video {
+    object-fit: cover;
+    object-position: top;
 }
 
 .proj-card-placeholder {
