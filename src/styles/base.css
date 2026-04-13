@@ -1,0 +1,121 @@
+/* ── BASE ── */
+html {
+    font-size: 18px;
+    /* Up from 16px — base for all rem units */
+}
+
+body {
+    font-family: var(--mono);
+    background-color: var(--parchment);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 4rem 1.5rem 5rem;
+
+    /* Grid paper texture */
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+}
+
+/* ── SKIP LINK (a11y) ── */
+.skip-link {
+    position: absolute;
+    top: -9999px;
+    left: 1rem;
+    background: var(--ink);
+    color: var(--parchment);
+    padding: 0.5rem 1rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    z-index: 9999;
+    border: 1px solid var(--copper);
+}
+
+.skip-link:focus {
+    top: 1rem;
+}
+
+/* ── GLOBAL FOCUS STYLES ── */
+:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-offset);
+    border-radius: 2px;
+}
+
+/* ── STRONG / BOLD ── */
+/* DM Mono max weight is 500 — load that and map strong to it */
+strong {
+    font-weight: 500;
+    color: var(--ink);
+    /* full ink, not muted — ensures visual contrast */
+}
+
+/* ── MAIN CONTAINER ── */
+#main {
+    width: 100%;
+}
+
+/* ── PAGE WRAP ── */
+.page-wrap {
+    width: 100%;
+    max-width: 560px;
+    margin-inline: auto;
+}
+
+.proj-page-wrap {
+    width: 100%;
+    max-width: 960px;
+    margin-inline: auto;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Respect user's motion preference */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ── MOBILE ── */
+@media (max-width: 600px) {
+    html {
+        font-size: 17px;
+    }
+
+    body {
+        padding: 2.5rem 1.25rem 4rem;
+    }
+}
+
+@media (max-width: 380px) {
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        padding: 2rem 1rem 3.5rem;
+    }
+}

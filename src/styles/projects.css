@@ -1,0 +1,313 @@
+/* ── PROJECTS ── */
+
+.proj-toolbar-wrap {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.proj-toolbar {
+    display: flex;
+    gap: 1.2rem;
+}
+
+.proj-filter-btn,
+.proj-sort-btn {
+    font-family: var(--mono);
+    font-size: 0.67rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    padding: 0 0 1px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.proj-filter-btn:hover,
+.proj-sort-btn:hover,
+.proj-filter-btn[aria-expanded="true"],
+.proj-sort-btn[aria-expanded="true"] {
+    color: var(--copper);
+    border-color: var(--copper-light);
+}
+
+.proj-filter-btn--active {
+    border-color: var(--copper);
+    color: var(--copper);
+}
+
+.proj-dropdown {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    left: 0;
+    background: var(--parchment);
+    border: 1px solid var(--rule);
+    padding: 1rem;
+    z-index: 100;
+    min-width: 300px;
+}
+
+/* display: flex must live here, not on the base rule, so [hidden] can override it */
+.proj-dropdown:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.proj-filter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.proj-filter-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.proj-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.proj-pill {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--rule);
+    padding: 0.2rem 0.55rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.proj-pill:hover {
+    color: var(--ink);
+    border-color: var(--copper-light);
+}
+
+.proj-pill--active {
+    color: var(--copper);
+    border-color: var(--copper);
+}
+
+.proj-tag-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.proj-tag-chip {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--rule);
+    padding: 0.15rem 0.4rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.proj-tag-chip:hover {
+    color: var(--ink);
+    border-color: var(--copper-light);
+}
+
+.proj-tag-chip--active {
+    color: var(--copper);
+    border-color: var(--copper);
+}
+
+/* ── Project grid ── */
+
+.proj-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+    gap: 0.75rem;
+}
+
+.proj-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--rule);
+    text-decoration: none;
+    color: inherit;
+    background: var(--cream);
+    transition: border-color 0.15s;
+}
+
+.proj-card:hover,
+.proj-card:focus-visible {
+    border-color: var(--copper-light);
+}
+
+.proj-card-img {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--parchment);
+}
+
+.proj-card-img img,
+.proj-card-img video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.proj-card-img video {
+    object-fit: cover;
+    object-position: top;
+}
+
+.proj-card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    color: var(--text-muted);
+}
+
+.proj-card-body {
+    padding: 0.7rem 0.75rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+}
+
+.proj-card-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 0.95rem;
+    line-height: 1.35;
+    color: var(--ink);
+}
+
+.proj-card-desc {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+    line-height: 1.6;
+    flex: 1;
+}
+
+.proj-chips {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 0.4rem;
+}
+
+.proj-chip {
+    font-size: 0.52rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--copper);
+    border: 1px solid var(--copper-light);
+    padding: 0.08rem 0.3rem;
+}
+
+.proj-tags {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    padding-top: 0.3rem;
+}
+
+.proj-tag {
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border: 1px solid var(--rule);
+    padding: 0.06rem 0.25rem;
+}
+
+.proj-group-heading {
+    grid-column: 1 / -1;
+    padding: 1.5rem 0 0.5rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+}
+
+.proj-group-heading:first-child {
+    border-top: none;
+    padding-top: 0;
+}
+
+.proj-list[data-empty="true"]::before {
+    content: 'No projects match the current filters.';
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    display: block;
+    padding: 1rem 0;
+}
+
+.proj-search {
+    font-family: var(--mono);
+    font-size: 0.67rem;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    padding: 0 0 1px;
+    width: 140px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.proj-search::placeholder {
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+}
+
+.proj-search:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-offset);
+    border-color: var(--copper-light);
+}
+
+/* ── Mobile ── */
+
+@media (max-width: 600px) {
+    .proj-page-wrap {
+        padding-inline: 1.25rem;
+    }
+
+    .proj-toolbar {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .proj-search {
+        width: 100%;
+        order: -1;
+    }
+
+    .proj-dropdown {
+        position: static;
+        min-width: unset;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
