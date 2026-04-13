@@ -196,6 +196,26 @@
     color: var(--ink);
 }
 
+.proj-ais-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.52rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--aisafety);
+    border: 1px solid var(--aisafety);
+    padding: 0.08rem 0.3rem;
+    align-self: flex-start;
+}
+
+.proj-card-venue {
+    font-size: 0.58rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    font-style: italic;
+    line-height: 1.4;
+}
+
 .proj-card-desc {
     font-size: 0.62rem;
     color: var(--text-muted);

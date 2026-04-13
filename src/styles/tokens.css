@@ -10,6 +10,7 @@
     --text-muted: rgba(28, 26, 23, 0.55);
     --serif: 'Cormorant Garamond', Georgia, serif;
     --mono: 'DM Mono', 'Courier New', monospace;
+    --aisafety: #3d7a6b;
     --focus-ring: 2px solid var(--copper-light);
     --focus-offset: 3px;
 }

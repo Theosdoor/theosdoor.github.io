@@ -3,10 +3,12 @@ projects:
     description: "Implementation of research on relative-magnitude relational composition in attention-only transformers"
     url: "https://github.com/Theosdoor/order-by-scale"
     image: /images/projects/order-by-scale.png
+    venue: "ResponsibleFM @ NeurIPS 2025"
     role: lead
     category: research
     featured: true
     year: 2025
+    ais: true
     languages: [Python]
     tools: [TransformerLens, PyTorch]
 
@@ -35,10 +37,12 @@ projects:
     description: "Research project investigating watermarking LLM code output"
     url: "https://github.com/DurhamAISafety/ghost-marks-in-the-machine"
     image: /images/projects/ghost-marks.png
+    venue: "d/acc Hackathon @ Apart Research"
     role: lead
     category: side-project
     featured: true
     year: 2025
+    ais: true
     languages: [Python]
     tools: [Transformers, PyTorch]
 
@@ -46,9 +50,11 @@ projects:
     description: "Challenges of Evaluating LLM Safety for User Welfare — Code & Dataset"
     url: "https://github.com/theaLilott/context_eval"
     image: /images/projects/context_eval.png
+    venue: "IASEAI 2026"
     role: contributor
     category: research
     year: 2026
+    ais: true
     languages: [Python]
     tools: [Openrouter]
 
@@ -69,6 +75,7 @@ projects:
     role: lead
     category: side-project
     year: 2026
+    ais: true
     languages: [HTML, JavaScript]
     tools: [Astro, Tailwind]
 
