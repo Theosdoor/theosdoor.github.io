@@ -82,18 +82,11 @@ import '../styles/global.css';
           <h2 class="section-label">Let's chat!</h2>
           <p class="bio">Pick a time that works for you and I'll see you there.</p>
         </div>
-        <div class="zcal-wrap">
-          <!-- don't load lazily -->
-          <iframe
-            src="https://zcal.co/i/pLX_Nnsl?embed=1&embedType=iframe"
-            style="border:none;"
-            id="zcal-invite"
-            scrolling="yes"
-            title="Schedule a meeting with Theo Farrell"
-            allowfullscreen
-          ></iframe>
-        </div>
       </div><!-- /.page-wrap -->
+      <div class="zcal-wrap">
+        <script is:inline type="text/javascript" async src="https://static.zcal.co/embed/v1/embed.js"></script>
+        <div class="zcal-inline-widget"><a href="https://zcal.co/i/pLX_Nnsl">30 Minute Meeting - Schedule a meeting</a></div>
+      </div>
     </div><!-- /#panel-chat -->
   </div><!-- /#main -->
 </Base>

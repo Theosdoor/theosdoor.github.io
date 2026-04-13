@@ -430,15 +430,16 @@ strong {
 
 .zcal-wrap {
     width: 100%;
+    max-width: 900px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+    box-sizing: border-box;
     opacity: 0;
     animation: fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
 }
 
 .zcal-wrap iframe {
     width: 100%;
-    min-width: 320px;
-    min-height: 544px;
-    height: 731px;
     border: none;
     display: block;
 }
