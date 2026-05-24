@@ -1,5 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
+import DecoDivider from '../../components/DecoDivider.astro';
+import Icon from '../../components/Icon.astro';
 import '../../styles/cv.css';
 ---
 
@@ -14,62 +16,57 @@ import '../../styles/cv.css';
     }
   </script>
 
-  <aside>
+  <aside class="deco-frame cv-sidebar relative flex h-screen w-[260px] shrink-0 flex-col overflow-hidden border-r border-rule bg-panel p-8">
     <div>
-      <p class="sidebar-label">Curriculum Vitae</p>
-      <h1 class="sidebar-name">Theo<br /><em>Farrell</em></h1>
-      <div class="divider"></div>
-
-      <div class="sidebar-meta">
-        <span class="label">Location</span>
-        Manchester, UK
-
-        <span class="label">Phone</span>
-        (+44) 7596 102384
-
-        <span class="label">Email</span>
-        <a href="mailto:theo.farrell99@outlook.com">theo.farrell99 'at' outlook.com</a>
+      <p class="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.24em] text-accent-strong">Curriculum Vitae</p>
+      <h1 class="font-serif text-3xl font-black leading-tight text-ink">Theo<br />Farrell</h1>
+      <DecoDivider class="my-7 max-w-36" />
+      <div class="space-y-3 font-sans text-sm leading-7 text-muted">
+        <p><span class="block text-xs font-semibold uppercase tracking-wider text-subtle">Location</span>Manchester, UK</p>
+        <p><span class="block text-xs font-semibold uppercase tracking-wider text-subtle">Phone</span>(+44) 7596 102384</p>
+        <p>
+          <span class="block text-xs font-semibold uppercase tracking-wider text-subtle">Email</span>
+          <a class="border-b border-rule hover:border-accent hover:text-accent" href="mailto:theo.farrell99@outlook.com">theo.farrell99 'at' outlook.com</a>
+        </p>
       </div>
-
-      <div class="social-links">
-        <a class="social-link" href="https://www.linkedin.com/in/theofarrell/" target="_blank" rel="noopener" title="LinkedIn">
-          <img src="/images/icons/linkedin.svg" alt="LinkedIn" />
+      <div class="mt-7 flex gap-4">
+        <a class="text-muted hover:text-accent" href="https://www.linkedin.com/in/theofarrell/" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <Icon name="linkedin" class="size-4" />
         </a>
-        <a class="social-link" href="https://github.com/Theosdoor" target="_blank" rel="noopener" title="GitHub">
-          <img src="/images/icons/github.svg" alt="GitHub" />
+        <a class="text-muted hover:text-accent" href="https://github.com/Theosdoor" target="_blank" rel="noopener" aria-label="GitHub">
+          <Icon name="github" class="size-4" />
         </a>
-        <a class="social-link" href="https://scholar.google.com/citations?hl=en&user=wbiptScAAAAJ" target="_blank" rel="noopener" title="Google Scholar">
-          <img src="/images/icons/gscholar.svg" alt="Google Scholar" />
+        <a class="text-muted hover:text-accent" href="https://scholar.google.com/citations?hl=en&user=wbiptScAAAAJ" target="_blank" rel="noopener" aria-label="Google Scholar">
+          <Icon name="scholar" class="size-4" />
         </a>
-        <a class="social-link" href="https://theosdoor.github.io" target="_blank" rel="noopener" title="Website">
-          <img src="/images/icons/globe.svg" alt="Website" />
+        <a class="text-muted hover:text-accent" href="https://theosdoor.github.io" target="_blank" rel="noopener" aria-label="Website">
+          <Icon name="website" class="size-4" />
         </a>
       </div>
     </div>
-
-    <div class="sidebar-footer">
-      <a class="dl-btn" href="/cv/TheoFarrell_CV.pdf" download>
-        <span class="dl-icon"></span>
+    <div class="mt-auto">
+      <a class="inline-flex items-center gap-2 border border-accent bg-accent px-4 py-3 font-sans text-xs font-semibold uppercase tracking-wider text-white hover:bg-accent-strong transition" href="/cv/TheoFarrell_CV.pdf" download>
+        <span aria-hidden="true">&#8595;</span>
         Download PDF
       </a>
-      <p class="build-stamp">Built from LaTeX source · auto-deployed</p>
+      <p class="mt-4 font-sans text-xs tracking-wide text-subtle">Built from LaTeX source &middot; auto-deployed</p>
     </div>
   </aside>
 
-  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar" aria-expanded="true">
-    <svg class="chevron" viewBox="0 0 6 10" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <button class="sidebar-toggle fixed z-20 flex h-14 w-6 items-center justify-center border border-rule bg-panel text-accent" id="sidebarToggle" aria-label="Collapse sidebar" aria-expanded="true">
+    <svg class="chevron w-[90%] h-auto" viewBox="0 0 6 10" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <polyline points="5,1 1,5 5,9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
   </button>
 
-  <main>
-    <div class="top-bar">
-      <div class="mobile-header">
-        <span class="mobile-name">Theo <em>Farrell</em></span>
-        <a class="mobile-dl" href="/cv/TheoFarrell_CV.pdf" download>&#8595; PDF</a>
+  <main class="flex h-screen min-w-0 flex-1 flex-col">
+    <div class="top-bar items-center border-b border-rule bg-panel px-4 py-3">
+      <div class="flex flex-1 items-center gap-3">
+        <span class="font-serif text-lg font-bold text-ink">Theo Farrell</span>
+        <a class="ml-auto border border-accent px-3 py-2 font-sans text-xs font-semibold uppercase tracking-wider text-accent" href="/cv/TheoFarrell_CV.pdf" download>&#8595; PDF</a>
       </div>
     </div>
-    <iframe src="/cv/TheoFarrell_CV.pdf" title="Theo Farrell — Curriculum Vitae"></iframe>
+    <iframe class="flex-1 bg-canvas" src="/cv/TheoFarrell_CV.pdf" title="Theo Farrell - Curriculum Vitae"></iframe>
   </main>
 
   <script>

@@ -4,7 +4,7 @@ import Card from '../components/Card.astro';
 import TabNav from '../components/TabNav.astro';
 import Publications from '../components/Publications.astro';
 import Projects from '../components/Projects.astro';
-import '../styles/global.css';
+import DecoDivider from '../components/DecoDivider.astro';
 ---
 
 <Base
@@ -12,81 +12,48 @@ import '../styles/global.css';
   description="Theo Farrell — Durham University MSci Natural Sciences, AI safety researcher & group organiser"
   ogUrl="https://theosdoor.github.io/"
 >
-  <a class="skip-link" href="#main">Skip to main content</a>
+  <a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:border focus:border-accent focus:bg-panel focus:px-4 focus:py-2 focus:text-ink" href="#main">Skip to main content</a>
 
-  <div id="main" tabindex="-1">
+  <main id="main" class="w-full px-5 py-16 sm:px-6" tabindex="-1">
     <TabNav />
-
-    <!-- HOME PANEL -->
     <div id="panel-home" role="tabpanel" aria-labelledby="tab-home">
-      <div class="page-wrap">
-      <header class="identity">
-        <div class="portrait-wrap">
-          <img class="portrait" src="/images/theocool.jpeg" alt="Theo Farrell" width="140" height="140" fetchpriority="high" />
-        </div>
-        <h1 class="display-name">Theo<br /><em>Farrell</em></h1>
-        <div class="rule"></div>
-        <p class="bio">
-          MSci Natural Sciences (Computer Science &amp; Philosophy) at Durham University<br />
-          AI safety researcher &amp; group organiser
-        </p>
-      </header>
-
-      <nav class="link-list" aria-label="Links">
-        <Card
-          href="/cv/"
-          icon="/images/icons/resume.svg"
-          title="Curriculum Vitae"
-          sub="View my full CV"
-          external={false}
-        />
-        <Card
-          href="https://www.linkedin.com/in/theofarrell/"
-          icon="/images/icons/linkedin.svg"
-          title="LinkedIn"
-          sub="Connect with me"
-        />
-        <Card
-          href="https://github.com/Theosdoor"
-          icon="/images/icons/github.svg"
-          title="GitHub"
-          sub="Browse my code"
-        />
-        <Card
-          href="https://scholar.google.com/citations?user=wbiptScAAAAJ"
-          icon="/images/icons/gscholar.svg"
-          title="Google Scholar"
-          sub="Research &amp; publications"
-        />
-      </nav>
-
-      <Publications />
-
-      <footer class="footer">
-        <p>theo.farrell99 'at' outlook.com · Manchester, UK · 2026</p>
-      </footer>
-      </div><!-- /.page-wrap -->
-    </div><!-- /#panel-home -->
-
-    <!-- PROJECTS PANEL -->
-    <div id="panel-projects" role="tabpanel" aria-labelledby="tab-projects" hidden>
-      <div class="proj-page-wrap">
-        <Projects />
+      <div class="mx-auto w-full max-w-[560px]">
+        <header class="mb-12 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]">
+          <div class="deco-frame mb-6 size-36 border border-accent bg-panel p-1">
+            <img class="size-full object-cover object-[80%_80%]" src="/images/theocool.jpeg" alt="Theo Farrell" width="140" height="140" fetchpriority="high" />
+          </div>
+          <p class="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.28em] text-accent-strong">Researcher &amp; organiser</p>
+          <h1 class="mb-6 font-serif text-5xl font-black leading-tight text-ink sm:text-6xl">Theo<br />Farrell</h1>
+          <DecoDivider class="mb-6 max-w-44" />
+          <p class="font-sans text-sm leading-8 tracking-wide text-muted">
+            MSci Natural Sciences (Computer Science &amp; Philosophy) at Durham University<br />
+            AI safety researcher &amp; group organiser
+          </p>
+        </header>
+        <nav class="mb-12 flex flex-col gap-3" aria-label="Links">
+          <Card href="/cv/" icon="resume" title="Curriculum Vitae" sub="View my full CV" external={false} />
+          <Card href="https://www.linkedin.com/in/theofarrell/" icon="linkedin" title="LinkedIn" sub="Connect with me" />
+          <Card href="https://github.com/Theosdoor" icon="github" title="GitHub" sub="Browse my code" />
+          <Card href="https://scholar.google.com/citations?user=wbiptScAAAAJ" icon="scholar" title="Google Scholar" sub="Research &amp; publications" />
+        </nav>
+        <Publications />
+        <footer class="mt-12 border-t border-rule pt-6">
+          <p class="font-sans text-xs uppercase tracking-[0.16em] text-subtle">theo.farrell99 'at' outlook.com &middot; Manchester, UK &middot; 2026</p>
+        </footer>
       </div>
     </div>
-
-    <!-- CHAT PANEL -->
+    <div id="panel-projects" role="tabpanel" aria-labelledby="tab-projects" hidden>
+      <div class="mx-auto w-full max-w-[960px]"><Projects /></div>
+    </div>
     <div id="panel-chat" role="tabpanel" aria-labelledby="tab-chat" hidden>
-      <div class="page-wrap">
-        <div class="chat-intro">
-          <h2 class="section-label">Let's chat!</h2>
-          <p class="bio">Pick a time that works for you and I'll see you there.</p>
-        </div>
-      </div><!-- /.page-wrap -->
-      <div class="zcal-wrap">
-        <script is:inline type="text/javascript" async src="https://static.zcal.co/embed/v1/embed.js"></script>
-        <div class="zcal-inline-widget"><a href="https://zcal.co/i/pLX_Nnsl">30 Minute Meeting - Schedule a meeting</a></div>
+      <div class="mx-auto mb-8 w-full max-w-[560px]">
+        <h2 class="mb-4 border-b border-rule pb-3 font-serif text-xl font-bold text-ink">Let's chat!</h2>
+        <p class="font-sans text-sm leading-8 text-muted">Pick a time that works for you and I'll see you there.</p>
       </div>
-    </div><!-- /#panel-chat -->
-  </div><!-- /#main -->
+      <div class="mx-auto w-full max-w-[900px] px-4">
+        <script is:inline type="text/javascript" async src="https://static.zcal.co/embed/v1/embed.js"></script>
+        <div class="zcal-inline-widget" data-zcal-options='{"showBackground":1}'><a href="https://zcal.co/i/pLX_Nnsl">30 Minute Meeting - Schedule a meeting</a></div>
+      </div>
+    </div>
+  </main>
 </Base>

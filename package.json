@@ -10,7 +10,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
@@ -19,6 +20,8 @@
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
-    "@rollup/plugin-yaml": "^4.1.2"
+    "@astrojs/check": "^0.9.9",
+    "@rollup/plugin-yaml": "^4.1.2",
+    "typescript": "^6.0.3"
   }
 }

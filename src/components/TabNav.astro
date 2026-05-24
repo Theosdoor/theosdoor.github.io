@@ -1,34 +1,10 @@
 ---
 ---
 
-<nav class="tab-nav" role="tablist" aria-label="Page sections">
-  <button
-    class="tab-btn tab-btn--active"
-    role="tab"
-    aria-selected="true"
-    aria-controls="panel-home"
-    id="tab-home"
-  >
-    Home
-  </button>
-  <button
-    class="tab-btn"
-    role="tab"
-    aria-selected="false"
-    aria-controls="panel-projects"
-    id="tab-projects"
-  >
-    Projects
-  </button>
-  <button
-    class="tab-btn"
-    role="tab"
-    aria-selected="false"
-    aria-controls="panel-chat"
-    id="tab-chat"
-  >
-    Let's chat!
-  </button>
+<nav class="mx-auto mb-10 flex max-w-[560px] border-b border-rule" role="tablist" aria-label="Page sections">
+  <button class="tab-btn tab-btn--active border-b-2 border-accent px-0 pb-3 pr-6 pt-2 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-accent" role="tab" aria-selected="true" aria-controls="panel-home" id="tab-home">Home</button>
+  <button class="tab-btn border-b-2 border-transparent px-0 pb-3 pr-6 pt-2 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-subtle hover:text-ink" role="tab" aria-selected="false" aria-controls="panel-projects" id="tab-projects">Projects</button>
+  <button class="tab-btn border-b-2 border-transparent px-0 pb-3 pt-2 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-subtle hover:text-ink" role="tab" aria-selected="false" aria-controls="panel-chat" id="tab-chat">Let's chat!</button>
 </nav>
 
 <script>
@@ -53,6 +29,10 @@
         const isActive = t.getAttribute('aria-controls') === panelId;
         t.classList.toggle('tab-btn--active', isActive);
         t.setAttribute('aria-selected', String(isActive));
+        t.classList.toggle('border-accent', isActive);
+        t.classList.toggle('text-accent', isActive);
+        t.classList.toggle('border-transparent', !isActive);
+        t.classList.toggle('text-subtle', !isActive);
       });
       panels.forEach((p) => {
         if (p.id === panelId) p.removeAttribute('hidden');
