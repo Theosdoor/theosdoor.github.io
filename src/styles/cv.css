@@ -19,7 +19,8 @@ body {
     width 0.45s var(--ease-deco),
     min-width 0.45s var(--ease-deco),
     padding 0.45s var(--ease-deco),
-    left 0.45s var(--ease-deco);
+    left 0.45s var(--ease-deco),
+    visibility 0.45s var(--ease-deco);
 }
 
 .cv-sidebar.deco-frame::before {
@@ -42,6 +43,7 @@ html.sidebar-hidden-init .cv-sidebar {
   min-width: 0;
   padding: 0;
   border-width: 0;
+  visibility: hidden;
 }
 
 body.sidebar-hidden .sidebar-toggle,
