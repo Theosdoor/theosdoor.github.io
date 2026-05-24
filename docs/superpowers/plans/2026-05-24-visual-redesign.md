@@ -1000,6 +1000,18 @@ body.sidebar-hidden .sidebar-toggle .chevron {
     display: flex;
   }
 }
+
+/* Shift Theme Toggle to bottom-right to avoid PDF reader/top-bar collisions */
+[data-theme-toggle] {
+  top: auto !important;
+  bottom: 1.25rem !important;
+  right: 1.25rem !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="dark"] [data-theme-toggle] {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
 ```
 
 - [ ] **Step 5: Verify the CV route builds and retains its state hooks**
