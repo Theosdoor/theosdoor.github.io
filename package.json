@@ -20,6 +20,8 @@
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
-    "@rollup/plugin-yaml": "^4.1.2"
+    "@astrojs/check": "^0.9.9",
+    "@rollup/plugin-yaml": "^4.1.2",
+    "typescript": "^6.0.3"
   }
 }

@@ -8,8 +8,10 @@ This is a pnpm-managed Astro + Tailwind v4 static site. Use Node `>=24.x` and ke
 
 ```bash
 pnpm install
-pnpm dev      # local dev server
-pnpm build    # outputs to dist/
+pnpm exec astro check # TypeScript/Astro type-check
+pnpm test             # design-system and regression checks
+pnpm build            # outputs to dist/
+pnpm dev              # local dev server
 ```
 
 Deployed to GitHub Pages via `.github/workflows/deploy.yml` on push to `main`.
@@ -61,32 +63,25 @@ The `Projects` component contains all filter/sort/search logic in client-side JS
 
 ### Styling
 
-CSS is split into focused files — keep each file under ~300 lines. `global.css` is the import index; add new stylesheets there. The CV page imports `cv.css` directly instead of `global.css`.
+Tailwind v4 is the primary styling layer. `src/layouts/Base.astro` imports `src/styles/global.css` once for every route; components and pages should prefer semantic Tailwind utilities rather than new route-level stylesheets.
 
 | File | Contents |
 |------|----------|
-| `tokens.css` | CSS custom properties + box-sizing reset |
-| `base.css` | html/body, layout wrappers, a11y, animations, media queries |
-| `home.css` | identity, cards, publications, tabs, chat embed, footer |
-| `projects.css` | all `proj-*` styles |
-| `global.css` | import index only — `@import` the above four |
-| `cv.css` | CV page only |
-
-Tailwind is available (via `@tailwindcss/vite`) but the site primarily uses hand-written CSS with the design tokens below.
+| `global.css` | Tailwind entrypoint, CSS-first theme variables, runtime light/dark tokens, base rules, and the `deco-frame` utility |
+| `cv.css` | CV-only sidebar state, PDF layout, and theme-toggle placement overrides |
 
 ### Design tokens
 
-All in `src/styles/tokens.css`:
-- `--ink`, `--parchment`, `--cream`, `--copper`, `--copper-light` — colour palette
-- `--serif` (Cormorant Garamond), `--mono` (DM Mono) — typefaces
-- `--rule`, `--grid`, `--text-muted` — subtle UI values
-- `--focus-ring`, `--focus-offset` — keyboard focus styles
+All public utility tokens are declared in `src/styles/global.css` under `@theme inline`:
+- Semantic color utilities: `canvas`, `panel`, `ink`, `muted`, `subtle`, `rule`, `accent`, `accent-strong`, and `safety`
+- Typography utilities: `font-serif` and `font-sans`
+- Theme-sensitive values update through `--site-*` CSS variables on `html[data-theme="dark"]`
 
 ### Layout constraints
 
-- `.page-wrap` — max-width `560px`, centred; used for prose/card content on the home panel
-- `.proj-page-wrap` — max-width `960px`, centred; used for the projects grid
-- `.zcal-wrap` — max-width `900px`, centred; sits outside `.page-wrap` so the booking widget isn't artificially narrowed
+- Home prose/card content uses `max-w-[560px]`.
+- Project grids use `max-w-[960px]`.
+- The booking widget uses `max-w-[900px]`, separate from the narrower home content width.
 
 ### Astro script notes
 
