@@ -6,27 +6,54 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
 test('Tailwind v4 exposes semantic runtime theme utilities', async () => {
   const global = await read('src/styles/global.css');
-  const tokens = await read('src/styles/tokens.css');
 
   assert.match(global, /@import "tailwindcss";/);
-  assert.match(global, /@custom-variant dark/);
+  assert.doesNotMatch(global, /@custom-variant dark/);
   assert.match(global, /@theme inline/);
-  assert.match(global, /--color-canvas:\s*var\(--bg-primary\)/);
-  assert.match(global, /--color-safety:\s*var\(--tag-safety\)/);
-
-  assert.match(tokens, /html\[data-theme="dark"\]/);
-  assert.match(tokens, /--focus-color:\s*#ad627d;/);
-  assert.match(tokens, /outline:\s*2px solid var\(--focus-color\)/);
+  assert.match(global, /--color-canvas:\s*var\(--site-canvas\)/);
+  assert.match(global, /--color-safety:\s*var\(--site-safety\)/);
+  assert.match(global, /html\[data-theme="dark"\]/);
+  assert.match(global, /--site-muted:\s*#d5cad0;/);
+  assert.match(global, /outline:\s*2px solid var\(--color-accent\)/);
 });
 
-test('Base initializes theme before render and mounts the global toggle', async () => {
+test('Tailwind utilities retain spacing and decorative frames stay anchored in one entrypoint', async () => {
+  const global = await read('src/styles/global.css');
+
+  assert.doesNotMatch(global, /margin:\s*0|padding:\s*0/);
+  assert.match(global, /@utility deco-frame/);
+  assert.match(global, /position:\s*relative;/);
+  await assert.rejects(read('src/styles/tokens.css'));
+  await assert.rejects(read('src/styles/base.css'));
+});
+
+test('Base owns the shared stylesheet, initializes theme, and mounts the global toggle', async () => {
   const base = await read('src/layouts/Base.astro');
+  const home = await read('src/pages/index.astro');
+  const projectsPage = await read('src/pages/projects/index.astro');
+  const cvCss = await read('src/styles/cv.css');
 
   assert.match(base, /import ThemeToggle from '\.\.\/components\/ThemeToggle\.astro'/);
+  assert.match(base, /import '\.\.\/styles\/global\.css'/);
+  assert.doesNotMatch(home, /styles\/global\.css/);
+  assert.doesNotMatch(projectsPage, /styles\/global\.css/);
+  assert.doesNotMatch(cvCss, /@import "\.\/global\.css";/);
   assert.match(base, /localStorage\.getItem\('theme'\)/);
   assert.match(base, /prefers-color-scheme:\s*dark/);
   assert.match(base, /document\.documentElement\.dataset\.theme/);
   assert.match(base, /<ThemeToggle \/>/);
+});
+
+test('YAML content remains authorable with only project-specific type declarations', async () => {
+  const envTypes = await read('src/env.d.ts');
+  const projects = await read('src/components/Projects.astro');
+  const publications = await read('src/components/Publications.astro');
+
+  assert.doesNotMatch(envTypes, /reference types="astro\/client"/);
+  assert.match(envTypes, /declare module "\*\.yaml"/);
+  assert.doesNotMatch(envTypes, /declare module "\*\.yml"/);
+  assert.match(projects, /content\/projects\.yaml/);
+  assert.match(publications, /content\/pubs\.yaml/);
 });
 
 test('ThemeToggle supports system, light, and dark without storing system mode', async () => {
@@ -73,6 +100,9 @@ test('projects retains data behavior hooks while using semantic utilities', asyn
   assert.match(projects, /bg-panel/);
   assert.match(projects, /border-rule/);
   assert.match(projects, /text-safety/);
+  assert.match(projects, /proj-card-body flex flex-1 flex-col p-5/);
+  assert.match(projects, /proj-chips mt-auto flex flex-wrap gap-2 pt-4/);
+  assert.match(projects, /proj-tags mt-2 flex flex-wrap gap-2/);
   assert.match(projects, /classList\.toggle\('border-accent', active\)/);
   assert.doesNotMatch(projects, /(?:text|bg|border)-\$\{/);
 });
@@ -89,15 +119,13 @@ test('CV composes the redesigned shell and retains sidebar persistence', async (
   assert.doesNotMatch(cvPage, /<em>Farrell<\/em>/);
   assert.match(cvPage, /<Icon name="linkedin"/);
   assert.doesNotMatch(cvPage, /images\/icons|<img class="size-4/);
-  assert.match(cvCss, /@import "\.\/global\.css";/);
+  assert.doesNotMatch(cvCss, /@import "\.\/global\.css";/);
   assert.doesNotMatch(cvCss, /--copper|--parchment|--ink/);
 });
 
 test('legacy palette and superseded component styles are removed', async () => {
   const sourceFiles = [
-    'src/styles/tokens.css',
     'src/styles/global.css',
-    'src/styles/base.css',
     'src/styles/cv.css',
     'src/pages/index.astro',
     'src/pages/projects/index.astro',
@@ -113,6 +141,8 @@ test('legacy palette and superseded component styles are removed', async () => {
   assert.doesNotMatch(source, /--(?:ink|parchment|cream|copper|copper-light|rule|mono|aisafety)\b/);
   assert.doesNotMatch(source, /images\/icons|filter:/);
   assert.doesNotMatch(source, /(?:text|bg|border)-\$\{/);
+  await assert.rejects(read('src/styles/tokens.css'));
+  await assert.rejects(read('src/styles/base.css'));
   await assert.rejects(read('src/styles/home.css'));
   await assert.rejects(read('src/styles/projects.css'));
   await assert.rejects(read('public/images/icons/resume.svg'));
@@ -122,6 +152,3 @@ test('legacy palette and superseded component styles are removed', async () => {
   await assert.rejects(read('public/images/icons/globe.svg'));
   await assert.rejects(read('public/images/icons/external-link.svg'));
 });
-
-
-

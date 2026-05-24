@@ -138,25 +138,25 @@ const allTools = [
             data-tools={(p.tools ?? []).filter(Boolean).map(t => t.toLowerCase()).join(',')}
             data-ais={p.ais ? 'true' : 'false'}
           >
-            <div class="proj-card-img">
+            <div class="proj-card-img aspect-[16/10] overflow-hidden border-b border-rule">
               {p.image
                 ? (p.image.endsWith('.mp4') || p.image.endsWith('.gif')
-                    ? <video src={p.image} autoplay loop muted playsinline aria-label={p.title} />
-                    : <img src={p.image} alt={p.title} loading="lazy" />)
-                : <div class="proj-card-placeholder">{p.title[0]}</div>
+                    ? <video class="size-full object-cover" src={p.image} autoplay loop muted playsinline aria-label={p.title} />
+                    : <img class="size-full object-cover" src={p.image} alt={p.title} loading="lazy" />)
+                : <div class="proj-card-placeholder flex size-full items-center justify-center bg-canvas font-serif text-3xl font-bold text-subtle">{p.title[0]}</div>
               }
             </div>
-            <div class="proj-card-body">
-              {p.ais && <span class="proj-ais-badge border border-safety px-2 py-1 font-sans text-[0.65rem] font-semibold uppercase tracking-wider text-safety">AI Safety</span>}
+            <div class="proj-card-body flex flex-1 flex-col p-5">
+              {p.ais && <span class="proj-ais-badge mb-3 self-start border border-safety px-2 py-1 font-sans text-[0.65rem] font-semibold uppercase tracking-wider text-safety">AI Safety</span>}
               <h3 class="proj-card-title font-serif text-lg font-bold text-ink mb-1">{p.title}</h3>
               {p.venue && <p class="proj-card-venue font-sans text-[0.65rem] italic text-muted mb-1">{p.venue}</p>}
-              <p class="proj-card-desc font-sans text-sm leading-6 text-muted mb-4">{p.description}</p>
-              <div class="proj-chips">
+              <p class="proj-card-desc font-sans text-sm leading-6 text-muted">{p.description}</p>
+              <div class="proj-chips mt-auto flex flex-wrap gap-2 pt-4">
                 <span class="proj-chip border border-accent px-2 py-1 font-sans text-[0.65rem] uppercase tracking-wider text-accent">{p.role}</span>
                 <span class="proj-chip border border-accent px-2 py-1 font-sans text-[0.65rem] uppercase tracking-wider text-accent">{p.category}</span>
               </div>
               {((p.languages ?? []).length > 0 || (p.tools ?? []).filter(Boolean).length > 0) && (
-                <div class="proj-tags">
+                <div class="proj-tags mt-2 flex flex-wrap gap-2">
                   {(p.languages ?? []).map(l => (
                     <span class="proj-tag border border-rule px-2 py-1 font-sans text-[0.65rem] uppercase tracking-wider text-subtle">{l}</span>
                   ))}

@@ -1,5 +1,3 @@
-@import "./global.css";
-
 :root {
   --sidebar-w: 260px;
 }
@@ -18,10 +16,18 @@ body {
 .cv-sidebar,
 .sidebar-toggle {
   transition:
-    width 0.45s var(--ease-smooth),
-    min-width 0.45s var(--ease-smooth),
-    padding 0.45s var(--ease-smooth),
-    left 0.45s var(--ease-smooth);
+    width 0.45s var(--ease-deco),
+    min-width 0.45s var(--ease-deco),
+    padding 0.45s var(--ease-deco),
+    left 0.45s var(--ease-deco);
+}
+
+.cv-sidebar.deco-frame::before {
+  inset: 12px;
+}
+
+.cv-sidebar.deco-frame::after {
+  display: none;
 }
 
 .sidebar-toggle {
