@@ -1,12 +1,10 @@
-# CLAUDE.md
-
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+# AGENTS.md
 
 ## Development
 
 ```bash
-npm run dev      # local dev server
-npm run build    # outputs to dist/
+pnpm dev      # local dev server
+pnpm build    # outputs to dist/
 ```
 
 Deployed to GitHub Pages via `.github/workflows/deploy.yml` on push to `main`.
