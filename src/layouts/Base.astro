@@ -14,6 +14,8 @@ const {
 } = Astro.props;
 
 const ogImageAbsolute = `https://theosdoor.github.io${ogImage}`;
+
+import ThemeToggle from '../components/ThemeToggle.astro';
 ---
 
 <!doctype html>
@@ -35,7 +37,7 @@ const ogImageAbsolute = `https://theosdoor.github.io${ogImage}`;
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Raleway:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <!-- Favicon -->
@@ -44,8 +46,20 @@ const ogImageAbsolute = `https://theosdoor.github.io${ogImage}`;
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>🐐</text></svg>"
     />
     <slot name="head" />
+    <script is:inline>
+      (() => {
+        let theme;
+        try {
+          const saved = localStorage.getItem('theme');
+          if (saved === 'light' || saved === 'dark') theme = saved;
+        } catch {}
+        theme ||= window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
   </head>
   <body>
+    <ThemeToggle />
     <slot />
   </body>
 </html>

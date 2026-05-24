@@ -15,6 +15,28 @@ test('Tailwind v4 exposes semantic runtime theme utilities', async () => {
   assert.match(global, /--color-safety:\s*var\(--tag-safety\)/);
 
   assert.match(tokens, /html\[data-theme="dark"\]/);
-  assert.match(tokens, /--focus-color:\s*#ad627d/);
+  assert.match(tokens, /--focus-color:\s*#ad627d;/);
   assert.match(tokens, /outline:\s*2px solid var\(--focus-color\)/);
 });
+
+test('Base initializes theme before render and mounts the global toggle', async () => {
+  const base = await read('src/layouts/Base.astro');
+
+  assert.match(base, /import ThemeToggle from '\.\.\/components\/ThemeToggle\.astro'/);
+  assert.match(base, /localStorage\.getItem\('theme'\)/);
+  assert.match(base, /prefers-color-scheme:\s*dark/);
+  assert.match(base, /document\.documentElement\.dataset\.theme/);
+  assert.match(base, /<ThemeToggle \/>/);
+});
+
+test('ThemeToggle supports system, light, and dark without storing system mode', async () => {
+  const toggle = await read('src/components/ThemeToggle.astro');
+
+  assert.match(toggle, /data-theme-toggle/);
+  assert.match(toggle, /\['system', 'light', 'dark'\]/);
+  assert.match(toggle, /localStorage\.removeItem\('theme'\)/);
+  assert.match(toggle, /localStorage\.setItem\('theme', next\)/);
+  assert.match(toggle, /Switch to \$\{next/);
+  assert.doesNotMatch(toggle, /Click to/);
+});
+

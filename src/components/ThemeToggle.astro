@@ -1,0 +1,57 @@
+<button
+  type="button"
+  data-theme-toggle
+  class="fixed right-4 top-4 z-50 flex items-center gap-2 border border-rule bg-panel px-3 py-2 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-muted transition-colors hover:border-accent-strong hover:text-ink"
+  aria-label="Theme: System. Switch to Light theme."
+>
+  <span aria-hidden="true">Theme</span>
+  <span data-theme-label>System</span>
+</button>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const label = button?.querySelector<HTMLElement>('[data-theme-label]');
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  const modes = ['system', 'light', 'dark'] as const;
+  type Mode = (typeof modes)[number];
+
+  function storedMode(): Mode {
+    try {
+      const value = localStorage.getItem('theme');
+      return value === 'light' || value === 'dark' ? value : 'system';
+    } catch {
+      return 'system';
+    }
+  }
+
+  let activeMode: Mode = storedMode();
+
+  function render(mode: Mode): void {
+    activeMode = mode;
+    const applied = mode === 'system' ? (media.matches ? 'dark' : 'light') : mode;
+    document.documentElement.dataset.theme = applied;
+    if (label) label.textContent = mode[0].toUpperCase() + mode.slice(1);
+    const next = modes[(modes.indexOf(mode) + 1) % modes.length];
+    button?.setAttribute(
+      'aria-label',
+      `Theme: ${mode[0].toUpperCase() + mode.slice(1)}. Switch to ${next[0].toUpperCase() + next.slice(1)} theme.`
+    );
+  }
+
+  button?.addEventListener('click', () => {
+    const next = modes[(modes.indexOf(activeMode) + 1) % modes.length];
+    try {
+      if (next === 'system') localStorage.removeItem('theme');
+      else localStorage.setItem('theme', next);
+    } catch {
+      // Keep the control operational when storage is blocked.
+    }
+    render(next);
+  });
+
+  media.addEventListener('change', () => {
+    if (activeMode === 'system') render('system');
+  });
+
+  render(activeMode);
+</script>
