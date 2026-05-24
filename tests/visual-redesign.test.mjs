@@ -116,6 +116,7 @@ test('CV composes the redesigned shell and retains sidebar persistence', async (
   assert.match(cvPage, /localStorage\.getItem\('sidebarHidden'\)/);
   assert.match(cvPage, /localStorage\.setItem\('sidebarHidden'/);
   assert.match(cvPage, /TheoFarrell_CV\.pdf/);
+  assert.match(cvPage, /class="chevron w-\[90%\] h-auto"/);
   assert.doesNotMatch(cvPage, /<em>Farrell<\/em>/);
   assert.match(cvPage, /<Icon name="linkedin"/);
   assert.doesNotMatch(cvPage, /images\/icons|<img class="size-4/);
