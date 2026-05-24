@@ -40,14 +40,4 @@ html[data-theme="dark"] {
   outline-offset: 3px;
 }
 
-/* Temporary aliases keep unmigrated routes intact through Tasks 2-5. */
-:root {
-  --ink: var(--text-primary);
-  --parchment: var(--bg-primary);
-  --cream: var(--bg-secondary);
-  --copper: var(--accent);
-  --copper-light: var(--accent-light);
-  --rule: var(--border);
-  --mono: var(--font-body);
-  --aisafety: var(--tag-safety);
-}
+

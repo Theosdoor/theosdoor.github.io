@@ -93,4 +93,35 @@ test('CV composes the redesigned shell and retains sidebar persistence', async (
   assert.doesNotMatch(cvCss, /--copper|--parchment|--ink/);
 });
 
+test('legacy palette and superseded component styles are removed', async () => {
+  const sourceFiles = [
+    'src/styles/tokens.css',
+    'src/styles/global.css',
+    'src/styles/base.css',
+    'src/styles/cv.css',
+    'src/pages/index.astro',
+    'src/pages/projects/index.astro',
+    'src/pages/cv/index.astro',
+    'src/components/Card.astro',
+    'src/components/Icon.astro',
+    'src/components/TabNav.astro',
+    'src/components/Publications.astro',
+    'src/components/Projects.astro',
+  ];
+  const source = (await Promise.all(sourceFiles.map(read))).join('\n');
+
+  assert.doesNotMatch(source, /--(?:ink|parchment|cream|copper|copper-light|rule|mono|aisafety)\b/);
+  assert.doesNotMatch(source, /images\/icons|filter:/);
+  assert.doesNotMatch(source, /(?:text|bg|border)-\$\{/);
+  await assert.rejects(read('src/styles/home.css'));
+  await assert.rejects(read('src/styles/projects.css'));
+  await assert.rejects(read('public/images/icons/resume.svg'));
+  await assert.rejects(read('public/images/icons/linkedin.svg'));
+  await assert.rejects(read('public/images/icons/github.svg'));
+  await assert.rejects(read('public/images/icons/gscholar.svg'));
+  await assert.rejects(read('public/images/icons/globe.svg'));
+  await assert.rejects(read('public/images/icons/external-link.svg'));
+});
+
+
 
