@@ -1,8 +1,13 @@
 # AGENTS.md
 
+@/Users/Subspace_Explorer/.codex/RTK.md
+
 ## Development
 
+This is a pnpm-managed Astro + Tailwind v4 static site. Use Node `>=24.x` and keep `pnpm-lock.yaml` as the single lockfile.
+
 ```bash
+pnpm install
 pnpm dev      # local dev server
 pnpm build    # outputs to dist/
 ```
