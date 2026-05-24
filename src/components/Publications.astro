@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 import pubsData from '../../content/pubs.yaml';
 
 const owner: string = pubsData.owner;
@@ -28,19 +29,17 @@ function formatAuthors(authors: string[]): string {
 }
 ---
 
-<section class="publications" id="publications" aria-live="polite">
-  <h2 class="section-label">Publications</h2>
-  {
-    pubs.map((pub) => (
-      <article class="pub">
-        <h3 class="pub-title">{pub.title}</h3>
-        <p class="pub-meta" set:html={formatAuthors(pub.authors)} />
-        <p class="pub-venue">{pub.venue}</p>
-        <a class="pub-link" href={pub.url} target="_blank" rel="noopener">
-          <img src="/images/icons/external-link.svg" alt="" class="pub-link-icon" />
-          {pub.link_label ?? 'View paper'}
-        </a>
-      </article>
-    ))
-  }
+<section class="space-y-0" id="publications" aria-live="polite">
+  <h2 class="mb-5 border-b border-rule pb-3 font-serif text-xl font-bold text-ink">Publications</h2>
+  {pubs.map((pub) => (
+    <article class="border-b border-rule py-6 last:border-0">
+      <h3 class="mb-3 font-serif text-xl font-bold leading-snug text-ink">{pub.title}</h3>
+      <p class="mb-2 font-sans text-sm leading-7 text-muted" set:html={formatAuthors(pub.authors)} />
+      <p class="mb-3 font-sans text-sm text-accent">{pub.venue}</p>
+      <a class="inline-flex items-center gap-2 border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-ink hover:border-accent hover:text-accent" href={pub.url} target="_blank" rel="noopener">
+        <Icon name="external-link" class="size-3" />
+        {pub.link_label ?? 'View paper'}
+      </a>
+    </article>
+  ))}
 </section>

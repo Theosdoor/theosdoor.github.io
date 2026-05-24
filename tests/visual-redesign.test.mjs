@@ -40,3 +40,27 @@ test('ThemeToggle supports system, light, and dark without storing system mode',
   assert.doesNotMatch(toggle, /Click to/);
 });
 
+test('home UI is composed from DecoDivider and semantic Tailwind surfaces', async () => {
+  const divider = await read('src/components/DecoDivider.astro');
+  const icon = await read('src/components/Icon.astro');
+  const card = await read('src/components/Card.astro');
+  const publications = await read('src/components/Publications.astro');
+  const index = await read('src/pages/index.astro');
+
+  assert.match(divider, /aria-hidden="true"/);
+  assert.match(divider, /border-accent/);
+  assert.match(icon, /fill-current/);
+  assert.match(icon, /aria-hidden="true"/);
+  assert.match(icon, /'external-link'/);
+  assert.match(icon, /fontawesome\.com\/license\/free/);
+  assert.match(card, /import Icon/);
+  assert.match(card, /<Icon name=\{icon\}/);
+  assert.doesNotMatch(card, /images\/icons|<img/);
+  assert.match(publications, /<Icon name="external-link"/);
+  assert.match(card, /border-rule/);
+  assert.match(card, /bg-panel/);
+  assert.match(index, /import DecoDivider/);
+  assert.match(index, /icon="resume"/);
+  assert.doesNotMatch(index, /<em>Farrell<\/em>/);
+});
+

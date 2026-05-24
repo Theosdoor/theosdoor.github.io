@@ -1,0 +1,13 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['flex items-center gap-3', className]} aria-hidden="true">
+  <span class="h-px flex-1 bg-rule"></span>
+  <span class="size-2 rotate-45 border border-accent bg-canvas"></span>
+  <span class="h-px flex-1 bg-rule"></span>
+</div>

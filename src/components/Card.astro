@@ -1,7 +1,9 @@
 ---
+import Icon from './Icon.astro';
+
 interface Props {
   href: string;
-  icon: string;
+  icon: 'resume' | 'linkedin' | 'github' | 'scholar';
   title: string;
   sub: string;
   external?: boolean;
@@ -10,13 +12,18 @@ interface Props {
 const { href, icon, title, sub, external = true } = Astro.props;
 ---
 
-<a class="card" href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
-  <span class="card-icon">
-    <img src={icon} alt="" />
+<a
+  class="group flex items-center gap-4 border border-rule bg-panel px-5 py-4 text-ink transition duration-200 ease-deco hover:-translate-y-0.5 hover:border-accent focus-visible:border-accent"
+  href={href}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener' : undefined}
+>
+  <span class="flex size-9 shrink-0 items-center justify-center text-subtle transition group-hover:text-accent">
+    <Icon name={icon} class="size-6" />
   </span>
-  <span class="card-body">
-    <span class="card-title">{title}</span>
-    <span class="card-sub">{sub}</span>
+  <span class="flex flex-1 flex-col gap-1">
+    <span class="font-serif text-lg font-bold text-ink">{title}</span>
+    <span class="font-sans text-xs uppercase tracking-[0.16em] text-subtle">{sub}</span>
   </span>
-  <span class="card-arrow" aria-hidden="true">→</span>
-</a>
+  <span class="text-accent opacity-0 transition group-hover:opacity-100" aria-hidden="true">&#8594;</span>
+ </a>
