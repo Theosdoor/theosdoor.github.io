@@ -1,4 +1,22 @@
-@import './tokens.css';
-@import './base.css';
-@import './home.css';
-@import './projects.css';
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./base.css";
+@import "./home.css";
+@import "./projects.css";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme inline {
+  --font-serif: var(--font-heading);
+  --font-sans: var(--font-body);
+  --color-canvas: var(--bg-primary);
+  --color-panel: var(--bg-secondary);
+  --color-ink: var(--text-primary);
+  --color-muted: var(--text-secondary);
+  --color-subtle: var(--text-muted);
+  --color-rule: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-light);
+  --color-safety: var(--tag-safety);
+  --ease-deco: var(--ease-smooth);
+}

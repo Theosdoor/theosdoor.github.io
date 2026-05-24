@@ -1,25 +1,54 @@
-/* ── DESIGN TOKENS ── */
 :root {
-    --ink: #1c1a17;
-    --parchment: #f5f0e8;
-    --cream: #faf7f2;
-    --copper: #a0522d;
-    --copper-light: #c8763e;
-    --rule: rgba(28, 26, 23, 0.15);
-    --grid: rgba(28, 26, 23, 0.045);
-    --text-muted: rgba(28, 26, 23, 0.55);
-    --serif: 'Cormorant Garamond', Georgia, serif;
-    --mono: 'DM Mono', 'Courier New', monospace;
-    --aisafety: #3d7a6b;
-    --focus-ring: 2px solid var(--copper-light);
-    --focus-offset: 3px;
+  --font-heading: "Merriweather", Georgia, serif;
+  --font-body: "Raleway", system-ui, -apple-system, sans-serif;
+  --accent: #7d3c52;
+  --accent-light: #ad627d;
+  --accent-dark: #5c2838;
+  --tag-safety: #246253;
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --focus-color: #7d3c52;
+  --bg-primary: #faf8f9;
+  --bg-secondary: #ffffff;
+  --border: rgba(125, 60, 82, 0.2);
+  --text-primary: #1d171b;
+  --text-secondary: #5a4b52;
+  --text-muted: #82727a;
+  --grid: rgba(125, 60, 82, 0.035);
 }
 
-/* ── RESET ── */
+html[data-theme="dark"] {
+  --bg-primary: #120f11;
+  --bg-secondary: #1a1518;
+  --border: rgba(173, 98, 125, 0.34);
+  --text-primary: #f5f2f4;
+  --text-secondary: #cdbec5;
+  --text-muted: #aea2a8;
+  --grid: rgba(173, 98, 125, 0.06);
+  --focus-color: #ad627d;
+  --tag-safety: #73c4af;
+}
+
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 3px;
+}
+
+/* Temporary aliases keep unmigrated routes intact through Tasks 2-5. */
+:root {
+  --ink: var(--text-primary);
+  --parchment: var(--bg-primary);
+  --cream: var(--bg-secondary);
+  --copper: var(--accent);
+  --copper-light: var(--accent-light);
+  --rule: var(--border);
+  --mono: var(--font-body);
+  --aisafety: var(--tag-safety);
 }
