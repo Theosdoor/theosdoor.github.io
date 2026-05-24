@@ -217,7 +217,6 @@
 }
 
 .proj-card-desc {
-    font-size: 0.62rem;
     color: var(--text-muted);
     letter-spacing: 0.03em;
     line-height: 1.6;
@@ -259,8 +258,7 @@
 
 .proj-group-heading {
     grid-column: 1 / -1;
-    padding: 1.5rem 0 0.5rem;
-    border-top: 1px solid var(--rule);
+    padding: 0 0 0.5rem;
     font-family: var(--serif);
     font-size: 1.4rem;
     font-weight: 400;
@@ -268,9 +266,11 @@
     color: var(--ink);
 }
 
-.proj-group-heading:first-child {
-    border-top: none;
-    padding-top: 0;
+/* Add top border and padding only when preceded by another project card/heading */
+.proj-card ~ .proj-group-heading,
+.proj-group-heading ~ .proj-group-heading {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
 }
 
 .proj-list[data-empty="true"]::before {

@@ -62,7 +62,7 @@ const allTools = [
           />
         </div>
 
-        <div class="proj-dropdown absolute z-20 mt-3 min-w-[280px] border border-rule bg-panel p-4 text-ink hidden" id="proj-filter-panel" hidden>
+        <div class="proj-dropdown absolute z-20 mt-3 min-w-[280px] border border-rule bg-panel p-4 text-ink" id="proj-filter-panel" hidden>
           <div class="proj-filter-section">
             <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">Role</h3>
             <div class="proj-pills">
@@ -111,7 +111,7 @@ const allTools = [
           </div>
         </div>
 
-        <div class="proj-dropdown absolute z-20 mt-3 min-w-[280px] border border-rule bg-panel p-4 text-ink hidden" id="proj-sort-panel" hidden>
+        <div class="proj-dropdown absolute z-20 mt-3 min-w-[280px] border border-rule bg-panel p-4 text-ink" id="proj-sort-panel" hidden>
           <div class="proj-filter-section">
             <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">Sort by</h3>
             <div class="proj-pills">
@@ -217,7 +217,7 @@ const allTools = [
 
   function makeHeading(text: string, type: 'featured' | 'year' = 'year') {
     const div = document.createElement('div');
-    div.className = 'proj-group-heading col-span-full border-t border-rule pt-6 font-serif text-2xl font-bold text-ink';
+    div.className = 'proj-group-heading col-span-full font-serif text-2xl font-bold text-ink';
     div.dataset.groupType = type;
     div.textContent = text;
     return div;
@@ -321,6 +321,7 @@ const allTools = [
     const visible = allArticles.filter(matches);
     const visibleSet = new Set(visible);
     const hidden = allArticles.filter(el => !visibleSet.has(el));
+    const fragment = document.createDocumentFragment();
 
     if (state.sort === 'featured') {
       const featured = visible.filter(el => (el as HTMLElement).dataset.featured === 'true');
@@ -333,17 +334,26 @@ const allTools = [
             .localeCompare(b.querySelector('.proj-card-title')?.textContent ?? '');
         });
 
-      [...featured, ...rest, ...hidden].forEach(el => list!.appendChild(el));
-
-      visible.forEach(el => { (el as HTMLElement).hidden = false; });
-      hidden.forEach(el => { (el as HTMLElement).hidden = true; });
-
       if (featured.length > 0) {
-        list!.insertBefore(makeHeading('Highlighted', 'featured'), featured[0]);
+        fragment.appendChild(makeHeading('Highlighted', 'featured'));
       }
+      featured.forEach(el => {
+        (el as HTMLElement).hidden = false;
+        fragment.appendChild(el);
+      });
+
       if (rest.length > 0) {
-        list!.insertBefore(makeHeading('Other projects', 'featured'), rest[0]);
+        fragment.appendChild(makeHeading('Other projects', 'featured'));
       }
+      rest.forEach(el => {
+        (el as HTMLElement).hidden = false;
+        fragment.appendChild(el);
+      });
+
+      hidden.forEach(el => {
+        (el as HTMLElement).hidden = true;
+        fragment.appendChild(el);
+      });
     } else {
       const sorted = [...visible].sort((a, b) => {
         const yearDiff = getYear(b) - getYear(a);
@@ -355,21 +365,25 @@ const allTools = [
           .localeCompare(b.querySelector('.proj-card-title')?.textContent ?? '');
       });
 
-      [...sorted, ...hidden].forEach(el => list!.appendChild(el));
-
-      visible.forEach(el => { (el as HTMLElement).hidden = false; });
-      hidden.forEach(el => { (el as HTMLElement).hidden = true; });
-
       let currentYear: string | null = null;
       sorted.forEach(el => {
         const year = (el as HTMLElement).dataset.year ?? '0';
         const displayYear = year === '0' ? '—' : year;
         if (year !== currentYear) {
           currentYear = year;
-          list!.insertBefore(makeHeading(displayYear), el);
+          fragment.appendChild(makeHeading(displayYear));
         }
+        (el as HTMLElement).hidden = false;
+        fragment.appendChild(el);
+      });
+
+      hidden.forEach(el => {
+        (el as HTMLElement).hidden = true;
+        fragment.appendChild(el);
       });
     }
+
+    list!.appendChild(fragment);
 
     const placeholder = document.getElementById('proj-empty-state');
     if (placeholder) {
