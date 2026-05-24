@@ -64,3 +64,17 @@ test('home UI is composed from DecoDivider and semantic Tailwind surfaces', asyn
   assert.doesNotMatch(index, /<em>Farrell<\/em>/);
 });
 
+test('projects retains data behavior hooks while using semantic utilities', async () => {
+  const projects = await read('src/components/Projects.astro');
+
+  assert.match(projects, /data-url-sync/);
+  assert.match(projects, /setupPillGroup\('filter-role', 'role'\)/);
+  assert.match(projects, /restoreFromUrl\(\)/);
+  assert.match(projects, /bg-panel/);
+  assert.match(projects, /border-rule/);
+  assert.match(projects, /text-safety/);
+  assert.match(projects, /classList\.toggle\('border-accent', active\)/);
+  assert.doesNotMatch(projects, /(?:text|bg|border)-\$\{/);
+});
+
+
