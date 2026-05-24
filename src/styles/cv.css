@@ -1,4 +1,4 @@
-@import './tokens.css';
+@import "./global.css";
 
 :root {
   --sidebar-w: 260px;
@@ -12,79 +12,34 @@ body {
 body {
   display: flex;
   flex-direction: row;
-  background: var(--parchment);
-  color: var(--ink);
-  font-family: var(--mono);
-  background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 28px 28px;
   overflow: hidden;
 }
 
-/* ── SIDEBAR ── */
-aside {
-  width: var(--sidebar-w);
-  min-width: var(--sidebar-w);
-  height: 100vh;
-  background: var(--ink);
-  display: flex;
-  flex-direction: column;
-  padding: 2.4rem 1.8rem 1.8rem;
-  position: relative;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateX(-18px);
-  animation: slideIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards;
-  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    min-width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    padding 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Collapsed sidebar */
-body.sidebar-hidden aside {
-  width: 0;
-  min-width: 0;
-  padding: 0;
-}
-
-/* ── SIDEBAR TOGGLE TAB ── */
+.cv-sidebar,
 .sidebar-toggle {
-  position: fixed;
+  transition:
+    width 0.45s var(--ease-smooth),
+    min-width 0.45s var(--ease-smooth),
+    padding 0.45s var(--ease-smooth),
+    left 0.45s var(--ease-smooth);
+}
+
+.sidebar-toggle {
   left: var(--sidebar-w);
   top: 50%;
   transform: translateY(-50%);
-  z-index: 200;
-  width: 18px;
-  height: 52px;
-  background: var(--ink);
-  border: none;
-  border-left: 2px solid var(--copper);
-  border-radius: 0 4px 4px 0;
-  color: var(--copper);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+}
+
+body.sidebar-hidden .cv-sidebar,
+html.sidebar-hidden-init .cv-sidebar {
+  width: 0;
+  min-width: 0;
   padding: 0;
-  transition:
-    left 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    background 0.2s,
-    color 0.2s;
+  border-width: 0;
 }
 
-.sidebar-toggle:hover {
-  background: #2a2520;
-  color: var(--copper-light);
-}
-
-.sidebar-toggle .chevron {
-  width: 6px;
-  height: 10px;
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-body.sidebar-hidden .sidebar-toggle {
+body.sidebar-hidden .sidebar-toggle,
+html.sidebar-hidden-init .sidebar-toggle {
   left: 0;
 }
 
@@ -92,343 +47,34 @@ body.sidebar-hidden .sidebar-toggle .chevron {
   transform: rotate(180deg);
 }
 
-/* Flash-prevention: applied before JS runs */
-html.sidebar-hidden-init aside {
-  width: 0;
-  min-width: 0;
-  padding: 0;
-  animation: none;
-  opacity: 1;
-  transform: none;
-}
-
-html.sidebar-hidden-init .sidebar-toggle {
-  left: 0;
-}
-
-/* Copper vertical rule */
-aside::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 3px;
-  height: 100%;
-  background: linear-gradient(180deg,
-      transparent 0%,
-      var(--copper) 25%,
-      var(--copper-light) 60%,
-      transparent 100%);
-}
-
-/* Radial glow */
-aside::before {
-  content: '';
-  position: absolute;
-  top: -60px;
-  left: -80px;
-  width: 320px;
-  height: 320px;
-  background: radial-gradient(circle, rgba(160, 82, 45, 0.18) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.sidebar-label {
-  font-size: 0.68rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--copper-light);
-  margin-bottom: 0.6rem;
-  opacity: 0;
-  animation: fadeUp 0.5s ease 0.35s forwards;
-}
-
-.sidebar-name {
-  font-family: var(--serif);
-  font-weight: 300;
-  font-size: 1.9rem;
-  line-height: 1.1;
-  color: var(--parchment);
-  letter-spacing: 0.01em;
-  opacity: 0;
-  animation: fadeUp 0.6s ease 0.45s forwards;
-}
-
-.sidebar-name em {
-  font-style: italic;
-  font-weight: 400;
-  color: var(--copper-light);
-}
-
-.divider {
-  width: 36px;
-  height: 1px;
-  background: var(--copper);
-  margin: 1.4rem 0;
-  opacity: 0;
-  animation: fadeUp 0.5s ease 0.55s forwards;
-}
-
-/* Contact details */
-.sidebar-meta {
-  font-size: 0.72rem;
-  line-height: 1.9;
-  color: rgba(245, 240, 232, 0.55);
-  letter-spacing: 0.04em;
-  opacity: 0;
-  animation: fadeUp 0.5s ease 0.65s forwards;
-}
-
-.sidebar-meta .label {
-  display: block;
-  color: rgba(245, 240, 232, 0.85);
-  margin-top: 0.6rem;
-}
-
-.sidebar-meta .label:first-child {
-  margin-top: 0;
-}
-
-.sidebar-meta a {
-  color: inherit;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(200, 118, 62, 0.35);
-  transition: color 0.15s, border-color 0.15s;
-}
-
-.sidebar-meta a:hover {
-  color: var(--copper-light);
-  border-color: var(--copper-light);
-}
-
-/* Social links */
-.social-links {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 1.4rem;
-  opacity: 0;
-  animation: fadeUp 0.5s ease 0.75s forwards;
-}
-
-.social-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  color: rgba(245, 240, 232, 0.55);
-  text-decoration: none;
-  transition: color 0.15s, background 0.15s;
-  flex-shrink: 0;
-}
-
-.social-link:hover {
-  color: var(--copper-light);
-  background: rgba(160, 82, 45, 0.1);
-}
-
-.social-link svg {
-  width: 14px;
-  height: 14px;
-  fill: currentColor;
-}
-
-.social-link img {
-  width: 14px;
-  height: 14px;
-  filter: brightness(0) invert(1);
-  opacity: 0.55;
-  transition: opacity 0.15s, filter 0.15s;
-}
-
-.social-link:hover img {
-  opacity: 1;
-  filter: brightness(0) saturate(100%) invert(50%) sepia(60%) saturate(500%) hue-rotate(340deg);
-}
-
-/* Footer */
-.sidebar-footer {
-  margin-top: auto;
-  opacity: 0;
-  animation: fadeUp 0.5s ease 0.85s forwards;
-}
-
-.dl-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  text-decoration: none;
-  color: var(--ink);
-  background: var(--copper);
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.65rem 1rem;
-  transition: background 0.2s, transform 0.15s;
-  position: relative;
-}
-
-.dl-btn:hover {
-  background: var(--copper-light);
-  transform: translateY(-1px);
-}
-
-.dl-btn:active {
-  transform: translateY(0);
-}
-
-.dl-icon {
-  width: 11px;
-  height: 11px;
-  border: 1.5px solid currentColor;
-  border-radius: 1px;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.dl-icon::before {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 1.5px;
-  height: 4px;
-  background: currentColor;
-}
-
-.dl-icon::after {
-  content: '';
-  position: absolute;
-  bottom: 2px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-left: 3px solid transparent;
-  border-right: 3px solid transparent;
-  border-top: 3px solid currentColor;
-}
-
-.build-stamp {
-  margin-top: 0.9rem;
-  font-size: 0.6rem;
-  color: rgba(245, 240, 232, 0.2);
-  letter-spacing: 0.06em;
-}
-
-/* ── MAIN PDF VIEWER ── */
-main {
-  flex: 1;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  opacity: 0;
-  animation: fadeIn 0.6s ease 0.3s forwards;
-  min-width: 0;
-}
-
 .top-bar {
   display: none;
-  /* hidden on desktop, shown on mobile */
 }
 
-iframe {
-  flex: 1;
-  width: 100%;
-  border: none;
-  background: var(--parchment);
-}
-
-/* ── ANIMATIONS ── */
-@keyframes slideIn {
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}
-
-/* ── MOBILE ── */
 @media (max-width: 700px) {
   body {
     flex-direction: column;
     overflow: auto;
   }
 
-  /* Hide sidebar + toggle on mobile */
-  aside,
+  .cv-sidebar,
   .sidebar-toggle {
     display: none;
   }
 
-  main {
-    height: 100vh;
-    min-height: 100svh;
-    animation: none;
-    opacity: 1;
-  }
-
   .top-bar {
     display: flex;
-    height: 48px;
-    min-height: 48px;
-    align-items: center;
-    padding: 0 1rem;
-    background: var(--ink);
-    border-bottom: 1px solid rgba(160, 82, 45, 0.3);
   }
+}
 
-  .mobile-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex: 1;
-  }
+/* Shift Theme Toggle to bottom-right to avoid PDF reader/top-bar collisions */
+[data-theme-toggle] {
+  top: auto !important;
+  bottom: 1.25rem !important;
+  right: 1.25rem !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
 
-  .mobile-name {
-    font-family: var(--serif);
-    font-weight: 300;
-    font-size: 1.2rem;
-    color: var(--parchment);
-  }
-
-  .mobile-name em {
-    font-style: italic;
-    color: var(--copper-light);
-  }
-
-  .mobile-dl {
-    margin-left: auto;
-    text-decoration: none;
-    color: var(--copper);
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    border: 1px solid var(--copper);
-    padding: 0.3rem 0.7rem;
-    transition: background 0.15s, color 0.15s;
-  }
-
-  .mobile-dl:hover {
-    background: var(--copper);
-    color: var(--ink);
-  }
+html[data-theme="dark"] [data-theme-toggle] {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }

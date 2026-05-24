@@ -77,4 +77,20 @@ test('projects retains data behavior hooks while using semantic utilities', asyn
   assert.doesNotMatch(projects, /(?:text|bg|border)-\$\{/);
 });
 
+test('CV composes the redesigned shell and retains sidebar persistence', async () => {
+  const cvPage = await read('src/pages/cv/index.astro');
+  const cvCss = await read('src/styles/cv.css');
+
+  assert.match(cvPage, /import DecoDivider/);
+  assert.match(cvPage, /import Icon/);
+  assert.match(cvPage, /localStorage\.getItem\('sidebarHidden'\)/);
+  assert.match(cvPage, /localStorage\.setItem\('sidebarHidden'/);
+  assert.match(cvPage, /TheoFarrell_CV\.pdf/);
+  assert.doesNotMatch(cvPage, /<em>Farrell<\/em>/);
+  assert.match(cvPage, /<Icon name="linkedin"/);
+  assert.doesNotMatch(cvPage, /images\/icons|<img class="size-4/);
+  assert.match(cvCss, /@import "\.\/global\.css";/);
+  assert.doesNotMatch(cvCss, /--copper|--parchment|--ink/);
+});
+
 
