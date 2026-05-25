@@ -1,0 +1,80 @@
+---
+import talksData from '../../content/talks.yaml';
+
+interface Talk {
+  date: string;
+  event: string;
+  venue: string;
+  topic: 'research' | 'other';
+  description: string;
+}
+
+interface Props {
+  filterResearchOnly?: boolean;
+}
+
+const { filterResearchOnly = false } = Astro.props;
+
+const allTalks: Talk[] = [...talksData.talks].sort(
+  (a: Talk, b: Talk) => new Date(b.date).getTime() - new Date(a.date).getTime()
+);
+
+const talks = filterResearchOnly
+  ? allTalks.filter((t: Talk) => t.topic === 'research')
+  : allTalks;
+
+function formatDate(dateStr: string): string {
+  // Parsing date safely to avoid timezone shift offset bugs
+  const parts = dateStr.split('-');
+  const year = parseInt(parts[0], 10);
+  const monthIdx = parseInt(parts[1], 10) - 1;
+  const day = parseInt(parts[2], 10);
+  
+  const date = new Date(year, monthIdx, day);
+  
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  
+  const month = months[date.getMonth()];
+  return `${day} ${month} ${year}`;
+}
+
+function parseMarkdownLinks(text: string): string {
+  // Parse standard markdown links [text](url) into HTML anchors
+  return text.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    '<a class="border-b border-rule hover:border-accent hover:text-accent transition-colors font-semibold" href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+  );
+}
+---
+
+<section class="space-y-0 scroll-mt-20 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="talks" aria-live="polite">
+  <div class="mb-6 border-b border-rule pb-3 flex items-center justify-between">
+    <h3 class="font-serif text-2xl font-black text-ink">Talks</h3>
+    {filterResearchOnly && (
+      <a href="/talks/" class="border border-accent rounded-lg px-3 py-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-accent hover:bg-accent hover:text-white transition-all">
+        See All Talks &rarr;
+      </a>
+    )}
+  </div>
+
+  {talks.length === 0 ? (
+    <p class="font-sans text-sm text-subtle py-2">No talks listed yet.</p>
+  ) : (
+    <div class="divide-y divide-rule/50">
+      {talks.map((talk) => (
+        <article class="py-6 first:pt-0 last:pb-0">
+          <h4 class="mb-2 font-serif text-xl font-bold leading-snug text-ink">{talk.event}</h4>
+          <div class="mb-4 flex flex-wrap items-center gap-2 text-xs font-sans text-subtle font-semibold uppercase tracking-wider">
+            <span>{formatDate(talk.date)}</span>
+            <span>&bull;</span>
+            <span>{talk.venue}</span>
+          </div>
+          <p class="font-sans text-sm leading-8 text-muted" set:html={parseMarkdownLinks(talk.description)} />
+        </article>
+      ))}
+    </div>
+  )}
+</section>
