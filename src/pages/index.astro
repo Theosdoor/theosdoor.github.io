@@ -9,6 +9,8 @@ import Talks from '../components/Talks.astro';
 import FieldBuilding from '../components/FieldBuilding.astro';
 import Reviewing from '../components/Reviewing.astro';
 import { Content as IntroContent, frontmatter as introFrontmatter } from '../../content/intro.md';
+import { Image } from 'astro:assets';
+import profilePic from '../../public/images/theocool.jpeg';
 ---
 
 <Base
@@ -25,7 +27,15 @@ import { Content as IntroContent, frontmatter as introFrontmatter } from '../../
           <div class="flex flex-col gap-8 md:flex-row-reverse md:items-start md:justify-between md:gap-12">
             <!-- Image (right on desktop, top on mobile) -->
             <div class="deco-frame mb-6 size-36 shrink-0 border border-accent bg-panel p-1 md:mb-0 md:size-44">
-              <img class="size-full object-cover object-[80%_80%]" src="/images/theocool.jpeg" alt={introFrontmatter.name} width="176" height="176" fetchpriority="high" />
+              <Image 
+                class="size-full object-cover object-[80%_80%]" 
+                src={profilePic} 
+                alt={introFrontmatter.name} 
+                width={176} 
+                height={176} 
+                loading="eager"
+                fetchpriority="high" 
+              />
             </div>
             
             <!-- Text (left on desktop, bottom on mobile) -->
