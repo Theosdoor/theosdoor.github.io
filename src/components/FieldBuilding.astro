@@ -54,9 +54,9 @@ const renderedEntries = await Promise.all(
 
             {/* Content (Description and Bullets parsed by Markdown compiler) */}
             <div class="prose max-w-none font-sans text-sm leading-[1.4rem] tracking-wide text-muted
-                        prose-p:text-muted prose-p:leading-[1.4rem]
-                        prose-hr:border-t prose-hr:border-rule prose-hr:my-10
-                        prose-ul:list-none prose-ul:pl-0 prose-ul:space-y-4
+                        [&_p]:text-muted [&_p]:leading-[1.4rem] [&_p]:mb-8
+                        [&_hr]:border-t [&_hr]:border-rule [&_hr]:mt-8 [&_hr]:mb-10
+                        [&_ul]:list-none [&_ul]:pl-0 [&_ul]:space-y-4
                         [&_ul_li]:relative [&_ul_li]:pl-6 [&_ul_li]:text-muted [&_ul_li]:leading-[1.4rem]
                         [&_ul_li::before]:content-[''] [&_ul_li::before]:absolute [&_ul_li::before]:left-1 [&_ul_li::before]:top-[11px] [&_ul_li::before]:size-1.5 [&_ul_li::before]:rounded-full [&_ul_li::before]:bg-accent
                         [&_ul_ul]:mt-3 [&_ul_ul]:pl-5 [&_ul_ul]:space-y-2
