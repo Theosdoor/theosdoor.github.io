@@ -18,33 +18,37 @@ Deployed to GitHub Pages via `.github/workflows/deploy.yml` on push to `main`.
 
 ## Architecture
 
-Astro static site (`output: 'static'`) with three routes:
+Astro static site (`output: 'static'`) with multiple static routes:
 
-- **`/`** (`src/pages/index.astro`) — single-page with three tab panels: Home, Projects, Let's chat
+- **`/`** (`src/pages/index.astro`) — single-page with five tab panels: Home, Research, Field-building, Projects, Let's chat
 - **`/cv/`** (`src/pages/cv/index.astro`) — collapsible sidebar + PDF iframe; sidebar state persisted in `localStorage`
 - **`/projects/`** (`src/pages/projects/index.astro`) — standalone projects page (same `Projects` component, with `urlSync` enabled)
+- **`/talks/`** (`src/pages/talks/index.astro`) — standalone talks page showing all talks (including non-research topics)
+- **`/field-building/`** (`src/pages/field-building/index.astro`) — standalone field-building projects page
+- **`/lets-chat/`** (`src/pages/lets-chat/index.astro`) — standalone booking and scheduling meeting widget
 
 ### Tab navigation
 
-`src/components/TabNav.astro` handles all tab switching via vanilla JS. Tabs map to URL hashes (`#projects`, `#chat`; home has no hash). Hash ↔ panel ID mapping lives in `panelFromHash` / `hashFromPanel`. Browser back/forward is supported via `popstate`.
+Homepage tab switching is handled via client-side scripts inside `src/components/Header.astro`. Tabs map to URL hashes (`#research`, `#field-building`, `#projects`, `#chat`; home has no hash). Browser back/forward is fully supported via `popstate` and `hashchange` event listeners.
 
 ### Data-driven content
 
-Both publications and projects are loaded at **build time** from YAML via `@rollup/plugin-yaml` — no runtime fetching.
+All site content is managed and validated using **Astro Content Collections (Content Layer)** under `src/content.config.ts` with strict Zod validation schemas. Source files remain authored as raw YAML and Markdown under `content/`:
 
-**Publications** — `content/pubs.yaml`, rendered by `src/components/Publications.astro`:
+**1. Publications (`content/pubs.yaml`)** — Loaded via `getCollection('pubs')` and rendered by `src/components/Publications.astro`:
 ```yaml
-owner: "Theo Farrell"   # name to bold in author lists
+owner: "Theo Farrell"
 publications:
   - title: "..."
     authors: [...]
     venue: "..."
     year: 2025
     url: "..."
-    link_label: "..."   # optional, defaults to "View paper"
+    link_label: "..."   # optional
+    key-role: true | false
 ```
 
-**Projects** — `content/projects.yaml`, rendered by `src/components/Projects.astro`:
+**2. Projects (`content/projects.yaml`)** — Loaded via `getCollection('projects')` and rendered by `src/components/Projects.astro`:
 ```yaml
 projects:
   - title: "..."
@@ -53,13 +57,21 @@ projects:
     image: "..."         # optional; .mp4/.gif renders as <video>, otherwise <img>
     role: lead | contributor
     category: research | side-project | coursework
-    featured: true       # optional; controls "Highlighted" group in default sort
-    year: 2025           # optional
-    languages: [...]     # optional; drives filter chips
-    tools: [...]         # optional; drives filter chips
+    featured: true       # optional
+    year: 2025
+    languages: [...]     # optional
+    tools: [...]         # optional
+    ais: true | false    # optional
 ```
 
-The `Projects` component contains all filter/sort/search logic in client-side JS. Filters (role, category, language, tool) and sort order are reflected in the URL when `urlSync={true}` (used on `/projects/`).
+**3. Talks (`content/talks.yaml`)** — Loaded via `getCollection('talks')` and rendered by `src/components/Talks.astro`. Can be filtered using `filterResearchOnly` prop.
+
+**4. Field-building (`content/field-building/*.md`)** — Markdown files loaded via `getCollection('fieldBuilding')` and rendered dynamically by `src/components/FieldBuilding.astro`.
+
+### Modularity & DRY
+
+*   **Formatters (`src/utils/formatters.ts`)**: Date parsing, markdown links parsing, and author list name bolding are fully centralized and tested.
+*   **Projects Filter (`src/scripts/projects.ts`)**: The extensive client-side filtering, sorting, keyboard access, and URL state-synchronization logic is isolated in a dedicated type-safe TypeScript module.
 
 ### Styling
 
