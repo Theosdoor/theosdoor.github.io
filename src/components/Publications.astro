@@ -13,9 +13,19 @@ interface Pub {
   year: number;
   url: string;
   link_label?: string;
+  'key-role': boolean;
 }
 
-const pubs: Pub[] = [...pubsData.publications].sort((a: Pub, b: Pub) => b.year - a.year);
+interface Props {
+  headingLevel?: 'h1' | 'h2';
+}
+
+const { headingLevel = 'h2' } = Astro.props;
+const Heading = headingLevel;
+
+const allPubs: Pub[] = [...pubsData.publications].sort((a: Pub, b: Pub) => b.year - a.year);
+const keyPubs = allPubs.filter((p: Pub) => p['key-role'] === true);
+const otherPubs = allPubs.filter((p: Pub) => p['key-role'] === false);
 
 function formatAuthors(authors: string[]): string {
   return authors
@@ -29,17 +39,52 @@ function formatAuthors(authors: string[]): string {
 }
 ---
 
-<section class="space-y-0" id="publications" aria-live="polite">
-  <h2 class="mb-5 border-b border-rule pb-3 font-serif text-xl font-bold text-ink">Publications</h2>
-  {pubs.map((pub) => (
-    <article class="border-b border-rule py-6 last:border-0">
-      <h3 class="mb-3 font-serif text-xl font-bold leading-snug text-ink">{pub.title}</h3>
-      <p class="mb-2 font-sans text-sm leading-7 text-muted" set:html={formatAuthors(pub.authors)} />
-      <p class="mb-3 font-sans text-sm text-accent">{pub.venue}</p>
-      <a class="inline-flex items-center gap-2 border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-ink hover:border-accent hover:text-accent" href={pub.url} target="_blank" rel="noopener">
-        <Icon name="external-link" class="size-3" />
-        {pub.link_label ?? 'View paper'}
-      </a>
-    </article>
-  ))}
+<section class="space-y-0 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="research-section" aria-live="polite">
+  <Heading class="mb-4 border-b border-rule pb-3 font-serif text-2xl font-bold text-ink">Research</Heading>
+  
+  <!-- Jump Navigation -->
+  <nav class="mb-10 flex flex-wrap gap-3 font-sans text-xs font-semibold uppercase tracking-[0.16em]" aria-label="Research sections">
+    <a href="#key-role-papers" class="border border-accent rounded-lg px-4 py-2 text-accent hover:bg-accent hover:text-white transition-all">Key-Role Papers</a>
+    <a href="#other-papers" class="border border-accent rounded-lg px-4 py-2 text-accent hover:bg-accent hover:text-white transition-all">Other Contributions</a>
+  </nav>
+
+  <!-- Section 1: Key Role Papers -->
+  <div class="pt-2 mb-12 scroll-mt-20" id="key-role-papers">
+    <h3 class="mb-6 font-serif text-lg font-bold text-ink border-b border-rule/50 pb-2">
+      Published papers I played a key role in creating:
+    </h3>
+    <div class="divide-y divide-rule">
+      {keyPubs.map((pub) => (
+        <article class="py-6 first:pt-0 last:pb-0">
+          <h4 class="mb-3 font-serif text-xl font-bold leading-snug text-ink">{pub.title}</h4>
+          <p class="mb-2 font-sans text-sm leading-7 text-muted" set:html={formatAuthors(pub.authors)} />
+          <p class="mb-3 font-sans text-sm text-accent">{pub.venue}</p>
+          <a class="inline-flex items-center gap-2 border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-ink hover:border-accent hover:text-accent" href={pub.url} target="_blank" rel="noopener">
+            <Icon name="external-link" class="size-3" />
+            {pub.link_label ?? 'View paper'}
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <!-- Section 2: Other Contributions -->
+  <div class="pt-2 scroll-mt-20" id="other-papers">
+    <h3 class="mb-6 font-serif text-lg font-bold text-ink border-b border-rule/50 pb-2">
+      Other published papers I’ve helped with:
+    </h3>
+    <div class="divide-y divide-rule">
+      {otherPubs.map((pub) => (
+        <article class="py-6 first:pt-0 last:pb-0">
+          <h4 class="mb-3 font-serif text-xl font-bold leading-snug text-ink">{pub.title}</h4>
+          <p class="mb-2 font-sans text-sm leading-7 text-muted" set:html={formatAuthors(pub.authors)} />
+          <p class="mb-3 font-sans text-sm text-accent">{pub.venue}</p>
+          <a class="inline-flex items-center gap-2 border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-ink hover:border-accent hover:text-accent" href={pub.url} target="_blank" rel="noopener">
+            <Icon name="external-link" class="size-3" />
+            {pub.link_label ?? 'View paper'}
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
 </section>

@@ -1,10 +1,11 @@
 # Publications
-# Fields: title, authors (list), venue, year, url
+# Fields: title, authors (list), venue, year, url, key-role
 # Your name is automatically bolded — just write it exactly as it appears.
 owner: "Theo Farrell"
 
 publications:
   - title: "Order by Scale: Relative-Magnitude Relational Composition in Attention-Only Transformers"
+    key-role: true
     authors:
       - "Theo Farrell"
       - "Patrick Leask"
@@ -15,6 +16,7 @@ publications:
     link_label: "View on OpenReview"
 
   - title: "Challenges of Evaluating LLM Safety for User Welfare"
+    key-role: false
     authors:
       - "Manon Kempermann"
       - "Sai Suresh Macharla Vasu"

@@ -17,10 +17,11 @@ const { hideThemeToggle = false } = Astro.props;
 
     <!-- Desktop Navigation -->
     <nav class="hidden md:flex items-center gap-6 font-sans text-xs font-semibold uppercase tracking-[0.16em]" aria-label="Desktop navigation">
-      <a href="/" class="nav-link hover:text-accent transition-colors text-subtle" data-tab-link="home">Home</a>
+      <a href="/#research" class="nav-link hover:text-accent transition-colors text-subtle" data-tab-link="research">Research</a>
+      <a href="#" class="nav-link text-subtle/40 cursor-not-allowed pointer-events-none" aria-disabled="true">Field-building</a>
       <a href="/#projects" class="nav-link hover:text-accent transition-colors text-subtle" data-tab-link="projects">Projects</a>
       <a href="/cv/" class="nav-link hover:text-accent transition-colors text-subtle" target="_blank" rel="noopener noreferrer">CV</a>
-      <a href="/#chat" class="nav-link inline-flex items-center justify-center border border-accent rounded-lg px-4 py-2.5 text-accent hover:bg-accent hover:text-white transition-all" data-tab-link="chat">Let's Chat</a>
+      <a href="/#chat" class="nav-link inline-flex items-center justify-center border border-accent rounded-lg px-4 py-2.5 text-accent hover:bg-accent hover:text-white transition-all" data-tab-link="chat">Let's Talk</a>
       {!hideThemeToggle && <ThemeToggle class="relative right-auto top-auto z-auto p-1.5 border-0 bg-transparent" />}
     </nav>
 
@@ -38,10 +39,11 @@ const { hideThemeToggle = false } = Astro.props;
 
   <!-- Mobile Dropdown Menu -->
   <div id="mobileMenu" class="hidden absolute top-16 left-0 w-full bg-panel border-b border-rule px-6 py-6 md:hidden flex flex-col gap-5 font-sans text-sm font-semibold uppercase tracking-[0.16em]" aria-label="Mobile navigation">
-    <a href="/" class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" data-tab-link="home">Home</a>
+    <a href="/#research" class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" data-tab-link="research">Research</a>
+    <span class="text-subtle/40 py-1 cursor-not-allowed select-none">Field-building</span>
     <a href="/#projects" class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" data-tab-link="projects">Projects</a>
     <a href="/cv/" class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" target="_blank" rel="noopener noreferrer">CV</a>
-    <a href="/#chat" class="mobile-nav-link inline-flex items-center justify-center border border-accent rounded-lg px-4 py-2.5 text-accent hover:bg-accent hover:text-white transition-all w-full text-center" data-tab-link="chat">Let's Chat</a>
+    <a href="/#chat" class="mobile-nav-link inline-flex items-center justify-center border border-accent rounded-lg px-4 py-2.5 text-accent hover:bg-accent hover:text-white transition-all w-full text-center" data-tab-link="chat">Let's Talk</a>
   </div>
 </header>
 
@@ -80,12 +82,25 @@ const { hideThemeToggle = false } = Astro.props;
     const logoLink = document.querySelector('[data-logo-link]');
 
     function panelFromHash(hash: string): string {
+      if (!hash) return 'panel-home';
+      if (hash === '#research') return 'panel-research';
       if (hash === '#projects') return 'panel-projects';
       if (hash === '#chat') return 'panel-chat';
+
+      // Fallback: search for targeted element and activate its parent panel
+      try {
+        const target = document.querySelector(hash);
+        if (target) {
+          const parentPanel = target.closest('[role="tabpanel"]');
+          if (parentPanel) return parentPanel.id;
+        }
+      } catch {}
+
       return 'panel-home';
     }
 
     function hashFromPanel(panelId: string): string {
+      if (panelId === 'panel-research') return '#research';
       if (panelId === 'panel-projects') return '#projects';
       if (panelId === 'panel-chat') return '#chat';
       return '';
@@ -140,10 +155,12 @@ const { hideThemeToggle = false } = Astro.props;
       activate('panel-home');
     });
 
-    // Handle back/forward history navigation
-    window.addEventListener('popstate', () => {
+    // Handle back/forward history navigation and hash change events
+    const handleHashChange = () => {
       activate(panelFromHash(location.hash));
-    });
+    };
+    window.addEventListener('popstate', handleHashChange);
+    window.addEventListener('hashchange', handleHashChange);
 
     // Initial activation based on URL hash
     activate(panelFromHash(location.hash));
