@@ -56,15 +56,14 @@ test('YAML content remains authorable with only project-specific type declaratio
   assert.match(publications, /content\/pubs\.yaml/);
 });
 
-test('ThemeToggle supports system, light, and dark without storing system mode', async () => {
+test('ThemeToggle supports alternating light and dark themes via sun and moon icons', async () => {
   const toggle = await read('src/components/ThemeToggle.astro');
 
   assert.match(toggle, /data-theme-toggle/);
-  assert.match(toggle, /\['system', 'light', 'dark'\]/);
-  assert.match(toggle, /localStorage\.removeItem\('theme'\)/);
+  assert.match(toggle, /data-sun-icon/);
+  assert.match(toggle, /data-moon-icon/);
   assert.match(toggle, /localStorage\.setItem\('theme', next\)/);
-  assert.match(toggle, /Switch to \$\{next/);
-  assert.doesNotMatch(toggle, /Click to/);
+  assert.match(toggle, /Switch to/);
 });
 
 test('home UI is composed from DecoDivider and semantic Tailwind surfaces', async () => {

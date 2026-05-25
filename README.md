@@ -22,3 +22,7 @@ npm run build     # output to dist/
 
 - **Publications**: edit `content/pubs.yaml` — parsed at build time, no HTML changes needed.
 - **CV**: replace `public/TheoFarrell_CV.pdf`.
+
+## Acks
+
+- Some icons from https://phosphoricons.com/

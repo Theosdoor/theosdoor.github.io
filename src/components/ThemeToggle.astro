@@ -1,57 +1,112 @@
+---
+interface Props {
+  class?: string;
+  isSidebar?: boolean;
+}
+
+const { class: className = '', isSidebar = false } = Astro.props;
+---
+
 <button
   type="button"
   data-theme-toggle
-  class="fixed right-4 top-4 z-50 flex items-center gap-2 border border-rule bg-panel px-3 py-2 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-muted transition-colors hover:border-accent-strong hover:text-ink"
-  aria-label="Theme: System. Switch to Light theme."
+  class:list={[
+    "flex items-center justify-center rounded-lg border border-rule bg-panel transition-colors hover:border-accent-strong hover:text-ink text-muted p-2.5",
+    isSidebar 
+      ? "mt-0" 
+      : "fixed right-4 top-4 z-50",
+    className
+  ]}
+  aria-label="Toggle dark mode"
 >
-  <span aria-hidden="true">Theme</span>
-  <span data-theme-label>System</span>
+  <!-- Sun Icon (shown in dark theme) -->
+  <svg
+    data-sun-icon
+    class="size-5 shrink-0 fill-current hidden"
+    viewBox="0 0 256 256"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z" />
+  </svg>
+
+  <!-- Moon Icon (shown in light theme) -->
+  <svg
+    data-moon-icon
+    class="size-5 shrink-0 fill-current hidden"
+    viewBox="0 0 256 256"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path d="M240,96a8,8,0,0,1-8,8H216v16a8,8,0,0,1-16,0V104H184a8,8,0,0,1,0-16h16V72a8,8,0,0,1,16,0V88h16A8,8,0,0,1,240,96ZM144,56h8v8a8,8,0,0,0,16,0V56h8a8,8,0,0,0,0-16h-8V32a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16Zm72.77,97a8,8,0,0,1,1.43,8A96,96,0,1,1,95.07,37.8a8,8,0,0,1,10.6,9.06A88.07,88.07,0,0,0,209.14,150.33,8,8,0,0,1,216.77,153Zm-19.39,14.88c-1.79.09-3.59.14-5.38.14A104.11,104.11,0,0,1,88,64c0-1.79,0-3.59.14-5.38A80,80,0,1,0,197.38,167.86Z" />
+  </svg>
 </button>
 
 <script>
-  const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
-  const label = button?.querySelector<HTMLElement>('[data-theme-label]');
-  const media = window.matchMedia('(prefers-color-scheme: dark)');
-  const modes = ['system', 'light', 'dark'] as const;
-  type Mode = (typeof modes)[number];
+  function initTheme() {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+    if (buttons.length === 0) return;
 
-  function storedMode(): Mode {
-    try {
-      const value = localStorage.getItem('theme');
-      return value === 'light' || value === 'dark' ? value : 'system';
-    } catch {
-      return 'system';
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function getTheme(): 'light' | 'dark' {
+      try {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'light' || saved === 'dark') return saved;
+      } catch {}
+      return media.matches ? 'dark' : 'light';
     }
+
+    function applyTheme(theme: 'light' | 'dark') {
+      document.documentElement.dataset.theme = theme;
+      
+      buttons.forEach(button => {
+        const sun = button.querySelector<HTMLElement>('[data-sun-icon]');
+        const moon = button.querySelector<HTMLElement>('[data-moon-icon]');
+        
+        if (theme === 'dark') {
+          sun?.classList.remove('hidden');
+          moon?.classList.add('hidden');
+          button.setAttribute('aria-label', 'Switch to light theme');
+        } else {
+          sun?.classList.add('hidden');
+          moon?.classList.remove('hidden');
+          button.setAttribute('aria-label', 'Switch to dark theme');
+        }
+      });
+    }
+
+    // Toggle on click
+    buttons.forEach(button => {
+      if (button.dataset.hasListener) return;
+      button.dataset.hasListener = 'true';
+      
+      button.addEventListener('click', () => {
+        const current = getTheme();
+        const next = current === 'dark' ? 'light' : 'dark';
+        try {
+          localStorage.setItem('theme', next);
+        } catch {}
+        applyTheme(next);
+      });
+    });
+
+    // Listen to OS system color changes
+    media.addEventListener('change', () => {
+      try {
+        if (!localStorage.getItem('theme')) {
+          applyTheme(media.matches ? 'dark' : 'light');
+        }
+      } catch {
+        applyTheme(media.matches ? 'dark' : 'light');
+      }
+    });
+
+    // Initial render
+    applyTheme(getTheme());
   }
 
-  let activeMode: Mode = storedMode();
-
-  function render(mode: Mode): void {
-    activeMode = mode;
-    const applied = mode === 'system' ? (media.matches ? 'dark' : 'light') : mode;
-    document.documentElement.dataset.theme = applied;
-    if (label) label.textContent = mode[0].toUpperCase() + mode.slice(1);
-    const next = modes[(modes.indexOf(mode) + 1) % modes.length];
-    button?.setAttribute(
-      'aria-label',
-      `Theme: ${mode[0].toUpperCase() + mode.slice(1)}. Switch to ${next[0].toUpperCase() + next.slice(1)} theme.`
-    );
-  }
-
-  button?.addEventListener('click', () => {
-    const next = modes[(modes.indexOf(activeMode) + 1) % modes.length];
-    try {
-      if (next === 'system') localStorage.removeItem('theme');
-      else localStorage.setItem('theme', next);
-    } catch {
-      // Keep the control operational when storage is blocked.
-    }
-    render(next);
-  });
-
-  media.addEventListener('change', () => {
-    if (activeMode === 'system') render('system');
-  });
-
-  render(activeMode);
+  // Run on load and after page transitions if needed (Astro)
+  initTheme();
+  document.addEventListener('astro:after-swap', initTheme);
 </script>

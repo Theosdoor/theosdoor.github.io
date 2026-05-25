@@ -4,6 +4,7 @@ interface Props {
   description: string;
   ogUrl: string;
   ogImage?: string;
+  hideThemeToggle?: boolean;
 }
 
 const {
@@ -11,6 +12,7 @@ const {
   description,
   ogUrl,
   ogImage = '/images/theocool.jpeg',
+  hideThemeToggle = false,
 } = Astro.props;
 
 const ogImageAbsolute = `https://theosdoor.github.io${ogImage}`;
@@ -60,7 +62,7 @@ import '../styles/global.css';
     </script>
   </head>
   <body class="min-h-screen bg-canvas font-sans text-ink">
-    <ThemeToggle />
+    {!hideThemeToggle && <ThemeToggle />}
     <slot />
   </body>
 </html>
