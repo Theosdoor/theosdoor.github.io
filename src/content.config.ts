@@ -1,13 +1,25 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 import { glob, file } from 'astro/loaders';
 import yaml from 'js-yaml';
+
+// Helper to safely slugify text for unique content collection IDs
+function slugify(text: string): string {
+  if (!text) return '';
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, ''); // Clean leading/trailing hyphens
+}
 
 const projects = defineCollection({
   loader: file('content/projects.yaml', {
     parser: (text) => {
-      const parsed = yaml.load(text) as { projects: any[] };
-      return parsed.projects.map((item, index) => ({
-        id: item.title ? item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') : String(index),
+      const parsed = yaml.load(text) as { projects?: any[] } | null;
+      const list = parsed?.projects ?? [];
+      return list.map((item, index) => ({
+        id: slugify(item.title) || String(index),
         ...item,
       }));
     }
@@ -44,9 +56,10 @@ const fieldBuilding = defineCollection({
 const talks = defineCollection({
   loader: file('content/talks.yaml', {
     parser: (text) => {
-      const parsed = yaml.load(text) as { talks: any[] };
-      return parsed.talks.map((item, index) => ({
-        id: item.event ? `${item.event.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${item.date}` : String(index),
+      const parsed = yaml.load(text) as { talks?: any[] } | null;
+      const list = parsed?.talks ?? [];
+      return list.map((item, index) => ({
+        id: item.event ? `${slugify(item.event)}-${item.date}` : String(index),
         ...item,
       }));
     }
@@ -64,9 +77,10 @@ const talks = defineCollection({
 const pubs = defineCollection({
   loader: file('content/pubs.yaml', {
     parser: (text) => {
-      const parsed = yaml.load(text) as { publications: any[] };
-      return parsed.publications.map((item, index) => ({
-        id: item.title ? item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') : String(index),
+      const parsed = yaml.load(text) as { publications?: any[] } | null;
+      const list = parsed?.publications ?? [];
+      return list.map((item, index) => ({
+        id: slugify(item.title) || String(index),
         ...item,
       }));
     }
