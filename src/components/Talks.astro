@@ -10,30 +10,15 @@ interface Talk {
   description: string;
 }
 
-interface Props {
-  filterResearchOnly?: boolean;
-}
-
-const { filterResearchOnly = false } = Astro.props;
-
 const rawTalks = await getCollection('talks');
-const allTalks: Talk[] = rawTalks.map(t => t.data).sort(
+const talks: Talk[] = rawTalks.map(t => t.data).sort(
   (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 );
-
-const talks = filterResearchOnly
-  ? allTalks.filter((t) => t.topic === 'research')
-  : allTalks;
 ---
 
 <section class="space-y-0 scroll-mt-20 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="talks" aria-live="polite">
   <div class="mb-6 border-b border-rule pb-3 flex items-center justify-between">
     <h3 class="font-serif text-2xl font-black text-ink">Talks</h3>
-    {filterResearchOnly && (
-      <a href="/talks/" class="border border-accent rounded-lg px-3 py-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-accent hover:bg-accent hover:text-white transition-all">
-        See All Talks &rarr;
-      </a>
-    )}
   </div>
 
   {talks.length === 0 ? (
