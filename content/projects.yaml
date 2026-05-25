@@ -1,4 +1,24 @@
 projects:
+  - title: "Human Features for Style Transfer"
+    description: "Deep learning pipeline enhancing human character visuals in game videos using movie reference footage. Integrates YOLO detection, GCN pose classification, and patch-level CUT."
+    url: "https://github.com/Theosdoor/features-for-style-transfer"
+    image: /images/projects/features-for-style-transfer.png
+    role: lead
+    category: coursework
+    year: 2026
+    languages: [Python]
+    tools: [PyTorch, YOLO]
+
+  - title: "Programmable Matter Lab"
+    description: "Interactive browser simulators for bio-inspired computing models, featuring active membranes (P-systems) and connectivity-preserving robot swarm shape transformations."
+    url: "https://github.com/Theosdoor/programmable-matter-lab"
+    image: /images/projects/prog-matter-lab.png
+    role: lead
+    category: side-project
+    year: 2025
+    languages: [HTML, JavaScript]
+    tools: []
+
   - title: "Order by Scale"
     description: "Implementation of research on relative-magnitude relational composition in attention-only transformers"
     url: "https://github.com/Theosdoor/order-by-scale"
