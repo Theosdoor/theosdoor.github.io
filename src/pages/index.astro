@@ -7,6 +7,7 @@ import DecoDivider from '../components/DecoDivider.astro';
 import LetsChat from '../components/LetsChat.astro';
 import Talks from '../components/Talks.astro';
 import FieldBuilding from '../components/FieldBuilding.astro';
+import Reviewing from '../components/Reviewing.astro';
 import { Content as IntroContent, frontmatter as introFrontmatter } from '../../content/intro.md';
 ---
 
@@ -54,6 +55,7 @@ import { Content as IntroContent, frontmatter as introFrontmatter } from '../../
     <div id="panel-research" role="tabpanel" aria-labelledby="tab-research" hidden>
       <div class="mx-auto w-full max-w-[800px] flex flex-col gap-16">
         <Publications />
+        <Reviewing />
         <Talks filterResearchOnly={true} />
       </div>
     </div>

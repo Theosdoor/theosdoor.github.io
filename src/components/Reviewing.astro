@@ -1,0 +1,31 @@
+---
+import reviewingData from '../../content/reviewing.yaml';
+
+interface Props {
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+
+const activities: string[] = reviewingData.reviewing;
+---
+
+<section class="space-y-0 scroll-mt-20 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="reviewing" aria-live="polite">
+  <div class="mb-6 border-b border-rule pb-3">
+    <Heading class="font-serif text-2xl font-black text-ink">Reviewing</Heading>
+  </div>
+
+  {activities.length === 0 ? (
+    <p class="font-sans text-sm text-subtle py-2">No reviewing activities listed yet.</p>
+  ) : (
+    <ul class="list-none pl-0 space-y-3 font-sans text-sm leading-8 text-muted">
+      {activities.map((activity) => (
+        <li class="relative pl-6 leading-7">
+          <span class="absolute left-1 top-[10px] size-1.5 rounded-full bg-accent"></span>
+          {activity}
+        </li>
+      ))}
+    </ul>
+  )}
+</section>
