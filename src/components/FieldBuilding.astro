@@ -1,58 +1,27 @@
 ---
+import { getCollection, render } from 'astro:content';
 import Icon from './Icon.astro';
+import { formatMonthYear, parseStartDateForSort } from '../utils/formatters';
 
-interface Frontmatter {
-  projectName: string;
-  role: string;
-  headline: string;
-  startDate: string;
-  endDate: string;
-  url?: string;
-}
-
-interface MarkdownEntry {
-  frontmatter: Frontmatter;
-  Content: any;
-}
-
-// Fetch all markdown files in the content/field-building directory using Vite import.meta.glob
-const entries = Object.values(
-  import.meta.glob<MarkdownEntry>('../../content/field-building/*.md', { eager: true })
-);
-
-// Date parsing for sorting (converts '2023-10' to 202310, ongoing gets sorted to top if it was start date, but here we sort by start date)
-function parseStartDateForSort(dateStr: string): number {
-  if (!dateStr) return 0;
-  const parts = dateStr.split('-');
-  const year = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10);
-  return (year || 0) * 100 + (month || 0);
-}
+// Fetch all markdown files via Astro content collections
+// import.meta.glob
+const sortedEntries = await getCollection('fieldBuilding');
 
 // Sort newest start date to oldest
-const sortedEntries = [...entries].sort((a, b) => {
-  return parseStartDateForSort(b.frontmatter.startDate) - parseStartDateForSort(a.frontmatter.startDate);
+sortedEntries.sort((a, b) => {
+  return parseStartDateForSort(b.data.startDate) - parseStartDateForSort(a.data.startDate);
 });
 
-// Format date string beautifully (e.g. '2023-10' -> 'October 2023')
-function formatMonthYear(dateStr: string): string {
-  if (!dateStr) return '';
-  if (dateStr.toLowerCase() === 'ongoing') return 'Ongoing';
-  
-  const parts = dateStr.split('-');
-  const year = parseInt(parts[0], 10);
-  const monthIdx = parseInt(parts[1], 10) - 1;
-  
-  if (isNaN(year) || isNaN(monthIdx) || monthIdx < 0 || monthIdx > 11) {
-    return dateStr;
-  }
-  
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-  return `${months[monthIdx]} ${year}`;
-}
+// Pre-render the Content component for each entry
+const renderedEntries = await Promise.all(
+  sortedEntries.map(async (entry) => {
+    const { Content } = await render(entry);
+    return {
+      ...entry,
+      Content,
+    };
+  })
+);
 ---
 
 <section class="space-y-8 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="field-building-section" aria-live="polite">
@@ -60,55 +29,58 @@ function formatMonthYear(dateStr: string): string {
     <h2 class="font-serif text-3xl font-black text-ink">Field-building</h2>
   </div>
 
-  {sortedEntries.length === 0 ? (
+  {renderedEntries.length === 0 ? (
     <p class="font-sans text-sm text-subtle py-2">No projects listed yet.</p>
   ) : (
     <div class="flex flex-col gap-10">
-      {sortedEntries.map((entry) => (
-        <article class="relative bg-panel border border-rule p-6 sm:p-8 rounded-xl transition-all duration-300 hover:shadow-md">
-          {/* Card Header */}
-          <div class="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between mb-4">
-            <h3 class="font-sans text-xs font-bold uppercase tracking-[0.2em] text-accent-strong">
-              {entry.frontmatter.projectName}
-            </h3>
-            <span class="font-sans text-xs font-semibold italic text-subtle">
-              {entry.frontmatter.role} &middot; {formatMonthYear(entry.frontmatter.startDate)} &mdash; {formatMonthYear(entry.frontmatter.endDate)}
-            </span>
-          </div>
-
-          {/* Headline */}
-          <h4 class="font-serif text-2xl font-black leading-tight text-ink mb-6">
-            {entry.frontmatter.headline}
-          </h4>
-
-          {/* Content (Description and Bullets parsed by Markdown compiler) */}
-          <div class="prose max-w-none font-sans text-sm leading-[1.4rem] tracking-wide text-muted
-                      prose-p:text-muted prose-p:leading-[1.4rem]
-                      prose-hr:border-t prose-hr:border-rule prose-hr:my-10
-                      prose-ul:list-none prose-ul:pl-0 prose-ul:space-y-4
-                      [&_ul_li]:relative [&_ul_li]:pl-6 [&_ul_li]:text-muted [&_ul_li]:leading-[1.4rem]
-                      [&_ul_li::before]:content-[''] [&_ul_li::before]:absolute [&_ul_li::before]:left-1 [&_ul_li::before]:top-[11px] [&_ul_li::before]:size-1.5 [&_ul_li::before]:rounded-full [&_ul_li::before]:bg-accent
-                      [&_ul_ul]:mt-3 [&_ul_ul]:pl-5 [&_ul_ul]:space-y-2
-                      [&_ul_ul_li::before]:bg-subtle [&_ul_ul_li::before]:size-1">
-            <entry.Content />
-          </div>
-
-          {/* External Link */}
-          {entry.frontmatter.url && (
-            <div class="mt-6 pt-4 border-t border-rule/30 flex justify-start">
-              <a 
-                href={entry.frontmatter.url} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="inline-flex items-center gap-2 border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-ink hover:border-accent hover:text-accent transition-all"
-              >
-                <Icon name="external-link" class="size-3" />
-                Visit website
-              </a>
+      {renderedEntries.map((entry) => {
+        const { Content } = entry;
+        return (
+          <article class="relative bg-panel border border-rule p-6 sm:p-8 rounded-xl transition-all duration-300 hover:shadow-md">
+            {/* Card Header */}
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between mb-4">
+              <h3 class="font-sans text-xs font-bold uppercase tracking-[0.2em] text-accent-strong">
+                {entry.data.projectName}
+              </h3>
+              <span class="font-sans text-xs font-semibold italic text-subtle">
+                {entry.data.role} &middot; {formatMonthYear(entry.data.startDate)} &mdash; {formatMonthYear(entry.data.endDate)}
+              </span>
             </div>
-          )}
-        </article>
-      ))}
+
+            {/* Headline */}
+            <h4 class="font-serif text-2xl font-black leading-tight text-ink mb-6">
+              {entry.data.headline}
+            </h4>
+
+            {/* Content (Description and Bullets parsed by Markdown compiler) */}
+            <div class="prose max-w-none font-sans text-sm leading-[1.4rem] tracking-wide text-muted
+                        prose-p:text-muted prose-p:leading-[1.4rem]
+                        prose-hr:border-t prose-hr:border-rule prose-hr:my-10
+                        prose-ul:list-none prose-ul:pl-0 prose-ul:space-y-4
+                        [&_ul_li]:relative [&_ul_li]:pl-6 [&_ul_li]:text-muted [&_ul_li]:leading-[1.4rem]
+                        [&_ul_li::before]:content-[''] [&_ul_li::before]:absolute [&_ul_li::before]:left-1 [&_ul_li::before]:top-[11px] [&_ul_li::before]:size-1.5 [&_ul_li::before]:rounded-full [&_ul_li::before]:bg-accent
+                        [&_ul_ul]:mt-3 [&_ul_ul]:pl-5 [&_ul_ul]:space-y-2
+                        [&_ul_ul_li::before]:bg-subtle [&_ul_ul_li::before]:size-1">
+              <Content />
+            </div>
+
+            {/* External Link */}
+            {entry.data.url && (
+              <div class="mt-6 pt-4 border-t border-rule/30 flex justify-start">
+                <a 
+                  href={entry.data.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="inline-flex items-center gap-2 border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-ink hover:border-accent hover:text-accent transition-all"
+                >
+                  <Icon name="external-link" class="size-3" />
+                  Visit website
+                </a>
+              </div>
+            )}
+          </article>
+        );
+      })}
     </div>
   )}
 </section>

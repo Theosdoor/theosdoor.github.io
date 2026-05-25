@@ -1,5 +1,6 @@
 ---
-import talksData from '../../content/talks.yaml';
+import { getCollection } from 'astro:content';
+import { formatDate, parseMarkdownLinks } from '../utils/formatters';
 
 interface Talk {
   date: string;
@@ -15,39 +16,14 @@ interface Props {
 
 const { filterResearchOnly = false } = Astro.props;
 
-const allTalks: Talk[] = [...talksData.talks].sort(
-  (a: Talk, b: Talk) => new Date(b.date).getTime() - new Date(a.date).getTime()
+const rawTalks = await getCollection('talks');
+const allTalks: Talk[] = rawTalks.map(t => t.data).sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 );
 
 const talks = filterResearchOnly
-  ? allTalks.filter((t: Talk) => t.topic === 'research')
+  ? allTalks.filter((t) => t.topic === 'research')
   : allTalks;
-
-function formatDate(dateStr: string): string {
-  // Parsing date safely to avoid timezone shift offset bugs
-  const parts = dateStr.split('-');
-  const year = parseInt(parts[0], 10);
-  const monthIdx = parseInt(parts[1], 10) - 1;
-  const day = parseInt(parts[2], 10);
-  
-  const date = new Date(year, monthIdx, day);
-  
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-  
-  const month = months[date.getMonth()];
-  return `${day} ${month} ${year}`;
-}
-
-function parseMarkdownLinks(text: string): string {
-  // Parse standard markdown links [text](url) into HTML anchors
-  return text.replace(
-    /\[([^\]]+)\]\(([^)]+)\)/g,
-    '<a class="border-b border-rule hover:border-accent hover:text-accent transition-colors font-semibold" href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
-  );
-}
 ---
 
 <section class="space-y-0 scroll-mt-20 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="talks" aria-live="polite">
