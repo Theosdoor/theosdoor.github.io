@@ -18,7 +18,7 @@ const { hideThemeToggle = false } = Astro.props;
     <!-- Desktop Navigation -->
     <nav class="hidden md:flex items-center gap-6 font-sans text-xs font-semibold uppercase tracking-[0.16em]" aria-label="Desktop navigation">
       <a href="/#research" class="nav-link hover:text-accent transition-colors text-subtle" data-tab-link="research">Research</a>
-      <a href="#" class="nav-link text-subtle/40 cursor-not-allowed pointer-events-none" aria-disabled="true">Field-building</a>
+      <a href="/#field-building" class="nav-link hover:text-accent transition-colors text-subtle" data-tab-link="field-building">Field-building</a>
       <a href="/#projects" class="nav-link hover:text-accent transition-colors text-subtle" data-tab-link="projects">Projects</a>
       <a href="/cv/" class="nav-link hover:text-accent transition-colors text-subtle" target="_blank" rel="noopener noreferrer">CV</a>
       <a href="/#chat" class="nav-link inline-flex items-center justify-center border border-accent rounded-lg px-4 py-2.5 text-accent hover:bg-accent hover:text-white transition-all" data-tab-link="chat">Let's Talk</a>
@@ -40,7 +40,7 @@ const { hideThemeToggle = false } = Astro.props;
   <!-- Mobile Dropdown Menu -->
   <div id="mobileMenu" class="hidden absolute top-16 left-0 w-full bg-panel border-b border-rule px-6 py-6 md:hidden flex flex-col gap-5 font-sans text-sm font-semibold uppercase tracking-[0.16em]" aria-label="Mobile navigation">
     <a href="/#research" class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" data-tab-link="research">Research</a>
-    <span class="text-subtle/40 py-1 cursor-not-allowed select-none">Field-building</span>
+    <a href="/#field-building" class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" data-tab-link="field-building">Field-building</a>
     <a href="/#projects" class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" data-tab-link="projects">Projects</a>
     <a href="/cv/" class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" target="_blank" rel="noopener noreferrer">CV</a>
     <a href="/#chat" class="mobile-nav-link inline-flex items-center justify-center border border-accent rounded-lg px-4 py-2.5 text-accent hover:bg-accent hover:text-white transition-all w-full text-center" data-tab-link="chat">Let's Talk</a>
@@ -84,6 +84,7 @@ const { hideThemeToggle = false } = Astro.props;
     function panelFromHash(hash: string): string {
       if (!hash) return 'panel-home';
       if (hash === '#research') return 'panel-research';
+      if (hash === '#field-building') return 'panel-field-building';
       if (hash === '#projects') return 'panel-projects';
       if (hash === '#chat') return 'panel-chat';
 
@@ -101,6 +102,7 @@ const { hideThemeToggle = false } = Astro.props;
 
     function hashFromPanel(panelId: string): string {
       if (panelId === 'panel-research') return '#research';
+      if (panelId === 'panel-field-building') return '#field-building';
       if (panelId === 'panel-projects') return '#projects';
       if (panelId === 'panel-chat') return '#chat';
       return '';

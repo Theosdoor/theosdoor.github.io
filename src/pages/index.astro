@@ -6,6 +6,7 @@ import Projects from '../components/Projects.astro';
 import DecoDivider from '../components/DecoDivider.astro';
 import LetsChat from '../components/LetsChat.astro';
 import Talks from '../components/Talks.astro';
+import FieldBuilding from '../components/FieldBuilding.astro';
 import { Content as IntroContent, frontmatter as introFrontmatter } from '../../content/intro.md';
 ---
 
@@ -55,6 +56,9 @@ import { Content as IntroContent, frontmatter as introFrontmatter } from '../../
         <Publications />
         <Talks filterResearchOnly={true} />
       </div>
+    </div>
+    <div id="panel-field-building" role="tabpanel" aria-labelledby="tab-field-building" hidden>
+      <div class="mx-auto w-full max-w-[800px]"><FieldBuilding /></div>
     </div>
     <div id="panel-projects" role="tabpanel" aria-labelledby="tab-projects" hidden>
       <div class="mx-auto w-full max-w-[960px]"><Projects /></div>
