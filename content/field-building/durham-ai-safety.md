@@ -6,7 +6,7 @@ startDate: "2023-10"
 endDate: "ongoing"
 url: "https://durhamaisafety.uk/"
 ---
-tba i'll add later
+I founded DAISI in my second year of university after being inspired by a three-person reading group at the [university's Effective Altruism society](https://www.durhamsu.com/groups/effective-altruism-durham). Supported by the [Pathfinder fellowship](https://pathfinder.kairos-project.org/), the group helps to funnel top-university talent into AI Safety.
 
 ---
 
