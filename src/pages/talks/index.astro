@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import Talks from '../../components/Talks.astro';
+---
+
+<Base
+  title="Talks — Theo Farrell"
+  description="Research and educational presentations by Theo Farrell"
+  ogUrl="https://theosdoor.github.io/talks/"
+>
+  <a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:border focus:border-accent focus:bg-panel focus:px-4 focus:py-2 focus:text-ink" href="#main">Skip to main content</a>
+
+  <main class="mx-auto w-full max-w-[800px] px-5 py-16 sm:px-8" id="main" tabindex="-1">
+    <Talks filterResearchOnly={false} />
+  </main>
+</Base>

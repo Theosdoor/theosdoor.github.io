@@ -1,0 +1,86 @@
+---
+import { getCollection, render } from 'astro:content';
+import Icon from './Icon.astro';
+import { formatMonthYear, parseStartDateForSort } from '../utils/formatters';
+
+// Fetch all markdown files via Astro content collections
+// import.meta.glob
+const sortedEntries = await getCollection('fieldBuilding');
+
+// Sort newest start date to oldest
+sortedEntries.sort((a, b) => {
+  return parseStartDateForSort(b.data.startDate) - parseStartDateForSort(a.data.startDate);
+});
+
+// Pre-render the Content component for each entry
+const renderedEntries = await Promise.all(
+  sortedEntries.map(async (entry) => {
+    const { Content } = await render(entry);
+    return {
+      ...entry,
+      Content,
+    };
+  })
+);
+---
+
+<section class="space-y-8 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="field-building-section" aria-live="polite">
+  <div class="mb-8 border-b border-rule pb-3">
+    <h2 class="font-serif text-3xl font-black text-ink">Field-building</h2>
+  </div>
+
+  {renderedEntries.length === 0 ? (
+    <p class="font-sans text-sm text-subtle py-2">No projects listed yet.</p>
+  ) : (
+    <div class="flex flex-col gap-10">
+      {renderedEntries.map((entry) => {
+        const { Content } = entry;
+        return (
+          <article class="relative bg-panel border border-rule p-6 sm:p-8 rounded-xl transition-all duration-300 hover:shadow-md">
+            {/* Card Header */}
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between mb-4">
+              <h3 class="font-sans text-xs font-bold uppercase tracking-[0.2em] text-accent-strong">
+                {entry.data.projectName}
+              </h3>
+              <span class="font-sans text-xs font-semibold italic text-subtle">
+                {entry.data.role} &middot; {formatMonthYear(entry.data.startDate)} &mdash; {formatMonthYear(entry.data.endDate)}
+              </span>
+            </div>
+
+            {/* Headline */}
+            <h4 class="font-serif text-2xl font-black leading-tight text-ink mb-6">
+              {entry.data.headline}
+            </h4>
+
+            {/* Content (Description and Bullets parsed by Markdown compiler) */}
+            <div class="prose max-w-none font-sans text-sm leading-[1.4rem] tracking-wide text-muted
+                        [&_p]:text-muted [&_p]:leading-[1.4rem] [&_p]:mb-8
+                        [&_hr]:border-t [&_hr]:border-rule [&_hr]:mt-8 [&_hr]:mb-10
+                        [&_ul]:list-none [&_ul]:pl-0 [&_ul]:space-y-4
+                        [&_ul_li]:relative [&_ul_li]:pl-6 [&_ul_li]:text-muted [&_ul_li]:leading-[1.4rem]
+                        [&_ul_li::before]:content-[''] [&_ul_li::before]:absolute [&_ul_li::before]:left-1 [&_ul_li::before]:top-[11px] [&_ul_li::before]:size-1.5 [&_ul_li::before]:rounded-full [&_ul_li::before]:bg-accent
+                        [&_ul_ul]:mt-3 [&_ul_ul]:pl-5 [&_ul_ul]:space-y-2
+                        [&_ul_ul_li::before]:bg-subtle [&_ul_ul_li::before]:size-1">
+              <Content />
+            </div>
+
+            {/* External Link */}
+            {entry.data.url && (
+              <div class="mt-6 pt-4 border-t border-rule/30 flex justify-start">
+                <a 
+                  href={entry.data.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="inline-flex items-center gap-2 border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-ink hover:border-accent hover:text-accent transition-all"
+                >
+                  <Icon name="external-link" class="size-3" />
+                  Visit website
+                </a>
+              </div>
+            )}
+          </article>
+        );
+      })}
+    </div>
+  )}
+</section>

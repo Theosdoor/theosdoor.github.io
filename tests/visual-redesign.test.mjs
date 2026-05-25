@@ -27,13 +27,15 @@ test('Tailwind utilities retain spacing and decorative frames stay anchored in o
   await assert.rejects(read('src/styles/base.css'));
 });
 
-test('Base owns the shared stylesheet, initializes theme, and mounts the global toggle', async () => {
+test('Base owns the shared stylesheet, initializes theme, and mounts the sticky header', async () => {
   const base = await read('src/layouts/Base.astro');
+  const header = await read('src/components/Header.astro');
   const home = await read('src/pages/index.astro');
   const projectsPage = await read('src/pages/projects/index.astro');
   const cvCss = await read('src/styles/cv.css');
 
-  assert.match(base, /import ThemeToggle from '\.\.\/components\/ThemeToggle\.astro'/);
+  assert.match(base, /import Header from '\.\.\/components\/Header\.astro'/);
+  assert.match(header, /import ThemeToggle from '\.\/ThemeToggle\.astro'/);
   assert.match(base, /import '\.\.\/styles\/global\.css'/);
   assert.doesNotMatch(home, /styles\/global\.css/);
   assert.doesNotMatch(projectsPage, /styles\/global\.css/);
@@ -41,7 +43,7 @@ test('Base owns the shared stylesheet, initializes theme, and mounts the global 
   assert.match(base, /localStorage\.getItem\('theme'\)/);
   assert.match(base, /prefers-color-scheme:\s*dark/);
   assert.match(base, /document\.documentElement\.dataset\.theme/);
-  assert.match(base, /<ThemeToggle \/>/);
+  assert.match(base, /<Header hideThemeToggle=\{hideThemeToggle\} \/>/);
 });
 
 test('YAML content remains authorable with only project-specific type declarations', async () => {
@@ -56,15 +58,14 @@ test('YAML content remains authorable with only project-specific type declaratio
   assert.match(publications, /content\/pubs\.yaml/);
 });
 
-test('ThemeToggle supports system, light, and dark without storing system mode', async () => {
+test('ThemeToggle supports alternating light and dark themes via sun and moon icons', async () => {
   const toggle = await read('src/components/ThemeToggle.astro');
 
   assert.match(toggle, /data-theme-toggle/);
-  assert.match(toggle, /\['system', 'light', 'dark'\]/);
-  assert.match(toggle, /localStorage\.removeItem\('theme'\)/);
+  assert.match(toggle, /data-sun-icon/);
+  assert.match(toggle, /data-moon-icon/);
   assert.match(toggle, /localStorage\.setItem\('theme', next\)/);
-  assert.match(toggle, /Switch to \$\{next/);
-  assert.doesNotMatch(toggle, /Click to/);
+  assert.match(toggle, /Switch to/);
 });
 
 test('home UI is composed from DecoDivider and semantic Tailwind surfaces', async () => {
