@@ -1,0 +1,18 @@
+---
+// src/components/LetsChat.astro
+interface Props {
+  headingLevel?: 'h1' | 'h2';
+}
+
+const { headingLevel = 'h2' } = Astro.props;
+const Heading = headingLevel;
+---
+
+<div class="mx-auto mb-8 w-full max-w-[560px]">
+  <Heading class="mb-4 border-b border-rule pb-3 font-serif text-xl font-bold text-ink">Let's chat!</Heading>
+  <p class="font-sans text-sm leading-8 text-muted">Pick a time that works for you and I'll see you there.</p>
+</div>
+<div class="mx-auto w-full max-w-[900px] px-4">
+  <script is:inline type="text/javascript" async src="https://static.zcal.co/embed/v1/embed.js"></script>
+  <div class="zcal-inline-widget" data-zcal-options='{"showBackground":1}'><a href="https://zcal.co/i/pLX_Nnsl">30 Minute Meeting - Schedule a meeting</a></div>
+</div>

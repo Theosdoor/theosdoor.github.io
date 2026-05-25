@@ -5,6 +5,7 @@ import TabNav from '../components/TabNav.astro';
 import Publications from '../components/Publications.astro';
 import Projects from '../components/Projects.astro';
 import DecoDivider from '../components/DecoDivider.astro';
+import LetsChat from '../components/LetsChat.astro';
 ---
 
 <Base
@@ -46,14 +47,7 @@ import DecoDivider from '../components/DecoDivider.astro';
       <div class="mx-auto w-full max-w-[960px]"><Projects /></div>
     </div>
     <div id="panel-chat" role="tabpanel" aria-labelledby="tab-chat" hidden>
-      <div class="mx-auto mb-8 w-full max-w-[560px]">
-        <h2 class="mb-4 border-b border-rule pb-3 font-serif text-xl font-bold text-ink">Let's chat!</h2>
-        <p class="font-sans text-sm leading-8 text-muted">Pick a time that works for you and I'll see you there.</p>
-      </div>
-      <div class="mx-auto w-full max-w-[900px] px-4">
-        <script is:inline type="text/javascript" async src="https://static.zcal.co/embed/v1/embed.js"></script>
-        <div class="zcal-inline-widget" data-zcal-options='{"showBackground":1}'><a href="https://zcal.co/i/pLX_Nnsl">30 Minute Meeting - Schedule a meeting</a></div>
-      </div>
+      <LetsChat headingLevel="h2" />
     </div>
   </main>
 </Base>
