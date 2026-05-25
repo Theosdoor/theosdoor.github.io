@@ -6,6 +6,7 @@ import Publications from '../components/Publications.astro';
 import Projects from '../components/Projects.astro';
 import DecoDivider from '../components/DecoDivider.astro';
 import LetsChat from '../components/LetsChat.astro';
+import { Content as IntroContent, frontmatter as introFrontmatter } from '../../content/intro.md';
 ---
 
 <Base
@@ -18,29 +19,37 @@ import LetsChat from '../components/LetsChat.astro';
   <main id="main" class="w-full px-5 py-16 sm:px-6" tabindex="-1">
     <TabNav />
     <div id="panel-home" role="tabpanel" aria-labelledby="tab-home">
-      <div class="mx-auto w-full max-w-[560px]">
+      <div class="mx-auto w-full max-w-[560px] md:max-w-[800px]">
         <header class="mb-12 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]">
-          <div class="deco-frame mb-6 size-36 border border-accent bg-panel p-1">
-            <img class="size-full object-cover object-[80%_80%]" src="/images/theocool.jpeg" alt="Theo Farrell" width="140" height="140" fetchpriority="high" />
+          <div class="flex flex-col gap-8 md:flex-row-reverse md:items-start md:justify-between md:gap-12">
+            <!-- Image (right on desktop, top on mobile) -->
+            <div class="deco-frame mb-6 size-36 shrink-0 border border-accent bg-panel p-1 md:mb-0 md:size-44">
+              <img class="size-full object-cover object-[80%_80%]" src="/images/theocool.jpeg" alt={introFrontmatter.name} width="176" height="176" fetchpriority="high" />
+            </div>
+            
+            <!-- Text (left on desktop, bottom on mobile) -->
+            <div class="flex-1">
+              <p class="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.28em] text-accent-strong">{introFrontmatter.subtitle}</p>
+              <h1 class="mb-6 font-serif text-5xl font-black leading-tight text-ink sm:text-6xl">{introFrontmatter.name}</h1>
+              <DecoDivider class="mb-6 max-w-44" />
+              <div class="prose font-sans text-sm leading-8 tracking-wide text-muted space-y-4">
+                <IntroContent />
+              </div>
+            </div>
           </div>
-          <p class="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.28em] text-accent-strong">Researcher &amp; organiser</p>
-          <h1 class="mb-6 font-serif text-5xl font-black leading-tight text-ink sm:text-6xl">Theo<br />Farrell</h1>
-          <DecoDivider class="mb-6 max-w-44" />
-          <p class="font-sans text-sm leading-8 tracking-wide text-muted">
-            MSci Natural Sciences (Computer Science &amp; Philosophy) at Durham University<br />
-            AI Safety Researcher &amp; Group Organiser
-          </p>
         </header>
-        <nav class="mb-12 flex flex-col gap-3" aria-label="Links">
-          <Card href="/cv/" icon="resume" title="Curriculum Vitae" sub="View my full CV" external={false} />
-          <Card href="https://www.linkedin.com/in/theofarrell/" icon="linkedin" title="LinkedIn" sub="Connect with me" />
-          <Card href="https://github.com/Theosdoor" icon="github" title="GitHub" sub="Browse my code" />
-          <Card href="https://scholar.google.com/citations?user=wbiptScAAAAJ" icon="scholar" title="Google Scholar" sub="Research &amp; publications" />
-        </nav>
-        <Publications />
-        <footer class="mt-12 border-t border-rule pt-6">
-          <p class="font-sans text-xs uppercase tracking-[0.16em] text-subtle">theo.farrell99 'at' outlook.com &middot; Manchester, UK &middot; 2026</p>
-        </footer>
+        <div class="mx-auto max-w-[560px]">
+          <nav class="mb-12 flex flex-col gap-3" aria-label="Links">
+            <Card href="/cv/" icon="resume" title="Curriculum Vitae" sub="View my full CV" external={false} />
+            <Card href="https://www.linkedin.com/in/theofarrell/" icon="linkedin" title="LinkedIn" sub="Connect with me" />
+            <Card href="https://github.com/Theosdoor" icon="github" title="GitHub" sub="Browse my code" />
+            <Card href="https://scholar.google.com/citations?user=wbiptScAAAAJ" icon="scholar" title="Google Scholar" sub="Research &amp; publications" />
+          </nav>
+          <Publications />
+          <footer class="mt-12 border-t border-rule pt-6">
+            <p class="font-sans text-xs uppercase tracking-[0.16em] text-subtle">theo.farrell99 'at' outlook.com &middot; Manchester, UK &middot; 2026</p>
+          </footer>
+        </div>
       </div>
     </div>
     <div id="panel-projects" role="tabpanel" aria-labelledby="tab-projects" hidden>
