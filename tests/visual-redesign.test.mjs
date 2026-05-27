@@ -46,6 +46,29 @@ test('Base owns the shared stylesheet, initializes theme, and mounts the sticky 
   assert.match(base, /<Header hideThemeToggle=\{hideThemeToggle\} \/>/);
 });
 
+test('Base serves the goat favicon package from public assets', async () => {
+  const base = await read('src/layouts/Base.astro');
+  const favicon = await read('public/favicon.svg');
+  const manifest = JSON.parse(await read('public/site.webmanifest'));
+
+  assert.match(base, /rel="icon" type="image\/svg\+xml" href="\/favicon\.svg"/);
+  assert.match(base, /rel="icon" type="image\/x-icon" href="\/favicon\.ico"/);
+  assert.match(base, /rel="apple-touch-icon" sizes="180x180" href="\/apple-touch-icon\.png"/);
+  assert.match(base, /rel="manifest" href="\/site\.webmanifest"/);
+  assert.match(base, /name="theme-color" content="#7d3c52"/);
+  assert.doesNotMatch(base, /data:image\/svg\+xml/);
+  assert.match(favicon, /🐐/);
+  assert.equal(manifest.theme_color, '#7d3c52');
+  assert.deepEqual(
+    manifest.icons.map((icon) => icon.src),
+    ['/icon-192.png', '/icon-512.png'],
+  );
+  await readFile(new URL('../public/favicon.ico', import.meta.url));
+  await readFile(new URL('../public/apple-touch-icon.png', import.meta.url));
+  await readFile(new URL('../public/icon-192.png', import.meta.url));
+  await readFile(new URL('../public/icon-512.png', import.meta.url));
+});
+
 test('YAML content remains authorable with only project-specific type declarations', async () => {
   const envTypes = await read('src/env.d.ts');
   const projects = await read('src/components/Projects.astro');
