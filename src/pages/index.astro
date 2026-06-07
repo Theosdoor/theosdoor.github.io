@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Card from '../components/Card.astro';
 import Publications from '../components/Publications.astro';
 import Projects from '../components/Projects.astro';
 import DecoDivider from '../components/DecoDivider.astro';
@@ -49,14 +48,7 @@ import profilePic from '../../public/images/theocool.jpeg';
             </div>
           </div>
         </header>
-        <div class="mx-auto max-w-[560px]">
-          <nav class="mb-12 flex flex-col gap-3" aria-label="Links">
-            <Card href="/cv/" icon="resume" title="Curriculum Vitae" sub="View my full CV" external={true} />
-            <Card href="https://www.linkedin.com/in/theofarrell/" icon="linkedin" title="LinkedIn" sub="Connect with me" />
-            <Card href="https://github.com/Theosdoor" icon="github" title="GitHub" sub="Browse my code" />
-            <Card href="https://scholar.google.com/citations?user=wbiptScAAAAJ" icon="scholar" title="Google Scholar" sub="Research &amp; publications" />
-          </nav>
-        </div>
+
       </div>
     </div>
     <div id="panel-research" role="tabpanel" aria-labelledby="tab-research" hidden>

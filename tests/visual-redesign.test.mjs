@@ -111,7 +111,7 @@ test('home UI is composed from DecoDivider and semantic Tailwind surfaces', asyn
   assert.match(card, /border-rule/);
   assert.match(card, /bg-panel/);
   assert.match(index, /import DecoDivider/);
-  assert.match(index, /icon="resume"/);
+  assert.doesNotMatch(index, /icon="resume"/);
   assert.doesNotMatch(index, /<em>Farrell<\/em>/);
 });
 
