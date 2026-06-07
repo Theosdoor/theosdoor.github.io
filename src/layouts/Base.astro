@@ -6,6 +6,7 @@ interface Props {
   ogImage?: string;
   hideThemeToggle?: boolean;
   hideHeader?: boolean;
+  hideFooter?: boolean;
 }
 
 const {
@@ -15,11 +16,13 @@ const {
   ogImage = '/images/theocool.jpeg',
   hideThemeToggle = false,
   hideHeader = false,
+  hideFooter = false,
 } = Astro.props;
 
 const ogImageAbsolute = `https://theosdoor.github.io${ogImage}`;
 
 import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 ---
 
@@ -67,5 +70,6 @@ import '../styles/global.css';
   <body class="min-h-screen bg-canvas font-sans text-ink">
     {!hideHeader && <Header hideThemeToggle={hideThemeToggle} />}
     <slot />
+    {!hideFooter && <Footer />}
   </body>
 </html>
