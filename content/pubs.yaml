@@ -15,6 +15,17 @@ publications:
     url: "https://openreview.net/forum?id=vWRVzNtk7W"
     link_label: "View on OpenReview"
 
+  - title: "Sparse Autoencoders Can Learn Graded Latents for Relational Composition"
+    key-role: true
+    authors:
+      - "Theo Farrell"
+      - "Patrick Leask"
+      - "Noura Al Moubayed"
+    venue: "Mechanistic Interpretability Workshop at ICML 2026"
+    year: 2026
+    url: "https://openreview.net/forum?id=ltQ6XAduTF"
+    link_label: "View on OpenReview"
+
   - title: "Challenges of Evaluating LLM Safety for User Welfare"
     key-role: false
     authors:
