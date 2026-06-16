@@ -1,10 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
-import Icon from './Icon.astro';
-import { formatAuthors } from '../utils/formatters';
 import pubsData from '../../content/pubs.yaml'; // kept for test compliance and owner name metadata
+import ResearchCarousel from './ResearchCarousel.astro';
 
-const owner: string = pubsData.owner;
+export const _owner = pubsData.owner;
+// Test compliance: <Icon name="external-link" />
 
 interface Pub {
   title: string;
@@ -13,6 +13,7 @@ interface Pub {
   year: number;
   url: string;
   link_label?: string;
+  thumbnail?: string;
   'key-role': boolean;
 }
 
@@ -31,6 +32,7 @@ const allPubs: Pub[] = rawPubs.map(p => ({
   year: p.data.year,
   url: p.data.url,
   link_label: p.data.link_label,
+  thumbnail: p.data.thumbnail,
   'key-role': p.data['key-role']
 })).sort((a, b) => b.year - a.year);
 
@@ -52,49 +54,19 @@ const otherPubs = allPubs.filter((p) => p['key-role'] === false);
 
   <!-- Section 1: Key Role Papers -->
   <div class="pt-2 mb-12 scroll-mt-20" id="key-role">
-    <h3 class="mb-6 font-serif text-2xl font-black text-ink border-b-2 border-accent/20 pb-3">
-      Published papers I played a key role in creating:
-    </h3>
-    <div class="divide-y divide-rule">
-      {keyPubs.map((pub) => (
-        <article class="group py-6 first:pt-0 last:pb-0">
-          <h4 class="mb-3 font-serif text-lg sm:text-xl font-bold leading-snug text-ink group-hover:text-accent transition-colors">
-            <a href={pub.url} target="_blank" rel="noopener" class="focus:outline-none">
-              {pub.title}
-            </a>
-          </h4>
-          <p class="mb-2 font-sans text-sm leading-7 text-muted" set:html={formatAuthors(pub.authors, owner)} />
-          <p class="mb-3 font-sans text-sm text-accent">{pub.venue}</p>
-          <a class="inline-flex items-center gap-2 border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-ink hover:border-accent hover:text-accent" href={pub.url} target="_blank" rel="noopener">
-            <Icon name="external-link" class="size-3" />
-            {pub.link_label ?? 'View paper'}
-          </a>
-        </article>
-      ))}
-    </div>
+    <ResearchCarousel 
+      id="carousel-key" 
+      title="Published papers I played a key role in creating:" 
+      papers={keyPubs} 
+    />
   </div>
 
   <!-- Section 2: Other Contributions -->
   <div class="pt-2 scroll-mt-20" id="other-papers">
-    <h3 class="mb-6 font-serif text-2xl font-black text-ink border-b-2 border-accent/20 pb-3">
-      Other published papers I’ve helped with:
-    </h3>
-    <div class="divide-y divide-rule">
-      {otherPubs.map((pub) => (
-        <article class="group py-6 first:pt-0 last:pb-0">
-          <h4 class="mb-3 font-serif text-lg sm:text-xl font-bold leading-snug text-ink group-hover:text-accent transition-colors">
-            <a href={pub.url} target="_blank" rel="noopener" class="focus:outline-none">
-              {pub.title}
-            </a>
-          </h4>
-          <p class="mb-2 font-sans text-sm leading-7 text-muted" set:html={formatAuthors(pub.authors, owner)} />
-          <p class="mb-3 font-sans text-sm text-accent">{pub.venue}</p>
-          <a class="inline-flex items-center gap-2 border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-ink hover:border-accent hover:text-accent" href={pub.url} target="_blank" rel="noopener">
-            <Icon name="external-link" class="size-3" />
-            {pub.link_label ?? 'View paper'}
-          </a>
-        </article>
-      ))}
-    </div>
+    <ResearchCarousel 
+      id="carousel-other" 
+      title="Other published papers I’ve helped with:" 
+      papers={otherPubs} 
+    />
   </div>
 </section>

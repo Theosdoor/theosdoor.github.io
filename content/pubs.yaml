@@ -10,10 +10,11 @@ publications:
       - "Theo Farrell"
       - "Patrick Leask"
       - "Noura Al Moubayed"
-    venue: "39th Conference on Neural Information Processing Systems (NeurIPS 2025) Workshop: ResponsibleFM"
+    venue: "ResponsibleFM Workshop at NeurIPS 2025"
     year: 2025
     url: "https://openreview.net/forum?id=vWRVzNtk7W"
     link_label: "View on OpenReview"
+    thumbnail: "/images/pubs/5_Order_by_Scale_Relative_Magn.png"
 
   - title: "Sparse Autoencoders Can Learn Graded Latents for Relational Composition"
     key-role: true
@@ -25,6 +26,7 @@ publications:
     year: 2026
     url: "https://openreview.net/forum?id=ltQ6XAduTF"
     link_label: "View on OpenReview"
+    thumbnail: "/images/pubs/402_Sparse_Autoencoders_Can_Le.png"
 
   - title: "Challenges of Evaluating LLM Safety for User Welfare"
     key-role: false
@@ -34,7 +36,8 @@ publications:
       - "Mahalakshmi Raveenthiran"
       - "Theo Farrell"
       - "Ingmar Weber"
-    venue: "Second Conference of the International Association for Safe and Ethical Artificial Intelligence (IASEAI'26)"
+    venue: "IASEAI 2026"
     year: 2026
     url: "https://arxiv.org/abs/2512.10687"
     link_label: "View preprint on arXiv"
+    thumbnail: "/images/pubs/context_evals.png"

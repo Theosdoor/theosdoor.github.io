@@ -94,6 +94,7 @@ const pubs = defineCollection({
     year: z.number(),
     url: z.string().url(),
     link_label: z.string().optional(),
+    thumbnail: z.string().optional(),
   }),
 });
 
