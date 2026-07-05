@@ -121,7 +121,22 @@ export function initializeSkillsFilter() {
 
   function updateSortButtonUI() {
     if (sortBtn) {
-      sortBtn.textContent = state.sort === 'rating' ? 'Sort: Rating ▾' : 'Sort: A-Z ▾';
+      sortBtn.dataset.sort = state.sort;
+      const ratingIcon = sortBtn.querySelector('.sort-icon-rating');
+      const alphaIcon = sortBtn.querySelector('.sort-icon-alpha');
+      if (ratingIcon && alphaIcon) {
+        if (state.sort === 'rating') {
+          ratingIcon.classList.remove('hidden');
+          ratingIcon.classList.add('flex');
+          alphaIcon.classList.remove('flex');
+          alphaIcon.classList.add('hidden');
+        } else {
+          ratingIcon.classList.remove('flex');
+          ratingIcon.classList.add('hidden');
+          alphaIcon.classList.remove('hidden');
+          alphaIcon.classList.add('flex');
+        }
+      }
     }
   }
 

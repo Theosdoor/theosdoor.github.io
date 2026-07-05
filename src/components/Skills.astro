@@ -17,6 +17,11 @@ const yamlContent = fs.readFileSync('content/skills.yaml', 'utf8');
 const parsedYaml = yaml.load(yamlContent) as { show_tags?: boolean };
 const showTags = parsedYaml.show_tags ?? false;
 
+// Read SVGs for the sort cycle button and prepare them for fill styling
+const starSvg = fs.readFileSync('public/images/icons/star.svg', 'utf8')
+  .replace(/fill="#[0-9a-fA-F]+"/, 'fill="currentColor"');
+const azSvg = fs.readFileSync('public/images/icons/arrow-down-a-z.svg', 'utf8');
+
 // Load the skills collection and sort by rating descending, then name ascending
 const rawSkills = await getCollection('skills');
 const skills = rawSkills
@@ -71,12 +76,15 @@ const skills = rawSkills
             </div>
           </div>
 
-          <!-- Sort Button -->
+          <!-- Sort Button (Borderless, cycles icon rating <-> alphabetical) -->
           <button
             id="skills-sort-btn"
-            class="px-4 py-2 border border-rule rounded-lg bg-canvas font-sans text-xs font-semibold uppercase tracking-[0.12em] text-muted hover:border-accent hover:text-accent transition-all cursor-pointer select-none"
+            class="p-2 border-0 bg-transparent text-muted hover:text-accent hover:bg-rule/10 transition-all cursor-pointer select-none rounded-lg flex items-center justify-center size-9"
+            aria-label="Toggle sort order"
+            data-sort="rating"
           >
-            Sort: Rating ▾
+            <span class="sort-icon-rating size-5 flex items-center justify-center"><Fragment set:html={starSvg} /></span>
+            <span class="sort-icon-alpha size-5 hidden items-center justify-center"><Fragment set:html={azSvg} /></span>
           </button>
 
           <!-- Debug Tags Toggle (hidden by default, shown dynamically via JS in dev/debug mode) -->
