@@ -311,6 +311,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   function updateSortButtonUI() {
     if (projSortBtn) {
       projSortBtn.dataset.sort = state.sort;
+      projSortBtn.title = state.sort === 'featured' ? 'Current sort: Featured (click to sort by Recent)' : 'Current sort: Recent (click to sort by Featured)';
       const featuredIcon = projSortBtn.querySelector('.sort-icon-featured');
       const recentIcon = projSortBtn.querySelector('.sort-icon-recent');
       if (featuredIcon && recentIcon) {

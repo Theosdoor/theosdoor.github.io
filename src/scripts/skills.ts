@@ -122,6 +122,7 @@ export function initializeSkillsFilter() {
   function updateSortButtonUI() {
     if (sortBtn) {
       sortBtn.dataset.sort = state.sort;
+      sortBtn.title = state.sort === 'rating' ? 'Current sort: Rating (click to sort A-Z)' : 'Current sort: A-Z (click to sort by Rating)';
       const ratingIcon = sortBtn.querySelector('.sort-icon-rating');
       const alphaIcon = sortBtn.querySelector('.sort-icon-alpha');
       if (ratingIcon && alphaIcon) {
