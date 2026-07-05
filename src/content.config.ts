@@ -28,7 +28,7 @@ const projects = defineCollection({
     id: z.string(),
     title: z.string(),
     description: z.string(),
-    url: z.string().url().optional(),
+    url: z.url().optional(),
     image: z.string().nullable().optional(),
     role: z.enum(['lead', 'contributor']),
     category: z.enum(['research', 'side-project', 'coursework']),
@@ -49,7 +49,7 @@ const fieldBuilding = defineCollection({
     headline: z.string(),
     startDate: z.string(),
     endDate: z.string(),
-    url: z.string().url().optional(),
+    url: z.url().optional(),
   }),
 });
 
@@ -92,7 +92,7 @@ const pubs = defineCollection({
     authors: z.array(z.string()),
     venue: z.string(),
     year: z.number(),
-    url: z.string().url(),
+    url: z.url(),
     link_label: z.string().optional(),
     thumbnail: z.string().optional(),
   }),
