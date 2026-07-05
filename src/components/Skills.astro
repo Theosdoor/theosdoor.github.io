@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import SkillIcon from './SkillIcon.astro';
 import DecoDivider from './DecoDivider.astro';
+import fs from 'node:fs';
+import yaml from 'js-yaml';
 
 interface Props {
   headingLevel?: 'h1' | 'h2';
@@ -9,6 +11,11 @@ interface Props {
 
 const { headingLevel = 'h2' } = Astro.props;
 const Heading = headingLevel;
+
+// Read the raw YAML to parse show_tags
+const yamlContent = fs.readFileSync('content/skills.yaml', 'utf8');
+const parsedYaml = yaml.load(yamlContent) as { show_tags?: boolean };
+const showTags = parsedYaml.show_tags ?? false;
 
 // Load the skills collection and sort by rating descending, then name ascending
 const rawSkills = await getCollection('skills');
@@ -71,6 +78,21 @@ const skills = rawSkills
           >
             Sort: Rating ▾
           </button>
+
+          <!-- Debug Tags Toggle (hidden by default, shown dynamically via JS in dev/debug mode) -->
+          <div id="skills-debug-container" class="hidden items-center gap-2 border border-rule px-3 py-2 rounded-lg bg-canvas text-muted select-none">
+            <input
+              type="checkbox"
+              id="skills-debug-tags"
+              class="size-3.5 rounded border-rule text-accent focus:ring-accent accent-accent cursor-pointer"
+            />
+            <label
+              for="skills-debug-tags"
+              class="font-sans text-[10px] font-semibold uppercase tracking-wider cursor-pointer"
+            >
+              Debug Tags (devonly)
+            </label>
+          </div>
         </div>
 
         <!-- AI Safety Toggle -->
@@ -101,6 +123,7 @@ const skills = rawSkills
       <div 
         id="skills-container"
         class="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr))] transition-all duration-300"
+        data-show-tags={showTags ? 'true' : 'false'}
       >
         <!-- Empty state placeholder -->
         <div 
@@ -148,7 +171,7 @@ const skills = rawSkills
             </div>
 
             <!-- Tags Section -->
-            <div class="flex flex-wrap gap-1.5 mt-auto">
+            <div class="skill-tags-wrapper flex flex-wrap gap-1.5 mt-auto">
               {skill.tags.map(tag => {
                 const isHighlight = tag === 'ai-safety' || tag === 'mechanistic-interpretability';
                 return (
@@ -208,5 +231,15 @@ const skills = rawSkills
     color: var(--color-safety) !important;
     background-color: color-mix(in srgb, var(--color-safety) 8%, transparent) !important;
     box-shadow: 0 0 6px color-mix(in srgb, var(--color-safety) 15%, transparent) !important;
+  }
+
+  /* By default, hide tags if show-tags is false on the container */
+  #skills-container[data-show-tags="false"] .skill-tags-wrapper {
+    display: none;
+  }
+
+  /* But show tags if debug show-tags toggle is checked, which adds the show-tags class */
+  #skills-container.show-tags .skill-tags-wrapper {
+    display: flex;
   }
 </style>

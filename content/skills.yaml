@@ -1,3 +1,4 @@
+show_tags: false
 skills:
   # Fluent Programming
   - name: "Python"

@@ -65,4 +65,6 @@ test('Skills script supports URL restoration, search syncing, and filtering logi
   assert.match(script, /syncToUrl\(\)/);
   assert.match(script, /document\.getElementById\('skills-search'\)/);
   assert.match(script, /document\.getElementById\('skills-ais-toggle'\)/);
+  assert.match(script, /document\.getElementById\('skills-debug-tags'\)/);
+  assert.match(script, /document\.getElementById\('skills-debug-container'\)/);
 });
