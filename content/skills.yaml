@@ -1,0 +1,173 @@
+skills:
+  # Fluent Programming
+  - name: "Python"
+    rating: 5
+    ais: true
+    tags: [programming-language, machine-learning, deep-learning, ai-safety, backend]
+    icon_url: "https://img.icons8.com/color/96/000000/python.png"
+  - name: "C#"
+    rating: 5
+    ais: false
+    tags: [programming-language, oop, gamedev, backend]
+    icon_url: "https://img.icons8.com/color/48/000000/c-sharp-logo.png"
+  - name: "JavaScript"
+    rating: 5
+    ais: false
+    tags: [programming-language, web-dev, frontend]
+    icon_url: "https://img.icons8.com/color/48/000000/javascript--v1.png"
+  - name: "HTML"
+    rating: 5
+    ais: false
+    tags: [programming-language, web-dev, frontend]
+    icon_url: "https://img.icons8.com/color/48/000000/html-5--v1.png"
+
+  # Familiar Programming
+  - name: "C"
+    rating: 3
+    ais: false
+    tags: [programming-language, system, procedural]
+    icon_url: "https://img.icons8.com/fluency/48/000000/c.png"
+  - name: "C++"
+    rating: 3
+    ais: false
+    tags: [programming-language, system, oop]
+    icon_url: "https://img.icons8.com/color/48/000000/c-plus-plus-logo.png"
+  - name: "Java"
+    rating: 3
+    ais: false
+    tags: [programming-language, oop, backend]
+    icon_url: "https://img.icons8.com/color/48/000000/java-coffee-cup-logo--v1.png"
+  - name: "Haskell"
+    rating: 3
+    ais: false
+    tags: [programming-language, functional]
+    icon_url: "https://img.icons8.com/color/48/000000/haskell.png"
+  - name: "Fortran"
+    rating: 2
+    ais: false
+    tags: [programming-language, scientific-computing]
+    icon_url: null
+  - name: "Ruby"
+    rating: 2
+    ais: false
+    tags: [programming-language, scripting, backend]
+    icon_url: "https://img.icons8.com/color/48/000000/ruby.png"
+
+  # Tools & Libraries
+  - name: "PyTorch"
+    rating: 5
+    ais: true
+    tags: [deep-learning, machine-learning, ai-safety, computer-vision, nlp]
+    icon_url: "https://pytorch.org/assets/images/pytorch-logo.png"
+  - name: "TransformerLens"
+    rating: 5
+    ais: true
+    tags: [deep-learning, mechanistic-interpretability, ai-safety, nlp]
+    icon_url: null
+  - name: "SAELens"
+    rating: 4
+    ais: true
+    tags: [deep-learning, mechanistic-interpretability, ai-safety, nlp]
+    icon_url: null
+  - name: "TensorFlow"
+    rating: 3
+    ais: false
+    tags: [deep-learning, machine-learning]
+    icon_url: "https://img.icons8.com/color/48/000000/tensorflow.png"
+  - name: "scikit-learn"
+    rating: 4
+    ais: false
+    tags: [machine-learning, data-science]
+    icon_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Scikit_learn_logo_small.svg/1200px-Scikit_learn_logo_small.svg.png"
+  - name: "Hugging Face"
+    rating: 4
+    ais: true
+    tags: [deep-learning, nlp, ai-safety]
+    icon_url: "https://huggingface.co/front/assets/huggingface_logo-noborder.svg"
+  - name: "NumPy"
+    rating: 5
+    ais: false
+    tags: [data-science, scientific-computing]
+    icon_url: "https://user-images.githubusercontent.com/50221806/86498227-c985dc00-bd39-11ea-9135-3e82bab6d664.png"
+  - name: "Weights & Biases"
+    rating: 4
+    ais: true
+    tags: [machine-learning, tooling]
+    icon_url: null
+  - name: "OpenCV"
+    rating: 4
+    ais: false
+    tags: [computer-vision]
+    icon_url: "https://img.icons8.com/color/48/000000/opencv.png"
+  - name: "Seaborn"
+    rating: 4
+    ais: false
+    tags: [data-science, visualization]
+    icon_url: null
+  - name: "matplotlib"
+    rating: 4
+    ais: false
+    tags: [data-science, visualization]
+    icon_url: null
+  - name: "pandas"
+    rating: 4
+    ais: false
+    tags: [data-science]
+    icon_url: "https://numfocus.org/wp-content/uploads/2016/07/pandas-logo-300.png"
+  - name: "Git"
+    rating: 5
+    ais: false
+    tags: [tooling]
+    icon_url: "https://img.icons8.com/color/48/000000/git.png"
+  - name: "uv"
+    rating: 5
+    ais: false
+    tags: [tooling, python]
+    icon_url: https://docs.astral.sh/uv/assets/logo-letter.svg
+  - name: "LaTeX"
+    rating: 5
+    ais: false
+    tags: [typesetting, academic]
+    icon_url: "https://img.icons8.com/color/48/000000/latex.png"
+  - name: "AR/VR"
+    rating: 3
+    ais: false
+    tags: [gamedev, spatial-computing]
+    icon_url: "https://img.icons8.com/color/48/000000/vr-headset.png"
+  - name: "Unity"
+    rating: 4
+    ais: false
+    tags: [gamedev, c-sharp]
+    icon_url: "https://img.icons8.com/fluency/48/000000/unity.png"
+  - name: "Arduino"
+    rating: 3
+    ais: false
+    tags: [embedded, electronics]
+    icon_url: "https://img.icons8.com/color/48/000000/arduino.png"
+  
+  # Project tags
+  - name: "YOLO"
+    rating: 4
+    ais: false
+    tags: [computer-vision, deep-learning]
+    icon_url: null
+  - name: "Gymnasium"
+    rating: 4
+    ais: true
+    tags: [reinforcement-learning, ai-safety]
+    icon_url: "https://img.icons8.com/color/48/000000/dumbbell.png"
+  - name: "Openrouter"
+    rating: 4
+    ais: true
+    tags: [api, ai-safety]
+    icon_url: null
+  - name: "Astro"
+    rating: 4
+    ais: false
+    tags: [web-dev, frontend]
+    icon_url: "https://img.icons8.com/color/48/000000/rocket.png"
+  - name: "Tailwind"
+    rating: 4
+    ais: false
+    tags: [web-dev, frontend]
+    icon_url: "https://img.icons8.com/color/48/000000/tailwindcss.png"

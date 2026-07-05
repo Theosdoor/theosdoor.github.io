@@ -9,6 +9,8 @@ function slugify(text: string): string {
   return text
     .toLowerCase()
     .trim()
+    .replace(/\+/g, 'plus')
+    .replace(/#/g, 'sharp')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, ''); // Clean leading/trailing hyphens
 }
@@ -98,4 +100,25 @@ const pubs = defineCollection({
   }),
 });
 
-export const collections = { projects, fieldBuilding, talks, pubs };
+const skills = defineCollection({
+  loader: file('content/skills.yaml', {
+    parser: (text) => {
+      const parsed = yaml.load(text) as { skills?: any[] } | null;
+      const list = parsed?.skills ?? [];
+      return list.map((item, index) => ({
+        id: slugify(item.name) || String(index),
+        ...item,
+      }));
+    }
+  }),
+  schema: z.object({
+    id: z.string(),
+    name: z.string(),
+    rating: z.number().min(1).max(5),
+    ais: z.boolean(),
+    tags: z.array(z.string()),
+    icon_url: z.string().url().optional().nullable(),
+  }),
+});
+
+export const collections = { projects, fieldBuilding, talks, pubs, skills };

@@ -1,0 +1,212 @@
+---
+import { getCollection } from 'astro:content';
+import SkillIcon from './SkillIcon.astro';
+import DecoDivider from './DecoDivider.astro';
+
+interface Props {
+  headingLevel?: 'h1' | 'h2';
+}
+
+const { headingLevel = 'h2' } = Astro.props;
+const Heading = headingLevel;
+
+// Load the skills collection and sort by rating descending, then name ascending
+const rawSkills = await getCollection('skills');
+const skills = rawSkills
+  ? rawSkills
+      .map(s => s.data)
+      .sort((a, b) => {
+        const ratingDiff = b.rating - a.rating;
+        if (ratingDiff !== 0) return ratingDiff;
+        return a.name.localeCompare(b.name);
+      })
+  : [];
+---
+
+<section class="space-y-8 animate-[fade-up_0.6s_var(--ease-smooth)_forwards]">
+  <div>
+    <Heading class="mb-3 font-serif text-3xl font-bold text-ink tracking-tight">Skills</Heading>
+    <p class="font-sans text-sm text-subtle leading-relaxed">
+      A dynamically filterable catalog of my programming languages, machine learning tools, and research frameworks.
+    </p>
+    <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-sans text-xs text-subtle/80">
+      <span class="font-semibold text-accent/90">Confidence Ratings:</span>
+      <span class="inline-flex items-center gap-1"><span class="text-accent leading-none">●●●●●</span> <span class="text-[11px]">Fluent / Production-grade</span></span>
+      <span class="text-rule/60">•</span>
+      <span class="inline-flex items-center gap-1"><span class="text-accent leading-none">●●●○○</span> <span class="text-[11px]">Proficient / Highly familiar</span></span>
+      <span class="text-rule/60">•</span>
+      <span class="inline-flex items-center gap-1"><span class="text-accent leading-none">●○○○○</span> <span class="text-[11px]">Basic / Familiar</span></span>
+    </div>
+    <DecoDivider class="mt-5 max-w-44" />
+  </div>
+
+  {skills.length === 0 ? (
+    <p class="text-subtle font-sans text-sm italic">No skills defined yet.</p>
+  ) : (
+    <div class="space-y-6">
+      <!-- Search and Toggle Row -->
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border border-rule bg-panel px-5 py-4 rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.01)] transition-all">
+        <!-- Search & Sort Cluster -->
+        <div class="flex flex-wrap items-center gap-3 flex-1 max-w-xl">
+          <!-- Search Input -->
+          <div class="relative flex-1 min-w-[200px]">
+            <input
+              id="skills-search"
+              type="search"
+              placeholder="Search skills, tools, tags..."
+              class="w-full pl-9 pr-4 py-2 border border-rule rounded-lg bg-canvas font-sans text-xs tracking-wide text-ink placeholder:text-subtle focus:border-accent focus:outline-none transition-colors"
+              aria-label="Search skills"
+            />
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-subtle" aria-hidden="true">
+              <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Sort Button -->
+          <button
+            id="skills-sort-btn"
+            class="px-4 py-2 border border-rule rounded-lg bg-canvas font-sans text-xs font-semibold uppercase tracking-[0.12em] text-muted hover:border-accent hover:text-accent transition-all cursor-pointer select-none"
+          >
+            Sort: Rating ▾
+          </button>
+        </div>
+
+        <!-- AI Safety Toggle -->
+        <div class="flex items-center gap-3">
+          <span class="font-sans text-xs font-semibold uppercase tracking-[0.16em] text-muted">
+            Only AI Safety
+          </span>
+          <label 
+            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full bg-rule transition-colors duration-200 ease-in-out focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2"
+          >
+            <input 
+              type="checkbox" 
+              id="skills-ais-toggle" 
+              class="sr-only" 
+              role="switch" 
+              aria-checked="false"
+            />
+            <span 
+              aria-hidden="true" 
+              class="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0.5 mt-0.5"
+              id="skills-toggle-dot"
+            ></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Skills Grid Container -->
+      <div 
+        id="skills-container"
+        class="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr))] transition-all duration-300"
+      >
+        <!-- Empty state placeholder -->
+        <div 
+          id="skills-empty-state" 
+          class="col-span-full border border-dashed border-rule bg-panel px-6 py-16 text-center text-sm font-sans tracking-wide text-subtle hidden rounded-xl"
+        >
+          No skills match the current search filters.
+        </div>
+
+        {skills.map(skill => (
+          <div
+            class="skill-card group flex flex-col justify-between border border-rule bg-panel rounded-xl p-5 transition duration-250 ease-deco hover:-translate-y-1 hover:border-accent hover:shadow-[0_8px_20px_rgba(125,60,82,0.06)]"
+            data-name={skill.name}
+            data-ais={skill.ais ? 'true' : 'false'}
+            data-tags={skill.tags.join(',')}
+            data-rating={skill.rating}
+          >
+            <div>
+              <!-- Header Row (Icon + Title) -->
+              <div class="flex items-center gap-3 mb-4">
+                <SkillIcon 
+                  name={skill.name} 
+                  iconUrl={skill.icon_url}
+                  class="size-6 text-accent group-hover:text-accent-strong transition-colors shrink-0" 
+                />
+                <h3 class="font-serif text-base font-bold text-ink group-hover:text-accent transition-colors">
+                  {skill.name}
+                </h3>
+              </div>
+
+              <!-- Rating Row -->
+              <div 
+                class="flex items-center gap-1 mb-4" 
+                aria-label={`Expertise level: ${skill.rating} out of 5`}
+              >
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span 
+                    class={`text-base font-bold select-none leading-none ${i < skill.rating ? 'text-accent' : 'text-rule opacity-30'}`}
+                    aria-hidden="true"
+                  >
+                    ●
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <!-- Tags Section -->
+            <div class="flex flex-wrap gap-1.5 mt-auto">
+              {skill.tags.map(tag => {
+                const isHighlight = tag === 'ai-safety' || tag === 'mechanistic-interpretability';
+                return (
+                  <span 
+                    class="font-sans text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded border transition-all duration-200 border-rule text-subtle bg-canvas/30"
+                    data-ais-tag={isHighlight ? 'true' : 'false'}
+                  >
+                    {tag.replace(/-/g, ' ')}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+</section>
+
+<!-- Inline script connection for skills toggle slider animation and logic -->
+<script>
+  import { initializeSkillsFilter } from '../scripts/skills';
+
+  // Toggle switch visual transition listener
+  const toggleInput = document.getElementById('skills-ais-toggle') as HTMLInputElement | null;
+  const toggleDot = document.getElementById('skills-toggle-dot');
+  
+  if (toggleInput && toggleDot) {
+    toggleInput.addEventListener('change', () => {
+      if (toggleInput.checked) {
+        toggleDot.classList.remove('translate-x-0.5');
+        toggleDot.classList.add('translate-x-5.5');
+        toggleInput.closest('label')?.classList.remove('bg-rule');
+        toggleInput.closest('label')?.classList.add('bg-accent');
+      } else {
+        toggleDot.classList.remove('translate-x-5.5');
+        toggleDot.classList.add('translate-x-0.5');
+        toggleInput.closest('label')?.classList.remove('bg-accent');
+        toggleInput.closest('label')?.classList.add('bg-rule');
+      }
+    });
+  }
+
+  // Run initialization
+  initializeSkillsFilter();
+</script>
+
+<style>
+  /* Custom Tailwind v4 overrides for toggle animation offsets */
+  .translate-x-5.5 {
+    transform: translateX(1.375rem);
+  }
+
+  /* Only glow green when only-ais toggle is checked (adding show-ais-glow class to container) */
+  #skills-container.show-ais-glow [data-ais-tag="true"] {
+    border-color: var(--color-safety) !important;
+    color: var(--color-safety) !important;
+    background-color: color-mix(in srgb, var(--color-safety) 8%, transparent) !important;
+    box-shadow: 0 0 6px color-mix(in srgb, var(--color-safety) 15%, transparent) !important;
+  }
+</style>

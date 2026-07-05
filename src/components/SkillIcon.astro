@@ -1,0 +1,38 @@
+---
+interface Props {
+  name: string;
+  iconUrl?: string | null;
+  class?: string;
+}
+
+const { name, iconUrl = null, class: className = '' } = Astro.props;
+---
+
+{
+  iconUrl ? (
+    <img 
+      src={iconUrl} 
+      alt={`${name} icon`} 
+      class:list={['object-contain shrink-0 select-none pointer-events-none', className]} 
+      loading="lazy" 
+      width="24"
+      height="24"
+      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+    />
+    <!-- In case the external image fails to load, render the placeholder as a sibling fallback -->
+    <div class:list={['hidden items-center justify-center shrink-0 text-muted opacity-60', className]}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="size-full">
+        <polyline points="16 18 22 12 16 6" />
+        <polyline points="8 6 2 12 8 18" />
+      </svg>
+    </div>
+  ) : (
+    // Consistent modern code bracket fallback placeholder
+    <div class:list={['flex items-center justify-center shrink-0 text-muted opacity-70 group-hover:text-accent transition-colors', className]}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="size-full">
+        <polyline points="16 18 22 12 16 6" />
+        <polyline points="8 6 2 12 8 18" />
+      </svg>
+    </div>
+  )
+}
