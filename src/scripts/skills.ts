@@ -170,26 +170,11 @@ export function initializeSkillsFilter() {
     filterAndRender();
   });
 
-  // Debug Tags Toggle logic
-  const debugToggle = document.getElementById('skills-debug-tags') as HTMLInputElement | null;
-  const debugContainer = document.getElementById('skills-debug-container');
-
-  const isDev = window.location.hostname === 'localhost' || 
-                window.location.hostname === '127.0.0.1' || 
-                new URLSearchParams(window.location.search).has('debug');
-
-  if (isDev && debugContainer) {
-    debugContainer.classList.remove('hidden');
-    debugContainer.classList.add('flex'); // Add flex layout
+  // Check if ?debug is present in the URL on page load
+  const hasDebugParam = new URLSearchParams(window.location.search).has('debug');
+  if (hasDebugParam) {
+    container.classList.add('show-tags');
   }
-
-  debugToggle?.addEventListener('change', () => {
-    if (debugToggle.checked) {
-      container.classList.add('show-tags');
-    } else {
-      container.classList.remove('show-tags');
-    }
-  });
 
   // Init
   restoreFromUrl();
