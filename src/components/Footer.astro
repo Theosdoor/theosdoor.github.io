@@ -1,5 +1,6 @@
 ---
 import { execSync } from 'child_process';
+import ContactEmail from './ContactEmail.astro';
 import Icon from './Icon.astro';
 
 let lastUpdated = '';
@@ -31,9 +32,7 @@ try {
         <Icon name="scholar" class="size-5" />
       </a>
       <span class="text-rule" aria-hidden="true">|</span>
-      <a href="mailto:theo.farrell99@outlook.com" class="font-sans text-xs uppercase tracking-[0.16em] text-subtle hover:text-accent transition-colors duration-200">
-        theo.farrell99 'at' outlook.com
-      </a>
+      <ContactEmail class="border-0 justify-center font-sans text-xs uppercase tracking-[0.16em] text-subtle hover:text-accent" />
     </div>
 
     <!-- Links Row -->

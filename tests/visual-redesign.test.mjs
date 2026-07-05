@@ -148,6 +148,30 @@ test('CV composes the redesigned shell and retains sidebar persistence', async (
   assert.doesNotMatch(cvCss, /--copper|--parchment|--ink/);
 });
 
+test('contact email copy affordance is centralized and avoids raw mailto links', async () => {
+  const footer = await read('src/components/Footer.astro');
+  const cvPage = await read('src/pages/cv/index.astro');
+  const emailComponent = await read('src/components/ContactEmail.astro');
+  const emailScript = await read('src/scripts/email-copy.ts');
+  const icon = await read('src/components/Icon.astro');
+  const constants = await read('src/utils/constants.ts');
+  const source = [footer, cvPage, emailComponent, emailScript, icon, constants].join('\n');
+
+  assert.match(constants, /emailUser/);
+  assert.match(constants, /'theo\.farrell99'/);
+  assert.match(constants, /emailDomain/);
+  assert.match(constants, /'outlook\.com'/);
+  assert.match(emailComponent, /data-email-user=\{contactConfig\.emailUser\}/);
+  assert.match(emailComponent, /<Icon name="copy"/);
+  assert.match(emailScript, /navigator\.clipboard\.writeText\(email\)/);
+  assert.match(footer, /<ContactEmail/);
+  assert.match(cvPage, /<ContactEmail/);
+  assert.match(icon, /'copy'/);
+  assert.doesNotMatch(source, /theo\.farrell99@outlook\.com|mailto:/);
+  assert.doesNotMatch(source, /<svg class="size-3\.5/);
+  await assert.rejects(read('public/images/icons/copy.svg'));
+});
+
 test('legacy palette and superseded component styles are removed', async () => {
   const sourceFiles = [
     'src/styles/global.css',

@@ -1,5 +1,5 @@
 ---
-type IconName = 'resume' | 'linkedin' | 'github' | 'scholar' | 'website' | 'external-link';
+type IconName = 'resume' | 'linkedin' | 'github' | 'scholar' | 'website' | 'external-link' | 'copy';
 
 interface Props {
   name: IconName;
@@ -32,6 +32,10 @@ const icons: Record<IconName, { viewBox: string; path: string }> = {
   'external-link': {
     viewBox: '0 0 512 512',
     path: 'M432 320H400a16 16 0 0 0-16 16V448H64V128H208a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16H48A48 48 0 0 0 0 112V464a48 48 0 0 0 48 48H400a48 48 0 0 0 48-48V336A16 16 0 0 0 432 320ZM488 0H360c-21.37 0-32.05 25.91-17 41l35.73 35.73L135 320.37a24 24 0 0 0 0 34L157.67 377a24 24 0 0 0 34 0L435.28 133.32 471 169c15 15 41 4.5 41-17V24A24 24 0 0 0 488 0Z',
+  },
+  copy: {
+    viewBox: '0 0 256 256',
+    path: 'M216,32H88a8,8,0,0,0-8,8V80H40a8,8,0,0,0-8,8V216a8,8,0,0,0,8,8H168a8,8,0,0,0,8-8V176h40a8,8,0,0,0,8-8V40A8,8,0,0,0,216,32ZM160,208H48V96H160Zm48-48H176V88a8,8,0,0,0-8-8H96V48H208Z',
   },
 };
 

@@ -1,0 +1,38 @@
+---
+import Icon from './Icon.astro';
+import { contactConfig } from '../utils/constants';
+
+interface Props {
+  class?: string;
+  iconClass?: string;
+  tooltipClass?: string;
+}
+
+const {
+  class: className = '',
+  iconClass = 'size-3.5',
+  tooltipClass = '-top-10 left-1/2 -translate-x-1/2',
+} = Astro.props;
+---
+
+<button
+  type="button"
+  data-email-user={contactConfig.emailUser}
+  data-email-domain={contactConfig.emailDomain}
+  class:list={[
+    'js-email-btn group relative cursor-pointer bg-transparent p-0 inline-flex items-center gap-1.5 transition-colors duration-200',
+    className,
+  ]}
+  aria-label="Copy email address"
+>
+  <span>{contactConfig.emailObfuscatedText}</span>
+  <Icon name="copy" class:list={[iconClass, 'opacity-70 group-hover:opacity-100 transition-opacity']} />
+  <span
+    class:list={[
+      'pointer-events-none absolute z-20 rounded bg-panel border border-rule px-2 py-1 text-[10px] normal-case tracking-normal text-ink opacity-0 scale-95 transition-all duration-200 whitespace-nowrap shadow-md js-tooltip',
+      tooltipClass,
+    ]}
+  >
+    Click to copy email
+  </span>
+</button>

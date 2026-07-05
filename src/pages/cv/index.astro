@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ContactEmail from '../../components/ContactEmail.astro';
 import DecoDivider from '../../components/DecoDivider.astro';
 import Icon from '../../components/Icon.astro';
 import '../../styles/cv.css';
@@ -28,7 +29,7 @@ import '../../styles/cv.css';
         <p><span class="block text-xs font-semibold uppercase tracking-wider text-subtle">Location</span>Manchester, UK</p>
         <p>
           <span class="block text-xs font-semibold uppercase tracking-wider text-subtle">Email</span>
-          <a class="border-b border-rule hover:border-accent hover:text-accent" href="mailto:theo.farrell99@outlook.com">theo.farrell99 'at' outlook.com</a>
+          <ContactEmail class="border-b border-rule text-left text-muted hover:border-accent hover:text-accent" />
         </p>
       </div>
       <div class="mt-7 flex gap-4">
