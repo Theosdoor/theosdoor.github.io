@@ -122,9 +122,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
 
     const sort = params.get('sort') || 'featured';
     state.sort = sort;
-    document.querySelectorAll('[data-sort]').forEach(b =>
-      setActiveStyle(b, (b as HTMLElement).dataset.sort === sort)
-    );
+    updateSortButtonUI();
 
     const ais = params.get('ais') === 'true' ? 'true' : 'all';
     state.ais = ais;
@@ -302,7 +300,34 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   });
 
   setupDropdown('proj-filter-btn', 'proj-filter-panel');
-  setupDropdown('proj-sort-btn', 'proj-sort-panel');
+
+  const projSortBtn = document.getElementById('proj-sort-btn');
+  projSortBtn?.addEventListener('click', () => {
+    state.sort = state.sort === 'featured' ? 'recent' : 'featured';
+    updateSortButtonUI();
+    filterAndRender();
+  });
+
+  function updateSortButtonUI() {
+    if (projSortBtn) {
+      projSortBtn.dataset.sort = state.sort;
+      const featuredIcon = projSortBtn.querySelector('.sort-icon-featured');
+      const recentIcon = projSortBtn.querySelector('.sort-icon-recent');
+      if (featuredIcon && recentIcon) {
+        if (state.sort === 'featured') {
+          featuredIcon.classList.remove('hidden');
+          featuredIcon.classList.add('flex');
+          recentIcon.classList.remove('flex');
+          recentIcon.classList.add('hidden');
+        } else {
+          featuredIcon.classList.remove('flex');
+          featuredIcon.classList.add('hidden');
+          recentIcon.classList.remove('hidden');
+          recentIcon.classList.add('flex');
+        }
+      }
+    }
+  }
 
   function setupPillGroup(attr: string, stateKey: 'role' | 'category' | 'sort' | 'ais') {
     const datasetKey = attr.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
@@ -320,7 +345,6 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   setupPillGroup('filter-role', 'role');
   setupPillGroup('filter-category', 'category');
   setupPillGroup('filter-ais', 'ais');
-  setupPillGroup('sort', 'sort');
 
   function setupTagGroup(attr: string, stateSet: Set<string>) {
     const datasetKey = attr.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());

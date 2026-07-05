@@ -76,15 +76,16 @@ const skills = rawSkills
             </div>
           </div>
 
-          <!-- Sort Button (Borderless, cycles icon rating <-> alphabetical) -->
+          <!-- Sort Button (Borderless, cycles rating <-> A-Z) -->
           <button
             id="skills-sort-btn"
-            class="p-2 border-0 bg-transparent text-muted hover:text-accent hover:bg-rule/10 transition-all cursor-pointer select-none rounded-lg flex items-center justify-center size-9"
+            class="p-2 border-0 bg-transparent text-muted hover:text-accent hover:bg-rule/10 transition-all cursor-pointer select-none rounded-lg flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em]"
             aria-label="Toggle sort order"
             data-sort="rating"
           >
-            <span class="sort-icon-rating size-5 flex items-center justify-center"><Fragment set:html={starSvg} /></span>
-            <span class="sort-icon-alpha size-5 hidden items-center justify-center"><Fragment set:html={azSvg} /></span>
+            <span class="sort-btn-text">Sort:</span>
+            <span class="sort-icon-rating size-4 flex items-center justify-center"><Fragment set:html={starSvg} /></span>
+            <span class="sort-icon-alpha size-4 hidden items-center justify-center"><Fragment set:html={azSvg} /></span>
           </button>
 
           <!-- Debug Tags Toggle (hidden by default, shown dynamically via JS in dev/debug mode) -->
