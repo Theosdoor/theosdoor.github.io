@@ -28,7 +28,7 @@ publications:
     link_label: "View on OpenReview"
     thumbnail: "/images/pubs/402_Sparse_Autoencoders_Can_Le.png"
 
-  - title: "Challenges of Evaluating LLM Safety for User Welfare"
+  - title: "Safe for whom? Rethinking how we evaluate the safety of LLMs for real users."
     key-role: false
     authors:
       - "Manon Kempermann"
@@ -38,6 +38,6 @@ publications:
       - "Ingmar Weber"
     venue: "IASEAI 2026"
     year: 2026
-    url: "https://arxiv.org/abs/2512.10687"
-    link_label: "View preprint on arXiv"
+    url: "https://ojs.aaai.org/index.php/IASEAI/article/view/43033"
+    link_label: "View online"
     thumbnail: "/images/pubs/context_evals.png"
