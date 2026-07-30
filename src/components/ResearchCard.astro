@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import { formatAuthors } from '../utils/formatters';
 import { owner, type Pub } from '../utils/pubs';
@@ -8,6 +9,13 @@ interface Props {
 }
 
 const { pub } = Astro.props;
+
+// Thumbnails are authored in content/pubs.yaml as public paths (/images/pubs/x.png);
+// importing them here hands them to Astro for resizing and webp conversion.
+const thumbnails = import.meta.glob<{ default: ImageMetadata }>('/public/images/pubs/*.{png,jpg,jpeg,webp}', {
+  eager: true,
+});
+const thumbnail = pub.thumbnail ? thumbnails[`/public${pub.thumbnail}`]?.default : undefined;
 ---
 
 <a
@@ -18,10 +26,16 @@ const { pub } = Astro.props;
 >
   {/* Thumbnail or Fallback */}
   <div class="aspect-[4/3] bg-panel overflow-hidden border-b border-rule flex items-center justify-center">
-    {pub.thumbnail ? (
-      <img
-        src={pub.thumbnail}
+    {thumbnail ? (
+      <Image
+        src={thumbnail}
         alt={pub.title}
+        width={370}
+        height={278}
+        position="top"
+        densities={[2]}
+        format="webp"
+        quality={80}
         class="size-full object-cover object-top"
         loading="lazy"
         decoding="async"
@@ -38,12 +52,12 @@ const { pub } = Astro.props;
 
   {/* Card Body */}
   <div class="p-5 flex flex-col flex-1">
-    <h4 class="font-serif text-base font-bold text-ink mb-2 leading-snug group-hover:text-accent transition duration-200 line-clamp-3">
+    <h3 class="font-serif text-base font-bold text-ink mb-2 leading-snug group-hover:text-accent transition duration-200 line-clamp-3">
       {pub.title}
-    </h4>
-    
+    </h3>
+
     <p class="font-sans text-xs leading-5 text-muted mb-2" set:html={formatAuthors(pub.authors, owner)} />
-    
+
     <p class="font-sans text-[0.65rem] uppercase tracking-wider text-accent-strong mb-4">
        {pub.venue} <!-- ({pub.year}) --> <!-- NOTE venue usually includes year so don't include year-->
     </p>

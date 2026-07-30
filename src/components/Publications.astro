@@ -1,5 +1,5 @@
 ---
-import ResearchCarousel from './ResearchCarousel.astro';
+import ResearchGrid from './ResearchGrid.astro';
 import { getPublications, owner } from '../utils/pubs';
 
 export const _owner = owner;
@@ -17,7 +17,7 @@ const keyPubs = allPubs.filter((p) => p['key-role'] === true);
 const otherPubs = allPubs.filter((p) => p['key-role'] === false);
 ---
 
-<section class="space-y-0 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="research-section" aria-live="polite">
+<section class="space-y-0 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="research-section">
   <Heading class="mb-4 border-b border-rule pb-3 font-serif text-3xl font-black text-ink">Research</Heading>
   
   <!-- Jump Navigation -->
@@ -30,19 +30,17 @@ const otherPubs = allPubs.filter((p) => p['key-role'] === false);
 
   <!-- Section 1: Key Role Papers -->
   <div class="pt-2 mb-12 scroll-mt-20" id="key-role">
-    <ResearchCarousel 
-      id="carousel-key" 
-      title="Published papers I played a key role in creating:" 
-      papers={keyPubs} 
+    <ResearchGrid
+      title="Published papers I played a key role in creating:"
+      papers={keyPubs}
     />
   </div>
 
   <!-- Section 2: Other Contributions -->
   <div class="pt-2 scroll-mt-20" id="other-papers">
-    <ResearchCarousel 
-      id="carousel-other" 
-      title="Other published papers I’ve helped with:" 
-      papers={otherPubs} 
+    <ResearchGrid
+      title="Other published papers I’ve helped with:"
+      papers={otherPubs}
     />
   </div>
 </section>

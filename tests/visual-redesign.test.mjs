@@ -107,6 +107,41 @@ test('sections live at real routes instead of homepage tab panels', async () => 
   assert.match(researchPage, /<Talks filterResearchOnly=\{true\} headingLevel="h2" \/>/);
 });
 
+test('publications render as a static grid with optimised thumbnails', async () => {
+  const publications = await read('src/components/Publications.astro');
+  const grid = await read('src/components/ResearchGrid.astro');
+  const card = await read('src/components/ResearchCard.astro');
+
+  // The carousel and its client script are gone
+  await assert.rejects(read('src/components/ResearchCarousel.astro'));
+  assert.doesNotMatch(publications, /Carousel|carousel/);
+  assert.doesNotMatch(grid, /carousel|scrollBy|ResizeObserver|<script/);
+
+  // Papers lay out as a responsive grid
+  assert.match(grid, /grid gap-5 sm:grid-cols-2/);
+  assert.match(publications, /<ResearchGrid/);
+
+  // Thumbnails go through Astro's image pipeline, cropped to the rendered box
+  assert.match(card, /import \{ Image \} from 'astro:assets'/);
+  assert.match(card, /width=\{370\}/);
+  assert.match(card, /height=\{278\}/);
+  assert.match(card, /densities=\{\[2\]\}/);
+  assert.match(card, /format="webp"/);
+  assert.doesNotMatch(card, /<img[^>]*pub\.thumbnail/);
+});
+
+test('static sections do not claim to be live regions', async () => {
+  const files = [
+    'src/components/Publications.astro',
+    'src/components/Talks.astro',
+    'src/components/Reviewing.astro',
+    'src/components/FieldBuilding.astro',
+  ];
+  const source = (await Promise.all(files.map(read))).join('\n');
+
+  assert.doesNotMatch(source, /aria-live/);
+});
+
 test('SelectedResearch lists key-role papers in plain form and links onward', async () => {
   const component = await read('src/components/SelectedResearch.astro');
 

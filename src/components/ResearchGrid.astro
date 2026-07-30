@@ -1,0 +1,27 @@
+---
+import ResearchCard from './ResearchCard.astro';
+import type { Pub } from '../utils/pubs';
+
+interface Props {
+  papers: Pub[];
+  title: string;
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { papers, title, headingLevel = 'h2' } = Astro.props;
+const Heading = headingLevel;
+---
+
+<div class="mb-10">
+  <Heading class="mb-6 border-b border-rule pb-3 font-serif text-2xl font-black text-ink">
+    {title}
+  </Heading>
+
+  {papers.length === 0 ? (
+    <p class="py-2 font-sans text-sm text-subtle">Nothing listed yet.</p>
+  ) : (
+    <div class="grid gap-5 sm:grid-cols-2">
+      {papers.map((paper) => <ResearchCard pub={paper} />)}
+    </div>
+  )}
+</div>
