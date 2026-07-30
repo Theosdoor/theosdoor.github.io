@@ -1,20 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { formatAuthors } from '../utils/formatters';
-import pubsData from '../../content/pubs.yaml';
-
-const owner: string = pubsData.owner;
-
-interface Pub {
-  title: string;
-  authors: string[];
-  venue: string;
-  year: number;
-  url: string;
-  link_label?: string;
-  thumbnail?: string;
-  'key-role': boolean;
-}
+import { owner, type Pub } from '../utils/pubs';
 
 interface Props {
   pub: Pub;

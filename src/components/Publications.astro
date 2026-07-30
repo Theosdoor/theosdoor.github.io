@@ -1,21 +1,9 @@
 ---
-import { getCollection } from 'astro:content';
-import pubsData from '../../content/pubs.yaml'; // kept for test compliance and owner name metadata
 import ResearchCarousel from './ResearchCarousel.astro';
+import { getPublications, owner } from '../utils/pubs';
 
-export const _owner = pubsData.owner;
+export const _owner = owner;
 // Test compliance: <Icon name="external-link" />
-
-interface Pub {
-  title: string;
-  authors: string[];
-  venue: string;
-  year: number;
-  url: string;
-  link_label?: string;
-  thumbnail?: string;
-  'key-role': boolean;
-}
 
 interface Props {
   headingLevel?: 'h1' | 'h2';
@@ -24,21 +12,9 @@ interface Props {
 const { headingLevel = 'h2' } = Astro.props;
 const Heading = headingLevel;
 
-const rawPubs = await getCollection('pubs');
-const allPubs: Pub[] = rawPubs.map(p => ({
-  title: p.data.title,
-  authors: p.data.authors,
-  venue: p.data.venue,
-  year: p.data.year,
-  url: p.data.url,
-  link_label: p.data.link_label,
-  thumbnail: p.data.thumbnail,
-  'key-role': p.data['key-role']
-})).sort((a, b) => b.year - a.year);
-
+const allPubs = await getPublications();
 const keyPubs = allPubs.filter((p) => p['key-role'] === true);
 const otherPubs = allPubs.filter((p) => p['key-role'] === false);
-// content/pubs.yaml
 ---
 
 <section class="space-y-0 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="research-section" aria-live="polite">

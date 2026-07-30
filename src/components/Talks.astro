@@ -12,9 +12,11 @@ interface Talk {
 
 interface Props {
   filterResearchOnly?: boolean;
+  headingLevel?: 'h1' | 'h2' | 'h3';
 }
 
-const { filterResearchOnly = false } = Astro.props;
+const { filterResearchOnly = false, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
 
 const rawTalks = await getCollection('talks');
 const allTalks: Talk[] = rawTalks.map(t => t.data).sort(
@@ -28,7 +30,7 @@ const talks = filterResearchOnly
 
 <section class="space-y-0 scroll-mt-20 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="talks" aria-live="polite">
   <div class="mb-6 border-b border-rule pb-3 flex items-center justify-between">
-    <h3 class="font-serif text-2xl font-black text-ink">Talks</h3>
+    <Heading class="font-serif text-2xl font-black text-ink">Talks</Heading>
     {filterResearchOnly && (
       <a href="/talks/" class="border border-accent rounded-lg px-3 py-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-accent hover:bg-accent hover:text-white transition-all">
         See All Talks &rarr;

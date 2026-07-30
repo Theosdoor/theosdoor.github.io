@@ -1,16 +1,6 @@
 ---
 import ResearchCard from './ResearchCard.astro';
-
-interface Pub {
-  title: string;
-  authors: string[];
-  venue: string;
-  year: number;
-  url: string;
-  link_label?: string;
-  thumbnail?: string;
-  'key-role': boolean;
-}
+import type { Pub } from '../utils/pubs';
 
 interface Props {
   papers: Pub[];

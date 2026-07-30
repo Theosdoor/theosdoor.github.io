@@ -1,0 +1,20 @@
+---
+import Base from '../../layouts/Base.astro';
+import Publications from '../../components/Publications.astro';
+import Reviewing from '../../components/Reviewing.astro';
+import Talks from '../../components/Talks.astro';
+---
+
+<Base
+  title="Research — Theo Farrell"
+  description="Theo Farrell — publications, reviewing, and research talks in AI safety and mechanistic interpretability"
+  ogUrl="https://theosdoor.github.io/research/"
+>
+  <main class="mx-auto w-full max-w-[800px] px-5 py-16 sm:px-8" id="main" tabindex="-1">
+    <div class="flex flex-col gap-16">
+      <Publications headingLevel="h1" />
+      <Reviewing headingLevel="h2" />
+      <Talks filterResearchOnly={true} headingLevel="h2" />
+    </div>
+  </main>
+</Base>

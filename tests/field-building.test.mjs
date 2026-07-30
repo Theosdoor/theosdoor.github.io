@@ -30,21 +30,20 @@ test('FieldBuilding component exists and implements dynamic loading and premium 
   assert.match(markdown, /url:\s*"https:\/\/durhamaisafety\.uk\/"/);
 });
 
-test('Header and Index page integrate the Field-building tab panel and navigation links', async () => {
+test('Field-building is reached by its own route from the navigation', async () => {
   const header = await read('src/components/Header.astro');
+  const footer = await read('src/components/Footer.astro');
   const index = await read('src/pages/index.astro');
   const standalone = await read('src/pages/field-building/index.astro');
 
-  // Verify Header links and client-side dynamic switching mappings
-  assert.match(header, /data-tab-link="field-building"/);
-  assert.match(header, /href="\/#field-building"/);
-  assert.match(header, /if\s*\(hash === '#field-building'\)\s*return 'panel-field-building';/);
-  assert.match(header, /if\s*\(panelId === 'panel-field-building'\)\s*return '#field-building';/);
+  // Verify navigation links point at the real route, not a homepage tab
+  assert.match(header, /href: '\/field-building\/'/);
+  assert.match(footer, /href="\/field-building\/"/);
+  assert.doesNotMatch(header, /#field-building|data-tab-link/);
+  assert.doesNotMatch(footer, /#field-building|data-tab-link/);
 
-  // Verify Homepage integration
-  assert.match(index, /import FieldBuilding from '\.\.\/components\/FieldBuilding\.astro'/);
-  assert.match(index, /<div id="panel-field-building" role="tabpanel" aria-labelledby="tab-field-building" hidden>/);
-  assert.match(index, /<FieldBuilding \/>/);
+  // Verify the homepage no longer duplicates the section
+  assert.doesNotMatch(index, /FieldBuilding|tabpanel/);
 
   // Verify Standalone route
   assert.match(standalone, /import Base from '\.\.\/\.\.\/layouts\/Base\.astro'/);

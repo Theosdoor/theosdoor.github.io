@@ -6,22 +6,37 @@ interface Props {
 }
 
 const { hideThemeToggle = false } = Astro.props;
+
+const navLinks = [
+  { href: '/research/', label: 'Research' },
+  { href: '/field-building/', label: 'Field-building' },
+  { href: '/projects/', label: 'Projects' },
+];
+
+const currentPath = Astro.url.pathname;
+const isCurrent = (href: string) => currentPath === href;
 ---
 
 <header class="sticky top-0 z-40 w-full border-b border-rule bg-panel/85 backdrop-blur-md">
   <div class="mx-auto flex h-16 w-full max-w-[960px] items-center justify-between px-5">
     <!-- Logo / Brand Link -->
-    <a href="/" class="font-serif text-lg font-bold tracking-wide text-ink hover:text-accent transition-colors" data-logo-link>
+    <a href="/" class="font-serif text-lg font-bold tracking-wide text-ink hover:text-accent transition-colors">
       Theo Farrell
     </a>
 
     <!-- Desktop Navigation -->
     <nav class="hidden md:flex items-center gap-6 font-sans text-xs font-semibold uppercase tracking-[0.16em]" aria-label="Desktop navigation">
-      <a href="/#research" class="nav-link hover:text-accent transition-colors text-subtle" data-tab-link="research">Research</a>
-      <a href="/#field-building" class="nav-link hover:text-accent transition-colors text-subtle" data-tab-link="field-building">Field-building</a>
-      <a href="/#projects" class="nav-link hover:text-accent transition-colors text-subtle" data-tab-link="projects">Projects</a>
+      {navLinks.map(({ href, label }) => (
+        <a
+          href={href}
+          class:list={['nav-link hover:text-accent transition-colors', isCurrent(href) ? 'text-accent' : 'text-subtle']}
+          aria-current={isCurrent(href) ? 'page' : undefined}
+        >
+          {label}
+        </a>
+      ))}
       <a href="/cv/" class="nav-link hover:text-accent transition-colors text-subtle" target="_blank" rel="noopener noreferrer">CV</a>
-      <a href="/#chat" class="nav-link inline-flex items-center justify-center border border-accent rounded-lg px-4 py-2.5 text-accent hover:bg-accent hover:text-white transition-all" data-tab-link="chat">Let's Talk</a>
+      <a href="/lets-chat/" class="nav-link inline-flex items-center justify-center border border-accent rounded-lg px-4 py-2.5 text-accent hover:bg-accent hover:text-white transition-all">Let's Talk</a>
       {!hideThemeToggle && <ThemeToggle class="relative right-auto top-auto z-auto p-1.5 border-0 bg-transparent" />}
     </nav>
 
@@ -39,17 +54,23 @@ const { hideThemeToggle = false } = Astro.props;
 
   <!-- Mobile Dropdown Menu -->
   <div id="mobileMenu" class="hidden absolute top-16 left-0 w-full bg-panel border-b border-rule px-6 py-6 md:hidden flex flex-col gap-5 font-sans text-sm font-semibold uppercase tracking-[0.16em]" aria-label="Mobile navigation">
-    <a href="/#research" class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" data-tab-link="research">Research</a>
-    <a href="/#field-building" class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" data-tab-link="field-building">Field-building</a>
-    <a href="/#projects" class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" data-tab-link="projects">Projects</a>
+    {navLinks.map(({ href, label }) => (
+      <a
+        href={href}
+        class:list={['mobile-nav-link hover:text-accent transition-colors py-1', isCurrent(href) ? 'text-accent' : 'text-subtle']}
+        aria-current={isCurrent(href) ? 'page' : undefined}
+      >
+        {label}
+      </a>
+    ))}
     <a href="/cv/" class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" target="_blank" rel="noopener noreferrer">CV</a>
-    <a href="/#chat" class="mobile-nav-link inline-flex items-center justify-center border border-accent rounded-lg px-4 py-2.5 text-accent hover:bg-accent hover:text-white transition-all w-full text-center" data-tab-link="chat">Let's Talk</a>
+    <a href="/lets-chat/" class="mobile-nav-link inline-flex items-center justify-center border border-accent rounded-lg px-4 py-2.5 text-accent hover:bg-accent hover:text-white transition-all w-full text-center">Let's Talk</a>
   </div>
 </header>
 
 <script>
   (() => {
-    // 1. Mobile Menu Toggle Logic
+    // Mobile menu toggle
     const menuToggle = document.getElementById('menuToggle');
     const mobileMenu = document.getElementById('mobileMenu');
     const openIcon = menuToggle?.querySelector('.menu-open');
@@ -62,9 +83,8 @@ const { hideThemeToggle = false } = Astro.props;
       closeIcon?.classList.toggle('hidden', isHidden);
     });
 
-    // Close menu when clicking a link
-    const mobileLinks = document.querySelectorAll('.mobile-nav-link');
-    mobileLinks.forEach(link => {
+    // Close menu when following a link
+    document.querySelectorAll('.mobile-nav-link').forEach((link) => {
       link.addEventListener('click', () => {
         mobileMenu?.classList.add('hidden');
         menuToggle?.setAttribute('aria-expanded', 'false');
@@ -72,99 +92,5 @@ const { hideThemeToggle = false } = Astro.props;
         closeIcon?.classList.add('hidden');
       });
     });
-
-    // 2. Client-Side Tab Switching Navigation Logic (Only active on homepage)
-    const panels = document.querySelectorAll<HTMLElement>('[role="tabpanel"]');
-    if (panels.length === 0) return; // Not on homepage, let links navigate normally
-
-    const desktopLinks = document.querySelectorAll<HTMLAnchorElement>('[data-tab-link]');
-    const allTabLinks = [...desktopLinks, ...mobileLinks] as HTMLAnchorElement[];
-    const logoLink = document.querySelector('[data-logo-link]');
-
-    function panelFromHash(hash: string): string {
-      if (!hash) return 'panel-home';
-      if (hash === '#research') return 'panel-research';
-      if (hash === '#field-building') return 'panel-field-building';
-      if (hash === '#projects') return 'panel-projects';
-      if (hash === '#chat') return 'panel-chat';
-
-      // Fallback: search for targeted element and activate its parent panel
-      try {
-        const target = document.querySelector(hash);
-        if (target) {
-          const parentPanel = target.closest('[role="tabpanel"]');
-          if (parentPanel) return parentPanel.id;
-        }
-      } catch {}
-
-      return 'panel-home';
-    }
-
-    function hashFromPanel(panelId: string): string {
-      if (panelId === 'panel-research') return '#research';
-      if (panelId === 'panel-field-building') return '#field-building';
-      if (panelId === 'panel-projects') return '#projects';
-      if (panelId === 'panel-chat') return '#chat';
-      return '';
-    }
-
-    function activate(panelId: string): void {
-      const activeType = panelId.replace('panel-', '');
-
-      allTabLinks.forEach((link) => {
-        const isButton = link.classList.contains('border-accent');
-        const linkType = link.getAttribute('data-tab-link');
-        const isActive = linkType === activeType;
-
-        if (isButton) {
-          link.classList.toggle('bg-accent', isActive);
-          link.classList.toggle('text-white', isActive);
-          link.classList.toggle('text-accent', !isActive);
-        } else {
-          link.classList.toggle('text-accent', isActive);
-          link.classList.toggle('text-subtle', !isActive);
-        }
-      });
-
-      panels.forEach((p) => {
-        if (p.id === panelId) p.removeAttribute('hidden');
-        else p.setAttribute('hidden', '');
-      });
-    }
-
-    // Intercept clicks on tab links on `/`
-    allTabLinks.forEach((link) => {
-      link.addEventListener('click', (e) => {
-        const linkType = link.getAttribute('data-tab-link');
-        if (!linkType) return; // Normal link (e.g. CV)
-
-        e.preventDefault();
-        const panelId = `panel-${linkType}`;
-        const hash = hashFromPanel(panelId);
-        if (location.hash !== hash) {
-          history.pushState({ panelId }, '', hash || (location.pathname + location.search));
-        }
-        activate(panelId);
-      });
-    });
-
-    // Clicking the logo on homepage should switch to home tab
-    logoLink?.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (location.hash !== '') {
-        history.pushState({ panelId: 'panel-home' }, '', location.pathname + location.search);
-      }
-      activate('panel-home');
-    });
-
-    // Handle back/forward history navigation and hash change events
-    const handleHashChange = () => {
-      activate(panelFromHash(location.hash));
-    };
-    window.addEventListener('popstate', handleHashChange);
-    window.addEventListener('hashchange', handleHashChange);
-
-    // Initial activation based on URL hash
-    activate(panelFromHash(location.hash));
   })();
 </script>

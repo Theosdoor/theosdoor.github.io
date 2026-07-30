@@ -72,13 +72,51 @@ test('Base serves the goat favicon package from public assets', async () => {
 test('YAML content remains authorable with only project-specific type declarations', async () => {
   const envTypes = await read('src/env.d.ts');
   const projects = await read('src/components/Projects.astro');
-  const publications = await read('src/components/Publications.astro');
+  const pubsUtil = await read('src/utils/pubs.ts');
 
   assert.doesNotMatch(envTypes, /reference types="astro\/client"/);
   assert.match(envTypes, /declare module "\*\.yaml"/);
   assert.doesNotMatch(envTypes, /declare module "\*\.yml"/);
   assert.match(projects, /content\/projects\.yaml/);
-  assert.match(publications, /content\/pubs\.yaml/);
+  assert.match(pubsUtil, /content\/pubs\.yaml/);
+});
+
+test('sections live at real routes instead of homepage tab panels', async () => {
+  const header = await read('src/components/Header.astro');
+  const index = await read('src/pages/index.astro');
+  const researchPage = await read('src/pages/research/index.astro');
+
+  // No client-side tab router remains
+  assert.doesNotMatch(header, /role="tablist"|data-tab-link|tabpanel|panelFromHash|pushState/);
+  assert.doesNotMatch(index, /role="tabpanel"|hidden>/);
+  await assert.rejects(read('src/components/TabNav.astro'));
+
+  // Nav points at real routes
+  assert.match(header, /href: '\/research\/'/);
+  assert.match(header, /href: '\/projects\/'/);
+  assert.match(header, /href="\/lets-chat\/"/);
+  assert.match(header, /aria-current=/);
+
+  // Homepage keeps the intro and leads with selected research
+  assert.match(index, /<IntroContent \/>/);
+  assert.match(index, /<SelectedResearch \/>/);
+
+  // Research has its own page composing the full sections
+  assert.match(researchPage, /<Publications headingLevel="h1" \/>/);
+  assert.match(researchPage, /<Reviewing headingLevel="h2" \/>/);
+  assert.match(researchPage, /<Talks filterResearchOnly=\{true\} headingLevel="h2" \/>/);
+});
+
+test('SelectedResearch lists key-role papers in plain form and links onward', async () => {
+  const component = await read('src/components/SelectedResearch.astro');
+
+  assert.match(component, /getPublications/);
+  assert.match(component, /filter\(\(p\) => p\['key-role'\]\)/);
+  assert.match(component, /slice\(0, limit\)/);
+  assert.match(component, /formatAuthors\(pub\.authors, owner\)/);
+  assert.match(component, /href="\/research\/"/);
+  assert.match(component, /id="research"/);
+  assert.doesNotMatch(component, /carousel|thumbnail/i);
 });
 
 test('ThemeToggle supports alternating light and dark themes via sun and moon icons', async () => {
@@ -179,7 +217,7 @@ test('legacy palette and superseded component styles are removed', async () => {
     'src/pages/cv/index.astro',
     'src/components/Card.astro',
     'src/components/Icon.astro',
-    'src/components/TabNav.astro',
+    'src/components/SelectedResearch.astro',
     'src/components/Publications.astro',
     'src/components/Projects.astro',
   ];
