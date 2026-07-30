@@ -1,9 +1,6 @@
 ---
 import ResearchGrid from './ResearchGrid.astro';
-import { getPublications, owner } from '../utils/pubs';
-
-export const _owner = owner;
-// Test compliance: <Icon name="external-link" />
+import { getPublications } from '../utils/pubs';
 
 interface Props {
   headingLevel?: 'h1' | 'h2';

@@ -4,15 +4,18 @@
 
 ## Development
 
-This is a pnpm-managed Astro + Tailwind v4 static site. Use Node `>=24.x` and keep `pnpm-lock.yaml` as the single lockfile.
+This is a pnpm-managed Astro 7 + Tailwind v4 static site. Use Node `>=24.x` and keep `pnpm-lock.yaml` as the single lockfile. TypeScript stays on 6.x while `@astrojs/check` peers on `^5 || ^6`.
 
 ```bash
 pnpm install
 pnpm exec astro check # TypeScript/Astro type-check
 pnpm test             # design-system and regression checks
 pnpm build            # outputs to dist/
-pnpm dev              # local dev server
+pnpm dev              # local dev server — Astro 7 daemonises it
+pnpm exec astro dev status   # port and pid; also `dev stop` / `dev logs`
 ```
+
+`astro dev` runs in the background in Astro 7 and picks another port if yours is taken, so stop stale servers with `astro dev stop` rather than leaving them running — a server whose `node_modules` changed underneath it serves confusing errors.
 
 Deployed to GitHub Pages via `.github/workflows/deploy.yml` on push to `main`.
 
@@ -20,22 +23,25 @@ Deployed to GitHub Pages via `.github/workflows/deploy.yml` on push to `main`.
 
 Astro static site (`output: 'static'`) with multiple static routes:
 
-- **`/`** (`src/pages/index.astro`) — single-page with five tab panels: Home, Research, Field-building, Projects, Let's chat
+- **`/`** (`src/pages/index.astro`) — intro/bio header, then `SelectedResearch` (the three most recent `key-role: true` papers, plain text, linking to `/research/`)
+- **`/research/`** (`src/pages/research/index.astro`) — `Publications` (h1) + `Reviewing` (h2) + `Talks` filtered to research (h2)
 - **`/cv/`** (`src/pages/cv/index.astro`) — collapsible sidebar + PDF iframe; sidebar state persisted in `localStorage`
 - **`/projects/`** (`src/pages/projects/index.astro`) — standalone projects page (same `Projects` component, with `urlSync` enabled)
 - **`/talks/`** (`src/pages/talks/index.astro`) — standalone talks page showing all talks (including non-research topics)
 - **`/field-building/`** (`src/pages/field-building/index.astro`) — standalone field-building projects page
 - **`/lets-chat/`** (`src/pages/lets-chat/index.astro`) — standalone booking and scheduling meeting widget
 
-### Tab navigation
+### Navigation
 
-Homepage tab switching is handled via client-side scripts inside `src/components/Header.astro`. Tabs map to URL hashes (`#research`, `#field-building`, `#projects`, `#chat`; home has no hash). Browser back/forward is fully supported via `popstate` and `hashchange` event listeners.
+Every section is a real route. `src/components/Header.astro` holds a `navLinks` array and marks the active entry with `aria-current="page"` by comparing `Astro.url.pathname`; add new sections there and in `Footer.astro`. There is no client-side router — the header script only toggles the mobile menu.
+
+Keep the client-side JavaScript budget small: the theme toggle (`ThemeToggle.astro`), the mobile menu (`Header.astro`), the projects filter (`src/scripts/projects.ts`), and the CV sidebar. Prefer a static solution over a new script.
 
 ### Data-driven content
 
 All site content is managed and validated using **Astro Content Collections (Content Layer)** under `src/content.config.ts` with strict Zod validation schemas. Source files remain authored as raw YAML and Markdown under `content/`:
 
-**1. Publications (`content/pubs.yaml`)** — Loaded via `getCollection('pubs')` and rendered by `src/components/Publications.astro`:
+**1. Publications (`content/pubs.yaml`)** — Loaded via `src/utils/pubs.ts` (`getPublications()`, newest first, plus the `Pub` type and `owner`), which is the single source for `Publications.astro` → `ResearchGrid` → `ResearchCard` on `/research/` and for `SelectedResearch.astro` on the homepage. `thumbnail` paths point into `public/images/pubs/`; `ResearchCard` imports them via `import.meta.glob` so Astro crops them to 370×278 and emits webp:
 ```yaml
 owner: "Theo Farrell"
 publications:
@@ -91,7 +97,8 @@ All public utility tokens are declared in `src/styles/global.css` under `@theme 
 
 ### Layout constraints
 
-- Home prose/card content uses `max-w-[560px]`.
+- Home content uses `max-w-[560px]` on mobile, widening to `md:max-w-[800px]`.
+- `/research/`, `/talks/` and `/field-building/` use `max-w-[800px]`.
 - Project grids use `max-w-[960px]`.
 - The booking widget uses `max-w-[900px]`, separate from the narrower home content width.
 

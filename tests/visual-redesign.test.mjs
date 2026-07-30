@@ -168,7 +168,7 @@ test('home UI is composed from DecoDivider and semantic Tailwind surfaces', asyn
   const divider = await read('src/components/DecoDivider.astro');
   const icon = await read('src/components/Icon.astro');
   const card = await read('src/components/Card.astro');
-  const publications = await read('src/components/Publications.astro');
+  const researchCard = await read('src/components/ResearchCard.astro');
   const index = await read('src/pages/index.astro');
 
   assert.match(divider, /aria-hidden="true"/);
@@ -180,7 +180,7 @@ test('home UI is composed from DecoDivider and semantic Tailwind surfaces', asyn
   assert.match(card, /import Icon/);
   assert.match(card, /<Icon name=\{icon\}/);
   assert.doesNotMatch(card, /images\/icons|<img/);
-  assert.match(publications, /<Icon name="external-link"/);
+  assert.match(researchCard, /<Icon name="external-link"/);
   assert.match(card, /border-rule/);
   assert.match(card, /bg-panel/);
   assert.match(index, /import DecoDivider/);

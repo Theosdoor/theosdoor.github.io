@@ -6,9 +6,10 @@ This is a modern, high-performance, data-driven static portfolio website designe
 
 ## Architecture & Routes
 
-The site is built as a static Astro application with several routes:
+The site is built as a static Astro application. Every section has its own URL — there is no client-side routing, and the only JavaScript shipped is the theme toggle, the mobile menu, the projects filter, and the CV sidebar.
 
-- **`/`** — Home page featuring interactive tab-based navigation across 5 panels: Home, Research, Field-building, Projects, and Let's Chat. Tab switching uses client-side history navigation with full browser back/forward support.
+- **`/`** — Home page: intro and bio, followed by the three most recent key-role papers as a plain list linking on to `/research/`.
+- **`/research/`** — Publications (key-role and other contributions), reviewing activity, and research talks.
 - **`/cv/`** — CV viewer with a collapsible sidebar and an embedded interactive PDF viewer. The sidebar state is persisted across visits in `localStorage`.
 - **`/projects/`** — Standalone projects page with extensive client-side filtering, sorting, keyboard accessibility, and URL state-synchronization.
 - **`/talks/`** — Standalone talks page listing all presentations, talks, and panels.
@@ -25,7 +26,8 @@ The project is pnpm-managed and requires Node `>=24.x`.
 # Install dependencies
 pnpm install
 
-# Start local development server
+# Start local development server (Astro 7 runs it in the background;
+# manage it with `pnpm exec astro dev stop|status|logs`)
 pnpm dev
 
 # Build production static bundle (outputs to dist/)
@@ -51,8 +53,9 @@ All content is managed through structured, type-safe data collections under `con
 ### Assets & Styling
 
 - **CV PDF**: Replace the CV file directly at `public/TheoFarrell_CV.pdf`.
+- **Publication thumbnails**: Drop images in `public/images/pubs/` and reference them from `content/pubs.yaml` as `/images/pubs/<file>`. `ResearchCard.astro` picks them up through Astro's image pipeline, cropping and converting to webp at build time.
 - **Styling**: Powered by Tailwind v4. Utility tokens, semantic colors, and design variables are defined in `src/styles/global.css` under `@theme inline` for runtime adaptation.
 
 ## Acknowledgements
 
-- Icons powered by [Phosphor Icons](https://phosphoricons.com/).
+- Icons from [Font Awesome Free](https://fontawesome.com/license/free) (see `src/components/Icon.astro` for the path definitions and attribution).
