@@ -235,6 +235,8 @@ test('contact email is centralized, obfuscated text only, with no copy affordanc
   assert.match(constants, /\[at\]/);
   assert.match(constants, /\[dot\]/);
   assert.match(emailComponent, /\{contactConfig\.emailObfuscatedText\}/);
+  // The address has no spaces to wrap on, so it must be allowed to break anywhere
+  assert.match(emailComponent, /wrap-anywhere/);
   assert.match(footer, /<ContactEmail/);
   assert.match(cvPage, /<ContactEmail/);
   assert.doesNotMatch(source, /theo\.farrell99@outlook\.com|mailto:/);
