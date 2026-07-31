@@ -75,6 +75,26 @@ html[data-theme="dark"] {
     color: var(--color-accent-strong);
     text-decoration-color: var(--color-accent-strong);
   }
+
+  /* The theme toggle shows whichever icon is centred; the other waits below its
+     clipped track. Driving this from the attribute that Base.astro sets before
+     first paint means each page renders in the right position immediately, so
+     only a click animates the swap. */
+  [data-sun-icon] {
+    translate: 0 100%;
+  }
+
+  [data-moon-icon] {
+    translate: 0 0;
+  }
+
+  html[data-theme="dark"] [data-sun-icon] {
+    translate: 0 0;
+  }
+
+  html[data-theme="dark"] [data-moon-icon] {
+    translate: 0 100%;
+  }
 }
 
 @utility deco-frame {
