@@ -244,6 +244,19 @@ test('social links live in the header, defined once, and not in the footer', asy
   assert.match(footer, /<ContactEmail/);
 });
 
+test('homepage repeats the social and CV links below the intro', async () => {
+  const home = await read('src/pages/index.astro');
+
+  // Reachable on mobile without opening the hamburger menu.
+  assert.match(home, /import \{ cvUrl, socialLinks \} from '\.\.\/utils\/constants'/);
+  assert.match(home, /socialLinks\.map/);
+  assert.match(home, /href=\{cvUrl\}/);
+  // The CV keeps a visible label rather than being an unmarked icon.
+  assert.match(home, /<Icon name="resume"[\s\S]*?\n\s*CV\n/);
+  // Still sourced from the shared constant, never hardcoded per page.
+  assert.doesNotMatch(home, /github\.com|linkedin\.com|scholar\.google|TheoFarrell_CV/);
+});
+
 test('homepage highlights field-building from the content collection', async () => {
   const home = await read('src/pages/index.astro');
   const section = await read('src/components/SelectedFieldBuilding.astro');
