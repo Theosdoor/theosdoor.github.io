@@ -3,9 +3,11 @@ import Base from '../layouts/Base.astro';
 import DecoDivider from '../components/DecoDivider.astro';
 import SelectedResearch from '../components/SelectedResearch.astro';
 import SelectedFieldBuilding from '../components/SelectedFieldBuilding.astro';
+import Icon from '../components/Icon.astro';
 import { Content as IntroContent, frontmatter as introFrontmatter } from '../../content/intro.md';
 import { Image } from 'astro:assets';
 import profilePic from '../../public/images/theocool.jpeg';
+import { socialLinks } from '../utils/constants';
 ---
 
 <Base
@@ -38,6 +40,24 @@ import profilePic from '../../public/images/theocool.jpeg';
             <div class="prose font-sans text-sm leading-[1.4rem] tracking-wide text-muted space-y-4">
               <IntroContent />
             </div>
+
+            <!-- Repeated from the header so they are reachable on mobile without
+                 opening the menu. -->
+            <ul class="mt-6 flex items-center gap-5">
+              {socialLinks.map(({ href, label, icon }) => (
+                <li>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-subtle transition-colors hover:text-accent"
+                    aria-label={label}
+                  >
+                    <Icon name={icon} class="size-5" />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </header>
