@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import { formatMonthYear, parseStartDateForSort } from '../utils/formatters';
+import { formatRole, parseRolesForSort, sortRolesByRecency } from '../utils/formatters';
 
 interface Props {
   limit?: number;
@@ -9,7 +9,7 @@ interface Props {
 const { limit = 1 } = Astro.props;
 const entries = (await getCollection('fieldBuilding'))
   .filter((entry) => entry.data.summary)
-  .sort((a, b) => parseStartDateForSort(b.data.startDate) - parseStartDateForSort(a.data.startDate))
+  .sort((a, b) => parseRolesForSort(b.data.roles) - parseRolesForSort(a.data.roles))
   .slice(0, limit);
 ---
 
@@ -31,9 +31,11 @@ const entries = (await getCollection('fieldBuilding'))
             {entry.data.projectName}
           </a>
           <p class="mt-1 font-sans text-xs leading-5 text-muted">{entry.data.summary}</p>
-          <p class="mt-1 font-sans text-[0.65rem] uppercase tracking-wider text-accent-strong">
-            {entry.data.role} &middot; {formatMonthYear(entry.data.startDate)} &mdash; {formatMonthYear(entry.data.endDate)}
-          </p>
+          <ul class="mt-1 font-sans text-[0.65rem] uppercase tracking-wider text-accent-strong">
+            {sortRolesByRecency(entry.data.roles).map((role) => (
+              <li>{formatRole(role)}</li>
+            ))}
+          </ul>
         </li>
       ))}
     </ul>

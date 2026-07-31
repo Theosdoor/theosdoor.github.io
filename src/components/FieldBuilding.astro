@@ -1,15 +1,15 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Icon from './Icon.astro';
-import { formatMonthYear, parseStartDateForSort } from '../utils/formatters';
+import { formatRole, parseRolesForSort, sortRolesByRecency } from '../utils/formatters';
 
 // Fetch all markdown files via Astro content collections
 // import.meta.glob
 const sortedEntries = await getCollection('fieldBuilding');
 
-// Sort newest start date to oldest
+// Sort by most recent role, newest to oldest
 sortedEntries.sort((a, b) => {
-  return parseStartDateForSort(b.data.startDate) - parseStartDateForSort(a.data.startDate);
+  return parseRolesForSort(b.data.roles) - parseRolesForSort(a.data.roles);
 });
 
 // Pre-render the Content component for each entry
@@ -42,9 +42,11 @@ const renderedEntries = await Promise.all(
               <h3 class="font-sans text-xs font-bold uppercase tracking-[0.2em] text-accent-strong">
                 {entry.data.projectName}
               </h3>
-              <span class="font-sans text-xs font-semibold italic text-subtle">
-                {entry.data.role} &middot; {formatMonthYear(entry.data.startDate)} &mdash; {formatMonthYear(entry.data.endDate)}
-              </span>
+              <ul class="font-sans text-xs font-semibold italic text-subtle sm:text-right">
+                {sortRolesByRecency(entry.data.roles).map((role) => (
+                  <li>{formatRole(role)}</li>
+                ))}
+              </ul>
             </div>
 
             {/* Headline */}

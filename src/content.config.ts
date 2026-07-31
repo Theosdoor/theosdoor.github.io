@@ -45,10 +45,17 @@ const fieldBuilding = defineCollection({
   loader: glob({ pattern: '*.md', base: 'content/field-building' }),
   schema: z.object({
     projectName: z.string(),
-    role: z.string(),
     headline: z.string(),
-    startDate: z.string(),
-    endDate: z.string(),
+    // A project can span several roles; they are displayed newest first.
+    roles: z
+      .array(
+        z.object({
+          title: z.string(),
+          startDate: z.string(),
+          endDate: z.string(),
+        })
+      )
+      .min(1),
     url: z.url().optional(),
     // Short blurb for the homepage; entries without one are not highlighted there.
     summary: z.string().optional(),

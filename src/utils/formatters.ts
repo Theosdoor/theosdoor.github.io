@@ -46,6 +46,40 @@ export function parseStartDateForSort(dateStr: string): number {
 }
 
 /**
+ * One stint on a field-building project.
+ */
+export interface Role {
+  title: string;
+  startDate: string;
+  endDate: string;
+}
+
+/**
+ * Orders a project's roles newest first, so the current one leads.
+ */
+export function sortRolesByRecency(roles: Role[]): Role[] {
+  return [...roles].sort(
+    (a, b) => parseStartDateForSort(b.startDate) - parseStartDateForSort(a.startDate)
+  );
+}
+
+/**
+ * Ranks a project by its most recent role, so projects with current
+ * involvement sort above ones that ended earlier.
+ */
+export function parseRolesForSort(roles: Role[]): number {
+  if (!roles?.length) return 0;
+  return Math.max(...roles.map((role) => parseStartDateForSort(role.startDate)));
+}
+
+/**
+ * Renders a role as "Title · Month Year — Month Year".
+ */
+export function formatRole(role: Role): string {
+  return `${role.title} · ${formatMonthYear(role.startDate)} — ${formatMonthYear(role.endDate)}`;
+}
+
+/**
  * Bolds the site owner's name inside the list of publication authors.
  */
 export function formatAuthors(authors: string[], owner: string = "Theo Farrell"): string {

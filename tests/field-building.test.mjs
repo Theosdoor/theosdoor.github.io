@@ -11,8 +11,9 @@ test('FieldBuilding component exists and implements dynamic loading and premium 
   // Verify component structure and logic
   assert.match(component, /import Icon from '\.\/Icon\.astro'/);
   assert.match(component, /import\.meta\.glob/);
-  assert.match(component, /formatMonthYear/);
-  assert.match(component, /parseStartDateForSort/);
+  assert.match(component, /formatRole/);
+  assert.match(component, /parseRolesForSort/);
+  assert.match(component, /sortRolesByRecency/);
   assert.match(component, /sortedEntries/);
 
   // Verify premium styling rules
@@ -22,12 +23,35 @@ test('FieldBuilding component exists and implements dynamic loading and premium 
   assert.match(component, /\[&_ul_li::before\]:content-\[''\]/); // Custom list indicator bullets
   assert.match(component, /Visit website/);
 
-  // Verify Markdown content schema
+  // Verify Markdown content schema: a project carries a list of roles
   assert.match(markdown, /projectName:\s*"Durham AI Safety Initiative"/);
-  assert.match(markdown, /role:\s*"Lead Organiser"/);
-  assert.match(markdown, /startDate:\s*"2023-10"/);
-  assert.match(markdown, /endDate:\s*"ongoing"/);
+  assert.match(markdown, /^roles:$/m);
+  assert.match(markdown, /- title: "Advisor"\n\s+startDate: "2026-02"\n\s+endDate: "ongoing"/);
+  assert.match(markdown, /- title: "Lead Organiser"\n\s+startDate: "2023-10"\n\s+endDate: "2026-02"/);
   assert.match(markdown, /url:\s*"https:\/\/durhamaisafety\.uk\/"/);
+  // The flat single-role fields are gone.
+  assert.doesNotMatch(markdown, /^role:|^startDate:|^endDate:/m);
+});
+
+test('roles are ordered newest first and rank a project by its latest one', async () => {
+  const { sortRolesByRecency, parseRolesForSort, formatRole } = await import(
+    '../src/utils/formatters.ts'
+  );
+  const roles = [
+    { title: 'Lead Organiser', startDate: '2023-10', endDate: '2026-02' },
+    { title: 'Advisor', startDate: '2026-02', endDate: 'ongoing' },
+  ];
+
+  assert.deepEqual(
+    sortRolesByRecency(roles).map((r) => r.title),
+    ['Advisor', 'Lead Organiser']
+  );
+  // Sorting must not mutate the caller's array.
+  assert.equal(roles[0].title, 'Lead Organiser');
+  // A project ranks by its most recent role, not its first.
+  assert.equal(parseRolesForSort(roles), 202602);
+  assert.equal(parseRolesForSort([]), 0);
+  assert.equal(formatRole(roles[1]), 'Advisor · February 2026 — Ongoing');
 });
 
 test('Field-building is reached by its own route from the navigation', async () => {
