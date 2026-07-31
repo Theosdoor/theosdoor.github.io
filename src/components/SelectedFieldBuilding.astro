@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import { formatMonthYear, parseStartDateForSort } from '../utils/formatters';
+
+interface Props {
+  limit?: number;
+}
+
+const { limit = 1 } = Astro.props;
+const entries = (await getCollection('fieldBuilding'))
+  .filter((entry) => entry.data.summary)
+  .sort((a, b) => parseStartDateForSort(b.data.startDate) - parseStartDateForSort(a.data.startDate))
+  .slice(0, limit);
+---
+
+{entries.length > 0 && (
+  <section id="field-building" class="mt-16 scroll-mt-20">
+    <h2 class="mb-6 border-b border-rule pb-3 font-serif text-3xl font-black text-ink">
+      Field-building
+    </h2>
+
+    <ul class="space-y-6">
+      {entries.map((entry) => (
+        <li>
+          <a
+            href={entry.data.url}
+            target="_blank"
+            rel="noopener"
+            class="font-serif text-base font-bold leading-snug text-ink transition-colors hover:text-accent"
+          >
+            {entry.data.projectName}
+          </a>
+          <p class="mt-1 font-sans text-xs leading-5 text-muted">{entry.data.summary}</p>
+          <p class="mt-1 font-sans text-[0.65rem] uppercase tracking-wider text-accent-strong">
+            {entry.data.role} &middot; {formatMonthYear(entry.data.startDate)} &mdash; {formatMonthYear(entry.data.endDate)}
+          </p>
+        </li>
+      ))}
+    </ul>
+
+    <a
+      href="/field-building/"
+      class="mt-8 inline-block font-sans text-xs font-semibold uppercase tracking-[0.16em] text-accent transition-colors hover:text-accent-strong"
+    >
+      All field-building &rarr;
+    </a>
+  </section>
+)}

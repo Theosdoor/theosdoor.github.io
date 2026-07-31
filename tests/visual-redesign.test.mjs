@@ -32,18 +32,18 @@ test('Base owns the shared stylesheet, initializes theme, and mounts the sticky 
   const header = await read('src/components/Header.astro');
   const home = await read('src/pages/index.astro');
   const projectsPage = await read('src/pages/projects/index.astro');
-  const cvCss = await read('src/styles/cv.css');
 
   assert.match(base, /import Header from '\.\.\/components\/Header\.astro'/);
   assert.match(header, /import ThemeToggle from '\.\/ThemeToggle\.astro'/);
   assert.match(base, /import '\.\.\/styles\/global\.css'/);
   assert.doesNotMatch(home, /styles\/global\.css/);
   assert.doesNotMatch(projectsPage, /styles\/global\.css/);
-  assert.doesNotMatch(cvCss, /@import "\.\/global\.css";/);
   assert.match(base, /localStorage\.getItem\('theme'\)/);
   assert.match(base, /prefers-color-scheme:\s*dark/);
   assert.match(base, /document\.documentElement\.dataset\.theme/);
-  assert.match(base, /<Header hideThemeToggle=\{hideThemeToggle\} \/>/);
+  assert.match(base, /<Header \/>/);
+  // The header and footer are unconditional; nothing opts out of the shell.
+  assert.doesNotMatch(base, /hideHeader|hideFooter|hideThemeToggle/);
 });
 
 test('Base serves the goat favicon package from public assets', async () => {
@@ -146,7 +146,7 @@ test('SelectedResearch lists key-role papers in plain form and links onward', as
   const component = await read('src/components/SelectedResearch.astro');
 
   assert.match(component, /getPublications/);
-  assert.match(component, /filter\(\(p\) => p\['key-role'\]\)/);
+  assert.match(component, /filter\(\(p\) => p\[['"]key-role['"]\]\)/);
   assert.match(component, /slice\(0, limit\)/);
   assert.match(component, /formatAuthors\(pub\.authors, owner\)/);
   assert.match(component, /href="\/research\/"/);
@@ -204,31 +204,71 @@ test('projects retains data behavior hooks while using semantic utilities', asyn
   assert.doesNotMatch(projects, /(?:text|bg|border)-\$\{/);
 });
 
-test('CV composes the redesigned shell and retains sidebar persistence', async () => {
-  const cvPage = await read('src/pages/cv/index.astro');
-  const cvCss = await read('src/styles/cv.css');
+test('CV is served as the PDF itself, with /cv redirecting to it', async () => {
+  const constants = await read('src/utils/constants.ts');
+  const config = await read('astro.config.mjs');
+  const header = await read('src/components/Header.astro');
+  const footer = await read('src/components/Footer.astro');
 
-  assert.match(cvPage, /import DecoDivider/);
-  assert.match(cvPage, /import Icon/);
-  assert.match(cvPage, /localStorage\.getItem\('sidebarHidden'\)/);
-  assert.match(cvPage, /localStorage\.setItem\('sidebarHidden'/);
-  assert.match(cvPage, /TheoFarrell_CV\.pdf/);
-  assert.match(cvPage, /class="chevron w-\[90%\] h-auto"/);
-  assert.doesNotMatch(cvPage, /<em>Farrell<\/em>/);
-  assert.match(cvPage, /<Icon name="linkedin"/);
-  assert.doesNotMatch(cvPage, /images\/icons|<img class="size-4/);
-  assert.doesNotMatch(cvCss, /@import "\.\/global\.css";/);
-  assert.doesNotMatch(cvCss, /--copper|--parchment|--ink/);
+  assert.match(constants, /export const cvUrl = '\/cv\/TheoFarrell_CV\.pdf'/);
+  assert.match(config, /'\/cv':\s*'\/cv\/TheoFarrell_CV\.pdf'/);
+  // Nav and footer link straight at the PDF via the shared constant.
+  assert.match(header, /href=\{cvUrl\}/);
+  assert.match(footer, /href=\{cvUrl\}/);
+  assert.doesNotMatch(header, /href="\/cv\/"/);
+  assert.doesNotMatch(footer, /href="\/cv\/"/);
+  // The iframe wrapper page and its stylesheet are gone.
+  await assert.rejects(read('src/pages/cv/index.astro'));
+  await assert.rejects(read('src/styles/cv.css'));
+});
+
+test('social links live in the header, defined once, and not in the footer', async () => {
+  const constants = await read('src/utils/constants.ts');
+  const header = await read('src/components/Header.astro');
+  const footer = await read('src/components/Footer.astro');
+
+  assert.match(constants, /export const socialLinks = \[/);
+  // Quoted so the footer's separate repository link is not mistaken for the profile.
+  for (const url of [
+    "'https://github.com/Theosdoor'",
+    "'https://www.linkedin.com/in/theofarrell/'",
+    "'https://scholar.google.com/citations",
+  ]) {
+    assert.ok(constants.includes(url), `constants.ts should own ${url}`);
+    assert.ok(!header.includes(url), `header should not hardcode ${url}`);
+  }
+  assert.doesNotMatch(footer, /linkedin\.com|scholar\.google/);
+  // Rendered in both the desktop nav and the mobile menu.
+  assert.equal(header.match(/socialLinks\.map/g)?.length, 2);
+  assert.doesNotMatch(footer, /<Icon/);
+  assert.match(footer, /<ContactEmail/);
+});
+
+test('homepage highlights field-building from the content collection', async () => {
+  const home = await read('src/pages/index.astro');
+  const section = await read('src/components/SelectedFieldBuilding.astro');
+  const config = await read('src/content.config.ts');
+  const daisi = await read('content/field-building/durham-ai-safety.md');
+
+  assert.match(home, /<SelectedFieldBuilding \/>/);
+  assert.match(config, /summary: z\.string\(\)\.optional\(\)/);
+  assert.match(daisi, /^summary: "/m);
+  // Blurb comes from the collection, never duplicated into the component.
+  assert.match(section, /getCollection\('fieldBuilding'\)/);
+  assert.match(section, /entry\.data\.summary/);
+  assert.doesNotMatch(section, /DAISI|Pathfinder/);
+  // Only entries curated with a summary surface on the homepage.
+  assert.match(section, /\.filter\(\(entry\) => entry\.data\.summary\)/);
+  assert.match(section, /href="\/field-building\/"/);
 });
 
 test('contact email is centralized, obfuscated text only, with no copy affordance', async () => {
   const footer = await read('src/components/Footer.astro');
-  const cvPage = await read('src/pages/cv/index.astro');
   const emailComponent = await read('src/components/ContactEmail.astro');
   const base = await read('src/layouts/Base.astro');
   const icon = await read('src/components/Icon.astro');
   const constants = await read('src/utils/constants.ts');
-  const source = [footer, cvPage, emailComponent, base, icon, constants].join('\n');
+  const source = [footer, emailComponent, base, icon, constants].join('\n');
 
   assert.match(constants, /'theo\.farrell99'/);
   assert.match(constants, /'outlook\.com'/);
@@ -238,7 +278,6 @@ test('contact email is centralized, obfuscated text only, with no copy affordanc
   // The address has no spaces to wrap on, so it must be allowed to break anywhere
   assert.match(emailComponent, /wrap-anywhere/);
   assert.match(footer, /<ContactEmail/);
-  assert.match(cvPage, /<ContactEmail/);
   assert.doesNotMatch(source, /theo\.farrell99@outlook\.com|mailto:/);
   assert.doesNotMatch(source, /navigator\.clipboard|js-email-btn|email-copy|name="copy"|'copy'/);
   await assert.rejects(read('src/scripts/email-copy.ts'));
@@ -248,13 +287,12 @@ test('contact email is centralized, obfuscated text only, with no copy affordanc
 test('legacy palette and superseded component styles are removed', async () => {
   const sourceFiles = [
     'src/styles/global.css',
-    'src/styles/cv.css',
     'src/pages/index.astro',
     'src/pages/projects/index.astro',
-    'src/pages/cv/index.astro',
     'src/components/Card.astro',
     'src/components/Icon.astro',
     'src/components/SelectedResearch.astro',
+    'src/components/SelectedFieldBuilding.astro',
     'src/components/Publications.astro',
     'src/components/Projects.astro',
   ];

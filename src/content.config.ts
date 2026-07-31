@@ -50,6 +50,8 @@ const fieldBuilding = defineCollection({
     startDate: z.string(),
     endDate: z.string(),
     url: z.url().optional(),
+    // Short blurb for the homepage; entries without one are not highlighted there.
+    summary: z.string().optional(),
   }),
 });
 

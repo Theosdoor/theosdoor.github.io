@@ -42,8 +42,11 @@ test('Field-building is reached by its own route from the navigation', async () 
   assert.doesNotMatch(header, /#field-building|data-tab-link/);
   assert.doesNotMatch(footer, /#field-building|data-tab-link/);
 
-  // Verify the homepage no longer duplicates the section
-  assert.doesNotMatch(index, /FieldBuilding|tabpanel/);
+  // The homepage links to the section rather than duplicating it: it may show the
+  // short SelectedFieldBuilding highlight, but never the full FieldBuilding listing.
+  assert.doesNotMatch(index, /tabpanel/);
+  assert.doesNotMatch(index, /(?<!Selected)FieldBuilding/);
+  assert.match(index, /<SelectedFieldBuilding \/>/);
 
   // Verify Standalone route
   assert.match(standalone, /import Base from '\.\.\/\.\.\/layouts\/Base\.astro'/);

@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import DecoDivider from '../components/DecoDivider.astro';
 import SelectedResearch from '../components/SelectedResearch.astro';
+import SelectedFieldBuilding from '../components/SelectedFieldBuilding.astro';
 import { Content as IntroContent, frontmatter as introFrontmatter } from '../../content/intro.md';
 import { Image } from 'astro:assets';
 import profilePic from '../../public/images/theocool.jpeg';
@@ -42,6 +43,7 @@ import profilePic from '../../public/images/theocool.jpeg';
       </header>
 
       <SelectedResearch />
+      <SelectedFieldBuilding />
     </div>
   </main>
 </Base>
