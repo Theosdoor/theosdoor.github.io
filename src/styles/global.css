@@ -44,6 +44,9 @@ html[data-theme="dark"] {
 @layer base {
   html {
     font-size: 18px;
+    /* Always reserve the scrollbar track so right-aligned header items (the
+       theme toggle) do not jump between pages that scroll and pages that don't. */
+    scrollbar-gutter: stable;
   }
 
   body {
