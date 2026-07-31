@@ -1,33 +1,46 @@
 ---
-import { formatAuthors } from '../utils/formatters';
-import { getPublications, owner } from '../utils/pubs';
+import { formatAuthors } from "../utils/formatters";
+import { getPublications, owner } from "../utils/pubs";
 
 interface Props {
   limit?: number;
 }
 
 const { limit = 3 } = Astro.props;
-const pubs = (await getPublications()).filter((p) => p['key-role']).slice(0, limit);
+const pubs = (await getPublications())
+  .filter((p) => p["key-role"])
+  .slice(0, limit);
 ---
 
 <section id="research" class="scroll-mt-20">
-  <h2 class="mb-6 border-b border-rule pb-3 font-serif text-3xl font-black text-ink">Research</h2>
+  <h2
+    class="mb-6 border-b border-rule pb-3 font-serif text-3xl font-black text-ink"
+  >
+    Recent Publications
+  </h2>
 
   <ul class="space-y-6">
-    {pubs.map((pub) => (
-      <li>
-        <a
-          href={pub.url}
-          target="_blank"
-          rel="noopener"
-          class="font-serif text-base font-bold leading-snug text-ink transition-colors hover:text-accent"
-        >
-          {pub.title}
-        </a>
-        <p class="mt-1 font-sans text-xs leading-5 text-muted" set:html={formatAuthors(pub.authors, owner)} />
-        <p class="mt-1 font-sans text-[0.65rem] uppercase tracking-wider text-accent-strong">{pub.venue}</p>
-      </li>
-    ))}
+    {
+      pubs.map((pub) => (
+        <li>
+          <a
+            href={pub.url}
+            target="_blank"
+            rel="noopener"
+            class="font-serif text-base font-bold leading-snug text-ink transition-colors hover:text-accent"
+          >
+            {pub.title}
+          </a>
+          <p
+            class="mt-1 font-sans text-xs leading-5 text-muted"
+            set:html={formatAuthors(pub.authors, owner)}
+          />
+          <p class="mt-1 font-sans text-[0.65rem] uppercase tracking-wider text-accent-strong">
+            {pub.venue}
+          </p>
+        </li>
+      ))
+    }
   </ul>
 
   <a
