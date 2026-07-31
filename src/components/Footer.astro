@@ -1,7 +1,6 @@
 ---
 import { execSync } from 'child_process';
 import ContactEmail from './ContactEmail.astro';
-import Icon from './Icon.astro';
 import { cvUrl } from '../utils/constants';
 
 let lastUpdated = '';
@@ -21,20 +20,8 @@ try {
 
 <footer class="mx-auto mt-16 w-full max-w-[960px] border-t border-rule px-5 py-8 sm:px-8">
   <div class="flex flex-col items-center justify-center gap-5 text-center">
-    <!-- Socials & Email Row -->
-    <div class="flex items-center justify-center gap-5">
-      <a href="https://github.com/Theosdoor" target="_blank" rel="noopener noreferrer" class="text-subtle hover:text-accent transition-colors duration-200" aria-label="GitHub">
-        <Icon name="github" class="size-5" />
-      </a>
-      <a href="https://www.linkedin.com/in/theofarrell/" target="_blank" rel="noopener noreferrer" class="text-subtle hover:text-accent transition-colors duration-200" aria-label="LinkedIn">
-        <Icon name="linkedin" class="size-5" />
-      </a>
-      <a href="https://scholar.google.com/citations?user=wbiptScAAAAJ" target="_blank" rel="noopener noreferrer" class="text-subtle hover:text-accent transition-colors duration-200" aria-label="Google Scholar">
-        <Icon name="scholar" class="size-5" />
-      </a>
-      <span class="text-rule" aria-hidden="true">|</span>
-      <ContactEmail class="justify-center font-sans text-xs tracking-[0.12em] text-subtle" />
-    </div>
+    <!-- Email (socials live in the header) -->
+    <ContactEmail class="justify-center font-sans text-xs tracking-[0.12em] text-subtle" />
 
     <!-- Links Row -->
     <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-sans text-xs font-semibold uppercase tracking-[0.16em]" aria-label="Footer navigation">
