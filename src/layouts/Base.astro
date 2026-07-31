@@ -4,9 +4,6 @@ interface Props {
   description: string;
   ogUrl: string;
   ogImage?: string;
-  hideThemeToggle?: boolean;
-  hideHeader?: boolean;
-  hideFooter?: boolean;
 }
 
 const {
@@ -14,9 +11,6 @@ const {
   description,
   ogUrl,
   ogImage = '/images/theocool.jpeg',
-  hideThemeToggle = false,
-  hideHeader = false,
-  hideFooter = false,
 } = Astro.props;
 
 const ogImageAbsolute = `https://theosdoor.github.io${ogImage}`;
@@ -68,11 +62,9 @@ import '../styles/global.css';
     </script>
   </head>
   <body class="min-h-screen bg-canvas font-sans text-ink">
-    {!hideHeader && (
-      <a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:border focus:border-accent focus:bg-panel focus:px-4 focus:py-2 focus:text-ink" href="#main">Skip to main content</a>
-    )}
-    {!hideHeader && <Header hideThemeToggle={hideThemeToggle} />}
+    <a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:border focus:border-accent focus:bg-panel focus:px-4 focus:py-2 focus:text-ink" href="#main">Skip to main content</a>
+    <Header />
     <slot />
-    {!hideFooter && <Footer />}
+    <Footer />
   </body>
 </html>

@@ -1,11 +1,6 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
-
-interface Props {
-  hideThemeToggle?: boolean;
-}
-
-const { hideThemeToggle = false } = Astro.props;
+import { cvUrl } from '../utils/constants';
 
 const navLinks = [
   { href: '/research/', label: 'Research' },
@@ -35,14 +30,14 @@ const isCurrent = (href: string) => currentPath === href;
           {label}
         </a>
       ))}
-      <a href="/cv/" class="nav-link hover:text-accent transition-colors text-subtle" target="_blank" rel="noopener noreferrer">CV</a>
+      <a href={cvUrl} class="nav-link hover:text-accent transition-colors text-subtle" target="_blank" rel="noopener noreferrer">CV</a>
       <a href="/lets-chat/" class="nav-link inline-flex items-center justify-center border border-accent rounded-lg px-4 py-2.5 text-accent hover:bg-accent hover:text-white transition-all">Let's Talk</a>
-      {!hideThemeToggle && <ThemeToggle class="relative right-auto top-auto z-auto p-1.5 border-0 bg-transparent" />}
+      <ThemeToggle class="relative right-auto top-auto z-auto p-1.5 border-0 bg-transparent" />
     </nav>
 
     <!-- Mobile Navigation Actions -->
     <div class="flex items-center gap-4 md:hidden">
-      {!hideThemeToggle && <ThemeToggle class="relative right-auto top-auto z-auto p-1.5 border-0 bg-transparent" />}
+      <ThemeToggle class="relative right-auto top-auto z-auto p-1.5 border-0 bg-transparent" />
       <button id="menuToggle" class="text-ink p-1 focus:outline-none" aria-label="Toggle menu" aria-expanded="false">
         <svg class="size-6 fill-current" viewBox="0 0 24 24" aria-hidden="true">
           <path class="menu-open" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
@@ -63,7 +58,7 @@ const isCurrent = (href: string) => currentPath === href;
         {label}
       </a>
     ))}
-    <a href="/cv/" class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" target="_blank" rel="noopener noreferrer">CV</a>
+    <a href={cvUrl} class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" target="_blank" rel="noopener noreferrer">CV</a>
     <a href="/lets-chat/" class="mobile-nav-link inline-flex items-center justify-center border border-accent rounded-lg px-4 py-2.5 text-accent hover:bg-accent hover:text-white transition-all w-full text-center">Let's Talk</a>
   </div>
 </header>
