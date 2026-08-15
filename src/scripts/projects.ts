@@ -13,6 +13,10 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   if (!list) return;
 
   const allArticles = [...list.querySelectorAll('.proj')];
+  // On first load we hide non-featured coursework so the research/side-project
+  // work leads. Cleared the moment the user touches a category pill, opens a
+  // shared filter URL, or clicks "show everything" — nothing is deleted.
+  let hideMinorCoursework = true;
   const state: FilterState = {
     role: 'all',
     category: 'all',
@@ -26,7 +30,10 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   function matches(el: Element) {
     const article = el as HTMLElement;
     const roleOk = state.role === 'all' || article.dataset.role === state.role;
-    const catOk = state.category === 'all' || article.dataset.category === state.category;
+    const minorCoursework = article.dataset.category === 'coursework' && article.dataset.featured !== 'true';
+    const catOk = state.category === 'all'
+      ? !(hideMinorCoursework && minorCoursework)
+      : article.dataset.category === state.category;
     const aisOk = state.ais === 'all' || article.dataset.ais === 'true';
     const elLangs = article.dataset.languages ? article.dataset.languages.split(',') : [];
     const elTools = article.dataset.tools ? article.dataset.tools.split(',') : [];
@@ -77,6 +84,8 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   function restoreFromUrl() {
     if (!options.urlSync) return;
     const params = new URLSearchParams(location.search);
+    // A shared/deep link means the visitor arrived with intent — show the full set.
+    if ([...params].length > 0) hideMinorCoursework = false;
 
     const role = params.get('role') || 'all';
     state.role = role;
@@ -218,6 +227,9 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
 
     list!.dataset.empty = visible.length === 0 ? 'true' : 'false';
     updateFilterIndicator();
+
+    const note = document.getElementById('proj-coursework-note');
+    if (note) note.hidden = !(hideMinorCoursework && state.category === 'all');
   }
 
   function updateFilterIndicator() {
@@ -316,6 +328,20 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
       });
     });
   }
+
+  // Any explicit category choice means the user is browsing deliberately — stop
+  // hiding coursework. Registered before setupPillGroup so it runs first.
+  document.querySelectorAll('[data-filter-category]').forEach(b =>
+    b.addEventListener('click', () => { hideMinorCoursework = false; })
+  );
+  document.getElementById('proj-show-all')?.addEventListener('click', () => {
+    hideMinorCoursework = false;
+    state.category = 'all';
+    document.querySelectorAll('[data-filter-category]').forEach(b =>
+      setActiveStyle(b, (b as HTMLElement).dataset.filterCategory === 'all')
+    );
+    filterAndRender();
+  });
 
   setupPillGroup('filter-role', 'role');
   setupPillGroup('filter-category', 'category');

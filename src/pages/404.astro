@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+import DecoDivider from '../components/DecoDivider.astro';
+---
+
+<Base
+  title="Page not found — Theo Farrell"
+  description="This page could not be found."
+  ogUrl="https://theosdoor.github.io/404"
+>
+  <main id="main" class="w-full px-5 py-24 sm:px-8" tabindex="-1">
+    <div class="mx-auto w-full max-w-[560px] text-center">
+      <p class="mb-3 font-sans text-xs font-semibold uppercase tracking-[0.28em] text-accent-strong">404</p>
+      <h1 class="mb-6 font-serif text-4xl font-black leading-tight text-ink sm:text-5xl">Page not found</h1>
+      <DecoDivider class="mx-auto mb-6 max-w-44" />
+      <p class="mb-8 font-sans text-sm leading-6 text-muted">That page doesn't exist — it may have moved. Let's get you back on track.</p>
+      <a href="/" class="inline-block font-sans text-xs font-semibold uppercase tracking-[0.16em] text-accent transition-colors hover:text-accent-strong">Back home &rarr;</a>
+    </div>
+  </main>
+</Base>

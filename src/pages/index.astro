@@ -8,7 +8,25 @@ import { Content as IntroContent, frontmatter as introFrontmatter } from '../../
 import { Image } from 'astro:assets';
 import profilePic from '../../public/images/theocool.jpeg';
 import { cvUrl, socialLinks } from '../utils/constants';
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: introFrontmatter.name,
+  url: 'https://theosdoor.github.io/',
+  image: 'https://theosdoor.github.io/images/theocool.jpeg',
+  jobTitle: introFrontmatter.subtitle,
+  affiliation: [
+    { '@type': 'CollegeOrUniversity', name: 'Durham University' },
+    { '@type': 'Organization', name: 'LASR Labs' },
+  ],
+  sameAs: socialLinks.map((s) => s.href),
+};
 ---
+
+<Fragment slot="head">
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} is:inline />
+</Fragment>
 
 <Base
   title="Theo Farrell"

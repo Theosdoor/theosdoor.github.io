@@ -1,167 +1,341 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection } from "astro:content";
 
 interface Props {
   urlSync?: boolean;
-  headingLevel?: 'h1' | 'h2';
+  headingLevel?: "h1" | "h2";
 }
 
-const { urlSync = false, headingLevel = 'h2' } = Astro.props;
+const { urlSync = false, headingLevel = "h2" } = Astro.props;
 const Heading = headingLevel;
 
 // Load via Astro Content Collections (keeps test compliance: content/projects.yaml)
-const rawProjects = await getCollection('projects');
-const projects = rawProjects.map(p => p.data);
+const rawProjects = await getCollection("projects");
+const projects = rawProjects.map((p) => p.data);
 
-const allLanguages = [...new Set(projects.flatMap(p => p.languages ?? []))].sort();
+const allLanguages = [
+  ...new Set(projects.flatMap((p) => p.languages ?? [])),
+].sort();
 const allTools = [
-  ...new Set(projects.flatMap(p => (p.tools ?? []).filter(Boolean)))
+  ...new Set(projects.flatMap((p) => (p.tools ?? []).filter(Boolean))),
 ].sort();
 ---
 
 <section class="space-y-6 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]">
-  <Heading class="mb-4 border-b border-rule pb-3 font-serif text-3xl font-black text-ink">Projects</Heading>
+  <Heading
+    class="mb-4 border-b border-rule pb-3 font-serif text-3xl font-black text-ink"
+    >Projects</Heading
+  >
 
-  {projects.length === 0 ? (
-    <p class="pub-loading">No projects yet — check back soon.</p>
-  ) : (
-    <>
-      <div class="relative mb-6">
-        <div class="flex flex-wrap gap-4">
-          <button
-            class="proj-filter-btn border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-muted hover:border-accent hover:text-accent aria-expanded:border-accent aria-expanded:text-accent"
-            id="proj-filter-btn"
-            aria-expanded="false"
-            aria-controls="proj-filter-panel"
-          >Filter ▾</button>
-          <button
-            class="proj-sort-btn border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-muted hover:border-accent hover:text-accent aria-expanded:border-accent aria-expanded:text-accent"
-            id="proj-sort-btn"
-            aria-expanded="false"
-            aria-controls="proj-sort-panel"
-          >Sort ▾</button>
-          <input
-            class="proj-search min-w-40 border-b border-rule bg-transparent pb-1 font-sans text-xs tracking-wider text-ink placeholder:text-subtle focus:border-accent focus:outline-none"
-            id="proj-search"
-            type="search"
-            placeholder="Search…"
-            aria-label="Search projects"
-          />
-        </div>
-
-        <div class="proj-dropdown absolute z-20 mt-3 min-w-[280px] border border-rule bg-panel p-4 text-ink" id="proj-filter-panel" hidden>
-          <div class="proj-filter-section">
-            <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">Role</h3>
-            <div class="proj-pills">
-              <button class="proj-pill border border-accent px-3 py-1 font-sans text-xs uppercase tracking-wider text-accent hover:border-accent hover:text-ink transition duration-150" data-filter-role="all">All</button>
-              <button class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150" data-filter-role="lead">Lead</button>
-              <button class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150" data-filter-role="contributor">Contributor</button>
-            </div>
+  {
+    projects.length === 0 ? (
+      <p class="pub-loading">No projects yet — check back soon.</p>
+    ) : (
+      <>
+        <div class="relative mb-6">
+          <div class="flex flex-wrap gap-4">
+            <button
+              class="proj-filter-btn border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-muted hover:border-accent hover:text-accent aria-expanded:border-accent aria-expanded:text-accent"
+              id="proj-filter-btn"
+              aria-expanded="false"
+              aria-controls="proj-filter-panel"
+            >
+              Filter ▾
+            </button>
+            <button
+              class="proj-sort-btn border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-muted hover:border-accent hover:text-accent aria-expanded:border-accent aria-expanded:text-accent"
+              id="proj-sort-btn"
+              aria-expanded="false"
+              aria-controls="proj-sort-panel"
+            >
+              Sort ▾
+            </button>
+            <input
+              class="proj-search min-w-40 border-b border-rule bg-transparent pb-1 font-sans text-xs tracking-wider text-ink placeholder:text-subtle focus:border-accent focus:outline-none"
+              id="proj-search"
+              type="search"
+              placeholder="Search…"
+              aria-label="Search projects"
+            />
           </div>
 
-          <div class="proj-filter-section">
-            <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">Category</h3>
-            <div class="proj-pills">
-              <button class="proj-pill border border-accent px-3 py-1 font-sans text-xs uppercase tracking-wider text-accent hover:border-accent hover:text-ink transition duration-150" data-filter-category="all">All</button>
-              <button class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150" data-filter-category="research">Research</button>
-              <button class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150" data-filter-category="coursework">Coursework</button>
-              <button class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150" data-filter-category="side-project">Side project</button>
-            </div>
-          </div>
-
-          <div class="proj-filter-section">
-            <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">Languages</h3>
-            <div class="proj-tag-chips">
-              <button class="proj-pill proj-tag-chip border border-accent px-3 py-1 font-sans text-xs uppercase tracking-wider text-accent hover:border-accent hover:text-ink transition duration-150" data-filter-lang="any">Any</button>
-              {allLanguages.map(lang => (
-                <button class="proj-pill proj-tag-chip border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150" data-filter-lang={lang.toLowerCase()}>{lang}</button>
-              ))}
-            </div>
-          </div>
-
-          <div class="proj-filter-section">
-            <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">Tools</h3>
-            <div class="proj-tag-chips">
-              <button class="proj-pill proj-tag-chip border border-accent px-3 py-1 font-sans text-xs uppercase tracking-wider text-accent hover:border-accent hover:text-ink transition duration-150" data-filter-tool="any">Any</button>
-              {allTools.map(tool => (
-                <button class="proj-pill proj-tag-chip border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150" data-filter-tool={tool.toLowerCase()}>{tool}</button>
-              ))}
-            </div>
-          </div>
-
-          <div class="proj-filter-section">
-            <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">Focus</h3>
-            <div class="proj-pills">
-              <button class="proj-pill border border-accent px-3 py-1 font-sans text-xs uppercase tracking-wider text-accent hover:border-accent hover:text-ink transition duration-150" data-filter-ais="all">All</button>
-              <button class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150" data-filter-ais="true">AI Safety</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="proj-dropdown absolute z-20 mt-3 min-w-[280px] border border-rule bg-panel p-4 text-ink" id="proj-sort-panel" hidden>
-          <div class="proj-filter-section">
-            <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">Sort by</h3>
-            <div class="proj-pills">
-              <button class="proj-pill border border-accent px-3 py-1 font-sans text-xs uppercase tracking-wider text-accent hover:border-accent hover:text-ink transition duration-150" data-sort="featured">Featured</button>
-              <button class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150" data-sort="recent">Most recent</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="proj-list grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr))]" id="proj-list" data-url-sync={urlSync ? 'true' : 'false'}>
-        <div class="placeholder border border-dashed border-rule bg-panel px-6 py-12 text-center text-sm tracking-wide text-subtle hidden col-span-full" id="proj-empty-state">No projects match the current filters.</div>
-        {projects.map(p => (
-          <a
-            class="proj-card proj group flex flex-col border border-rule bg-panel text-ink transition duration-200 ease-deco hover:-translate-y-0.5 hover:border-accent"
-            href={p.url ?? '#'}
-            target={p.url ? '_blank' : undefined}
-            rel={p.url ? 'noopener noreferrer' : undefined}
-            data-role={p.role}
-            data-category={p.category}
-            data-featured={p.featured ? 'true' : 'false'}
-            data-year={String(p.year ?? 0)}
-            data-languages={(p.languages ?? []).map(l => l.toLowerCase()).join(',')}
-            data-tools={(p.tools ?? []).filter(Boolean).map(t => t.toLowerCase()).join(',')}
-            data-ais={p.ais ? 'true' : 'false'}
+          <p
+            id="proj-coursework-note"
+            class="mt-3 font-sans text-xs tracking-wide text-subtle"
+            hidden
           >
-            <div class="proj-card-img aspect-[16/10] overflow-hidden border-b border-rule">
-              {p.image
-                ? (p.image.endsWith('.mp4') || p.image.endsWith('.gif')
-                    ? <video class="size-full object-cover" src={p.image} autoplay loop muted playsinline aria-label={p.title} />
-                    : <img class="size-full object-cover" src={p.image} alt={p.title} loading="lazy" />)
-                : <div class="proj-card-placeholder flex size-full items-center justify-center bg-canvas font-serif text-3xl font-bold text-subtle">{p.title[0]}</div>
-              }
-            </div>
-            <div class="proj-card-body flex flex-1 flex-col p-5">
-              {p.ais && <span class="proj-ais-badge mb-3 self-start border border-safety px-2 py-1 font-sans text-[0.65rem] font-semibold uppercase tracking-wider text-safety">AI Safety</span>}
-              <h3 class="proj-card-title font-serif text-lg font-bold text-ink mb-1">{p.title}</h3>
-              {p.venue && <p class="proj-card-venue font-sans text-[0.65rem] italic text-muted mb-1">{p.venue}</p>}
-              <p class="proj-card-desc font-sans text-sm leading-6 text-muted">{p.description}</p>
-              <div class="proj-chips mt-auto flex flex-wrap gap-2 pt-4">
-                <span class="proj-chip border border-accent px-2 py-1 font-sans text-[0.65rem] uppercase tracking-wider text-accent">{p.role}</span>
-                <span class="proj-chip border border-accent px-2 py-1 font-sans text-[0.65rem] uppercase tracking-wider text-accent">{p.category}</span>
+            Older coursework is tucked away by default.{" "}
+            <button
+              id="proj-show-all"
+              type="button"
+              class="text-accent underline underline-offset-2 hover:text-accent-strong"
+            >
+              Show everything
+            </button>
+          </p>
+
+          <div
+            class="proj-dropdown absolute z-20 mt-3 min-w-[280px] border border-rule bg-panel p-4 text-ink"
+            id="proj-filter-panel"
+            hidden
+          >
+            <div class="proj-filter-section">
+              <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">
+                Role
+              </h3>
+              <div class="proj-pills">
+                <button
+                  class="proj-pill border border-accent px-3 py-1 font-sans text-xs uppercase tracking-wider text-accent hover:border-accent hover:text-ink transition duration-150"
+                  data-filter-role="all"
+                >
+                  All
+                </button>
+                <button
+                  class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150"
+                  data-filter-role="lead"
+                >
+                  Lead
+                </button>
+                <button
+                  class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150"
+                  data-filter-role="contributor"
+                >
+                  Contributor
+                </button>
               </div>
-              {((p.languages ?? []).length > 0 || (p.tools ?? []).filter(Boolean).length > 0) && (
-                <div class="proj-tags mt-2 flex flex-wrap gap-2">
-                  {(p.languages ?? []).map(l => (
-                    <span class="proj-tag border border-rule px-2 py-1 font-sans text-[0.65rem] uppercase tracking-wider text-subtle">{l}</span>
-                  ))}
-                  {(p.tools ?? []).filter(Boolean).map(t => (
-                    <span class="proj-tag border border-rule px-2 py-1 font-sans text-[0.65rem] uppercase tracking-wider text-subtle">{t}</span>
-                  ))}
-                </div>
-              )}
             </div>
-          </a>
-        ))}
-      </div>
-    </>
-  )}
+
+            <div class="proj-filter-section">
+              <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">
+                Category
+              </h3>
+              <div class="proj-pills">
+                <button
+                  class="proj-pill border border-accent px-3 py-1 font-sans text-xs uppercase tracking-wider text-accent hover:border-accent hover:text-ink transition duration-150"
+                  data-filter-category="all"
+                >
+                  All
+                </button>
+                <button
+                  class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150"
+                  data-filter-category="research"
+                >
+                  Research
+                </button>
+                <button
+                  class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150"
+                  data-filter-category="coursework"
+                >
+                  Coursework
+                </button>
+                <button
+                  class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150"
+                  data-filter-category="side-project"
+                >
+                  Side project
+                </button>
+              </div>
+            </div>
+
+            <div class="proj-filter-section">
+              <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">
+                Languages
+              </h3>
+              <div class="proj-tag-chips">
+                <button
+                  class="proj-pill proj-tag-chip border border-accent px-3 py-1 font-sans text-xs uppercase tracking-wider text-accent hover:border-accent hover:text-ink transition duration-150"
+                  data-filter-lang="any"
+                >
+                  Any
+                </button>
+                {allLanguages.map((lang) => (
+                  <button
+                    class="proj-pill proj-tag-chip border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150"
+                    data-filter-lang={lang.toLowerCase()}
+                  >
+                    {lang}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div class="proj-filter-section">
+              <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">
+                Tools
+              </h3>
+              <div class="proj-tag-chips">
+                <button
+                  class="proj-pill proj-tag-chip border border-accent px-3 py-1 font-sans text-xs uppercase tracking-wider text-accent hover:border-accent hover:text-ink transition duration-150"
+                  data-filter-tool="any"
+                >
+                  Any
+                </button>
+                {allTools.map((tool) => (
+                  <button
+                    class="proj-pill proj-tag-chip border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150"
+                    data-filter-tool={tool.toLowerCase()}
+                  >
+                    {tool}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div class="proj-filter-section">
+              <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">
+                Focus
+              </h3>
+              <div class="proj-pills">
+                <button
+                  class="proj-pill border border-accent px-3 py-1 font-sans text-xs uppercase tracking-wider text-accent hover:border-accent hover:text-ink transition duration-150"
+                  data-filter-ais="all"
+                >
+                  All
+                </button>
+                <button
+                  class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150"
+                  data-filter-ais="true"
+                >
+                  AI Safety
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="proj-dropdown absolute z-20 mt-3 min-w-[280px] border border-rule bg-panel p-4 text-ink"
+            id="proj-sort-panel"
+            hidden
+          >
+            <div class="proj-filter-section">
+              <h3 class="mb-2 font-serif text-[0.65rem] font-bold uppercase tracking-wider text-accent-strong">
+                Sort by
+              </h3>
+              <div class="proj-pills">
+                <button
+                  class="proj-pill border border-accent px-3 py-1 font-sans text-xs uppercase tracking-wider text-accent hover:border-accent hover:text-ink transition duration-150"
+                  data-sort="featured"
+                >
+                  Featured
+                </button>
+                <button
+                  class="proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted hover:border-accent hover:text-ink transition duration-150"
+                  data-sort="recent"
+                >
+                  Most recent
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="proj-list grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr))]"
+          id="proj-list"
+          data-url-sync={urlSync ? "true" : "false"}
+        >
+          <div
+            class="placeholder border border-dashed border-rule bg-panel px-6 py-12 text-center text-sm tracking-wide text-subtle hidden col-span-full"
+            id="proj-empty-state"
+          >
+            No projects match the current filters.
+          </div>
+          {projects.map((p) => (
+            <a
+              class="proj-card proj group flex flex-col border border-rule bg-panel text-ink transition duration-200 ease-deco hover:-translate-y-0.5 hover:border-accent"
+              href={p.url ?? "#"}
+              target={p.url ? "_blank" : undefined}
+              rel={p.url ? "noopener noreferrer" : undefined}
+              data-role={p.role}
+              data-category={p.category}
+              data-featured={p.featured ? "true" : "false"}
+              data-year={String(p.year ?? 0)}
+              data-languages={(p.languages ?? [])
+                .map((l) => l.toLowerCase())
+                .join(",")}
+              data-tools={(p.tools ?? [])
+                .filter(Boolean)
+                .map((t) => t.toLowerCase())
+                .join(",")}
+              data-ais={p.ais ? "true" : "false"}
+            >
+              <div class="proj-card-img aspect-[16/10] overflow-hidden border-b border-rule">
+                {p.image ? (
+                  p.image.endsWith(".mp4") || p.image.endsWith(".gif") ? (
+                    <video
+                      class="size-full object-cover"
+                      src={p.image}
+                      autoplay
+                      loop
+                      muted
+                      playsinline
+                      aria-label={p.title}
+                    />
+                  ) : (
+                    <img
+                      class="size-full object-cover"
+                      src={p.image}
+                      alt={p.title}
+                      loading="lazy"
+                    />
+                  )
+                ) : (
+                  <div class="proj-card-placeholder flex size-full items-center justify-center bg-canvas font-serif text-3xl font-bold text-subtle">
+                    {p.title[0]}
+                  </div>
+                )}
+              </div>
+              <div class="proj-card-body flex flex-1 flex-col p-5">
+                {p.ais && (
+                  <span class="proj-ais-badge mb-3 self-start border border-safety px-2 py-1 font-sans text-[0.65rem] font-semibold uppercase tracking-wider text-safety">
+                    AI Safety
+                  </span>
+                )}
+                <h3 class="proj-card-title font-serif text-lg font-bold text-ink mb-1">
+                  {p.title}
+                </h3>
+                {p.venue && (
+                  <p class="proj-card-venue font-sans text-[0.65rem] italic text-muted mb-1">
+                    {p.venue}
+                  </p>
+                )}
+                <p class="proj-card-desc font-sans text-sm leading-6 text-muted">
+                  {p.description}
+                </p>
+                <div class="proj-chips mt-auto flex flex-wrap gap-2 pt-4">
+                  <span class="proj-chip border border-accent px-2 py-1 font-sans text-[0.65rem] uppercase tracking-wider text-accent">
+                    {p.role}
+                  </span>
+                  <span class="proj-chip border border-accent px-2 py-1 font-sans text-[0.65rem] uppercase tracking-wider text-accent">
+                    {p.category}
+                  </span>
+                </div>
+                {((p.languages ?? []).length > 0 ||
+                  (p.tools ?? []).filter(Boolean).length > 0) && (
+                  <div class="proj-tags mt-2 flex flex-wrap gap-2">
+                    {(p.languages ?? []).map((l) => (
+                      <span class="proj-tag border border-rule px-2 py-1 font-sans text-[0.65rem] uppercase tracking-wider text-subtle">
+                        {l}
+                      </span>
+                    ))}
+                    {(p.tools ?? []).filter(Boolean).map((t) => (
+                      <span class="proj-tag border border-rule px-2 py-1 font-sans text-[0.65rem] uppercase tracking-wider text-subtle">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </a>
+          ))}
+        </div>
+      </>
+    )
+  }
 </section>
 
 <script>
-  import { initializeProjectsFilter } from '../scripts/projects';
+  import { initializeProjectsFilter } from "../scripts/projects";
 
   // Thin wrappers exclusively for the visual-redesign regex tests
   function restoreFromUrl() {
@@ -178,11 +352,11 @@ const allTools = [
 
   // Keep test compliance for inline toggle styles
   function testCompliance() {
-    const el = document.createElement('div');
-    el.classList.toggle('border-accent', true);
-    el.classList.toggle('text-accent', true);
-    el.classList.toggle('border-rule', false);
-    el.classList.toggle('text-muted', false);
+    const el = document.createElement("div");
+    el.classList.toggle("border-accent", true);
+    el.classList.toggle("text-accent", true);
+    el.classList.toggle("border-rule", false);
+    el.classList.toggle("text-muted", false);
   }
 
   // Bind to window to prevent unused-variable warnings
@@ -191,9 +365,9 @@ const allTools = [
   (window as any).testCompliance = testCompliance;
 
   // Initialize module
-  const list = document.getElementById('proj-list');
+  const list = document.getElementById("proj-list");
   if (list) {
-    const urlSync = list.dataset.urlSync === 'true';
+    const urlSync = list.dataset.urlSync === "true";
     initializeProjectsFilter({ urlSync });
   }
 
