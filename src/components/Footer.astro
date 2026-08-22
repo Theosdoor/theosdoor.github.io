@@ -1,7 +1,7 @@
 ---
 import { execSync } from 'child_process';
 import ContactEmail from './ContactEmail.astro';
-import { cvUrl, cvDownloadName } from '../utils/constants';
+import { cvUrl } from '../utils/constants';
 
 let lastUpdated = '';
 try {
@@ -30,7 +30,7 @@ try {
       <a href="/field-building/" class="text-subtle hover:text-accent transition-colors duration-200">Field-building</a>
       <a href="/projects/" class="text-subtle hover:text-accent transition-colors duration-200">Projects</a>
       <a href="/talks/" class="text-subtle hover:text-accent transition-colors duration-200">Talks</a>
-      <a href={cvUrl} download={cvDownloadName} class="text-subtle hover:text-accent transition-colors duration-200" target="_blank" rel="noopener noreferrer">CV</a>
+      <a href={cvUrl} class="text-subtle hover:text-accent transition-colors duration-200" target="_blank" rel="noopener noreferrer">CV</a>
       <a href="/lets-chat/" class="text-subtle hover:text-accent transition-colors duration-200">Let's Talk</a>
     </nav>
 

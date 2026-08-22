@@ -6,16 +6,13 @@ export const contactConfig = {
   emailObfuscatedText: `${obfuscateEmailPart(emailUser)}[at]${obfuscateEmailPart(emailDomain)}`,
 } as const;
 
-// The CV is the PDF itself; /cv redirects here (see astro.config.mjs).
-export const cvUrl = '/cv/TheoFarrell_CV.pdf';
-
-// Build-date stamp (dd/mm/yyyy) — the CV is redeployed whenever it changes,
-// so the site build date tracks the last CV update.
-const cvBuildDate = new Date();
-const cvDD = String(cvBuildDate.getDate()).padStart(2, '0');
-const cvMM = String(cvBuildDate.getMonth() + 1).padStart(2, '0');
-export const cvUpdated = `${cvDD}/${cvMM}/${cvBuildDate.getFullYear()}`;
-export const cvDownloadName = `TheoFarrell_CV_${cvDD}${cvMM}.pdf`;
+// The CV is the PDF itself, served at a dated path so it opens in-tab and
+// saves with the date in its name. `cv-meta.json` is stamped by the deploy
+// pipeline (resume repo) so the file name and this link never disagree.
+// The stable /cv redirect (see astro.config.mjs) also points at this file.
+import cvMeta from '../data/cv-meta.json';
+export const cvUrl = `/cv/${cvMeta.file}`;
+export const cvUpdated = cvMeta.updated;
 
 // `icon` values must be names Icon.astro knows about.
 export const socialLinks = [

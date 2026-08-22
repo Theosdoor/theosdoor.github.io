@@ -1,7 +1,7 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
 import Icon from './Icon.astro';
-import { cvUrl, cvDownloadName, socialLinks } from '../utils/constants';
+import { cvUrl, socialLinks } from '../utils/constants';
 
 const navLinks = [
   { href: '/research/', label: 'Research' },
@@ -31,7 +31,7 @@ const isCurrent = (href: string) => currentPath === href;
           {label}
         </a>
       ))}
-      <a href={cvUrl} download={cvDownloadName} class="nav-link hover:text-accent transition-colors text-subtle" target="_blank" rel="noopener noreferrer">CV</a>
+      <a href={cvUrl} class="nav-link hover:text-accent transition-colors text-subtle" target="_blank" rel="noopener noreferrer">CV</a>
       <div class="flex items-center gap-3.5 border-l border-rule pl-5 xl:pl-6">
         {socialLinks.map(({ href, label, icon }) => (
           <a href={href} target="_blank" rel="noopener noreferrer" class="text-subtle hover:text-accent transition-colors" aria-label={label}>
@@ -66,7 +66,7 @@ const isCurrent = (href: string) => currentPath === href;
         {label}
       </a>
     ))}
-    <a href={cvUrl} download={cvDownloadName} class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" target="_blank" rel="noopener noreferrer">CV</a>
+    <a href={cvUrl} class="mobile-nav-link hover:text-accent transition-colors text-subtle py-1" target="_blank" rel="noopener noreferrer">CV</a>
     <div class="flex items-center gap-6 border-t border-rule pt-5">
       {socialLinks.map(({ href, label, icon }) => (
         <a href={href} target="_blank" rel="noopener noreferrer" class="mobile-nav-link text-subtle hover:text-accent transition-colors" aria-label={label}>
