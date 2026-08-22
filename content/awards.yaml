@@ -1,0 +1,55 @@
+# Grants and awards. Rendered by src/components/Awards.astro:
+#   - /awards/          shows everything (grouped by `kind`)
+#   - /research/        shows category: research
+#   - /field-building/  shows category: field-building
+# `academic` / `other` items appear only on /awards/ for now.
+awards:
+  - title: "Independent mechanistic interpretability research"
+    kind: grant
+    amount: "$6,500"
+    funder: "Coefficient Giving"
+    date: "2025-07"
+    category: research
+    description: "Four months of independent mechanistic interpretability research."
+
+  - title: "Durham AI Safety Initiative — annual group expenses"
+    kind: grant
+    amount: "$4,500"
+    funder: "Pathfinder"
+    date: "2025-10"
+    category: field-building
+    description: "One year of group expenses for the Durham AI Safety Initiative."
+
+  - title: "Durham AI Safety Initiative — annual group expenses"
+    kind: grant
+    amount: "$8,000"
+    funder: "Coefficient Giving"
+    date: "2025-03"
+    category: field-building
+    description: "One year of group expenses for the Durham AI Safety Initiative."
+
+  - title: "Natural Sciences Outstanding Achievement (Level 4)"
+    kind: award
+    funder: "Durham University"
+    date: "2026-07"
+    category: academic
+    description: "Awarded for averaging over 75% in the fourth year of the Natural Sciences programme."
+
+  - title: "Natural Sciences Outstanding Achievement (Level 3)"
+    kind: award
+    funder: "Durham University"
+    date: "2025-07"
+    category: academic
+    description: "Awarded for averaging over 75% in the third year of the Natural Sciences programme."
+
+  - title: "Natural Sciences Outstanding Achievement (Level 2)"
+    kind: award
+    funder: "Durham University"
+    date: "2024-07"
+    category: academic
+    description: "Awarded for averaging over 75% in the second year of the Natural Sciences programme."
+
+  - title: "Gold Duke of Edinburgh Award"
+    kind: award
+    date: "2022"
+    category: other

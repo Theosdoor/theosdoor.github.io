@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+import { formatMonthYear, parseStartDateForSort } from '../utils/formatters';
+
+interface Props {
+  heading?: string;
+  headingLevel?: 'h1' | 'h2' | 'h3';
+  // Restrict to these categories; omit to include all.
+  categories?: Array<'research' | 'field-building' | 'academic' | 'other'>;
+  // Restrict to grants or awards; omit to include both.
+  kind?: 'grant' | 'award';
+  // Show a "See all" link through to the full /awards/ page.
+  seeAll?: boolean;
+}
+
+const {
+  heading = 'Grants & Awards',
+  headingLevel = 'h2',
+  categories,
+  kind,
+  seeAll = false,
+} = Astro.props;
+const Heading = headingLevel;
+
+const items = (await getCollection('awards'))
+  .map((entry) => entry.data)
+  .filter((a) => (categories ? categories.includes(a.category) : true))
+  .filter((a) => (kind ? a.kind === kind : true))
+  .sort((a, b) => parseStartDateForSort(b.date) - parseStartDateForSort(a.date));
+---
+
+<section class="space-y-0 scroll-mt-20 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]">
+  <div class="mb-6 border-b border-rule pb-3 flex items-center justify-between gap-4">
+    <Heading class="font-serif text-2xl font-black text-ink">{heading}</Heading>
+    {seeAll && (
+      <a
+        href="/awards/"
+        class="shrink-0 border border-accent rounded-lg px-3 py-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-accent hover:bg-accent hover:text-white transition-all"
+      >
+        See All &rarr;
+      </a>
+    )}
+  </div>
+
+  {items.length === 0 ? (
+    <p class="font-sans text-sm text-subtle py-2">Nothing listed yet.</p>
+  ) : (
+    <div class="divide-y divide-rule/50">
+      {items.map((item) => (
+        <article class="py-6 first:pt-0 last:pb-0">
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <p class="font-serif text-lg font-bold leading-snug text-ink">
+              {item.amount && <span class="text-accent-strong">{item.amount}</span>}
+              {item.amount && <span class="text-subtle font-normal"> · </span>}
+              {item.title}
+            </p>
+            <span class="shrink-0 font-sans text-xs font-semibold uppercase tracking-wider text-subtle">
+              {formatMonthYear(item.date)}
+            </span>
+          </div>
+
+          {item.funder && (
+            <p class="mt-1 font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-accent-strong">
+              {item.funder}
+            </p>
+          )}
+
+          {item.description && (
+            <p class="mt-2 font-sans text-sm leading-7 text-muted">{item.description}</p>
+          )}
+
+          {item.url && (
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-2 inline-block border-b border-rule pb-0.5 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-ink hover:border-accent hover:text-accent transition-all"
+            >
+              Details
+            </a>
+          )}
+        </article>
+      ))}
+    </div>
+  )}
+</section>

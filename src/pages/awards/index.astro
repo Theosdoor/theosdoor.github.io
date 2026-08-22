@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import DecoDivider from '../../components/DecoDivider.astro';
+import Awards from '../../components/Awards.astro';
+---
+
+<Base
+  title="Grants & Awards — Theo Farrell"
+  description="Theo Farrell — research and field-building grants, and academic awards"
+  ogUrl="https://theosdoor.github.io/awards/"
+>
+  <main class="mx-auto w-full max-w-[800px] px-5 py-16 sm:px-8" id="main" tabindex="-1">
+    <header class="mb-12 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]">
+      <h1 class="mb-6 font-serif text-4xl font-black leading-tight text-ink sm:text-5xl">Grants &amp; Awards</h1>
+      <DecoDivider class="max-w-44" />
+    </header>
+
+    <div class="flex flex-col gap-16">
+      <Awards heading="Grants" kind="grant" headingLevel="h2" />
+      <Awards heading="Awards &amp; recognition" kind="award" headingLevel="h2" />
+    </div>
+  </main>
+</Base>

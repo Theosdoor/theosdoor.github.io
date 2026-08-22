@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Publications from '../../components/Publications.astro';
 import Reviewing from '../../components/Reviewing.astro';
 import Talks from '../../components/Talks.astro';
+import Awards from '../../components/Awards.astro';
 ---
 
 <Base
@@ -15,6 +16,7 @@ import Talks from '../../components/Talks.astro';
       <Publications headingLevel="h1" />
       <Reviewing headingLevel="h2" />
       <Talks filterResearchOnly={true} headingLevel="h2" />
+      <Awards heading="Grants & funding" categories={['research']} headingLevel="h2" seeAll />
     </div>
   </main>
 </Base>
