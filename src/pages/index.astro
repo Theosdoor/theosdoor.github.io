@@ -7,7 +7,7 @@ import Icon from '../components/Icon.astro';
 import { Content as IntroContent, frontmatter as introFrontmatter } from '../../content/intro.md';
 import { Image } from 'astro:assets';
 import profilePic from '../../public/images/theocool.jpeg';
-import { cvUrl, socialLinks } from '../utils/constants';
+import { cvUrl, cvDownloadName, socialLinks } from '../utils/constants';
 
 const personSchema = {
   '@context': 'https://schema.org',
@@ -79,6 +79,7 @@ const personSchema = {
               <li class="border-l border-rule pl-5">
                 <a
                   href={cvUrl}
+                  download={cvDownloadName}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="inline-flex items-center gap-2 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-subtle transition-colors hover:text-accent"
