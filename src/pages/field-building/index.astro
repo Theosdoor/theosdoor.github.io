@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import FieldBuilding from '../../components/FieldBuilding.astro';
+import Awards from '../../components/Awards.astro';
 ---
 
 <Base
@@ -9,6 +10,9 @@ import FieldBuilding from '../../components/FieldBuilding.astro';
   ogUrl="https://theosdoor.github.io/field-building/"
 >
   <main class="mx-auto w-full max-w-[800px] px-5 py-16 sm:px-8" id="main" tabindex="-1">
-    <FieldBuilding />
+    <div class="flex flex-col gap-16">
+      <FieldBuilding />
+      <Awards heading="Grants & funding" categories={['field-building']} headingLevel="h2" seeAll />
+    </div>
   </main>
 </Base>

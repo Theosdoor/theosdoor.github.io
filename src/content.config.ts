@@ -83,6 +83,30 @@ const talks = defineCollection({
   }),
 });
 
+const awards = defineCollection({
+  loader: file('content/awards.yaml', {
+    parser: (text) => {
+      const parsed = yaml.load(text) as { awards?: any[] } | null;
+      const list = parsed?.awards ?? [];
+      return list.map((item, index) => ({
+        id: slugify(`${item.title}-${item.date}`) || String(index),
+        ...item,
+      }));
+    }
+  }),
+  schema: z.object({
+    id: z.string(),
+    title: z.string(),
+    kind: z.enum(['grant', 'award']),
+    amount: z.string().optional(),
+    funder: z.string().optional(),
+    date: z.string(),
+    category: z.enum(['research', 'field-building', 'academic', 'other']),
+    description: z.string().optional(),
+    url: z.url().optional(),
+  }),
+});
+
 const pubs = defineCollection({
   loader: file('content/pubs.yaml', {
     parser: (text) => {
@@ -107,4 +131,4 @@ const pubs = defineCollection({
   }),
 });
 
-export const collections = { projects, fieldBuilding, talks, pubs };
+export const collections = { projects, fieldBuilding, talks, pubs, awards };
