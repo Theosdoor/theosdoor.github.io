@@ -62,6 +62,19 @@ const fieldBuilding = defineCollection({
   }),
 });
 
+const writing = defineCollection({
+  loader: glob({ pattern: '*.md', base: 'content/writing' }),
+  schema: z.object({
+    title: z.string(),
+    // YYYY-MM-DD; drives ordering and the displayed date.
+    date: z.string(),
+    // Teaser for the /writing/ index; the post still lists without one.
+    summary: z.string().optional(),
+    // Unfinished posts stay in the folder but off the site.
+    draft: z.boolean().optional(),
+  }),
+});
+
 const talks = defineCollection({
   loader: file('content/talks.yaml', {
     parser: (text) => {
@@ -107,4 +120,4 @@ const pubs = defineCollection({
   }),
 });
 
-export const collections = { projects, fieldBuilding, talks, pubs };
+export const collections = { projects, fieldBuilding, writing, talks, pubs };

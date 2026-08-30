@@ -29,6 +29,7 @@ Astro static site (`output: 'static'`) with multiple static routes:
 - **`/projects/`** (`src/pages/projects/index.astro`) — standalone projects page (same `Projects` component, with `urlSync` enabled)
 - **`/talks/`** (`src/pages/talks/index.astro`) — standalone talks page showing all talks (including non-research topics)
 - **`/field-building/`** (`src/pages/field-building/index.astro`) — standalone field-building projects page
+- **`/writing/`** (`src/pages/writing/index.astro`) — post index, newest first; individual posts at `/writing/<slug>/` (`src/pages/writing/[...slug].astro`)
 - **`/lets-chat/`** (`src/pages/lets-chat/index.astro`) — standalone booking and scheduling meeting widget
 
 ### Navigation
@@ -73,6 +74,16 @@ projects:
 **3. Talks (`content/talks.yaml`)** — Loaded via `getCollection('talks')` and rendered by `src/components/Talks.astro`. Can be filtered using `filterResearchOnly` prop.
 
 **4. Field-building (`content/field-building/*.md`)** — Markdown files loaded via `getCollection('fieldBuilding')` and rendered dynamically by `src/components/FieldBuilding.astro`.
+
+**5. Writing (`content/writing/*.md`)** — Blog posts, loaded via `getPosts()` in `src/utils/writing.ts` (drafts filtered out, newest first) for both `/writing/` routes. `~/Obsidian Vault/Website_Blog` is a symlink to this directory, so posts are authored in Obsidian and published by committing them; the vault holds no second copy. Plain Markdown only — Obsidian wikilinks and embeds are not rendered:
+```yaml
+---
+title: "..."
+date: "2026-08-30"   # YYYY-MM-DD, drives ordering
+summary: "..."       # optional teaser on the index
+draft: true          # optional; drafts are not built
+---
+```
 
 ### Modularity & DRY
 
