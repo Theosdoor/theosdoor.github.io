@@ -63,13 +63,18 @@ const fieldBuilding = defineCollection({
 });
 
 const writing = defineCollection({
-  loader: glob({ pattern: '*.md', base: 'content/writing' }),
+  // Syncthing names conflicts `post.sync-conflict-<date>-<id>.md`, which would
+  // otherwise load as a duplicate post; excluded so a phone-side conflict can
+  // never reach a build.
+  loader: glob({ pattern: ['*.md', '!*.sync-conflict-*'], base: 'content/writing' }),
   schema: z.object({
     title: z.string(),
     // YYYY-MM-DD; drives ordering and the displayed date.
     date: z.string(),
     // Teaser for the /writing/ index; the post still lists without one.
     summary: z.string().optional(),
+    // Public path (/images/writing/x.png) for the index thumbnail; optional.
+    image: z.string().optional(),
     // Unfinished posts stay in the folder but off the site.
     draft: z.boolean().optional(),
   }),

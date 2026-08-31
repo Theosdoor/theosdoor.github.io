@@ -23,6 +23,10 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# Syncthing marker/archive dirs (content/writing/ syncs to the phone)
+.stfolder/
+.stversions/
+
 # jetbrains setting folder
 .idea/
 
