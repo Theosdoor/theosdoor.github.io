@@ -1,9 +1,16 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import { formatDate } from '../../utils/formatters';
 import { getPosts } from '../../utils/writing';
 
 const posts = await getPosts();
+
+// Post images are authored in frontmatter as public paths (/images/writing/x.png);
+// importing them here hands them to Astro for resizing and webp conversion.
+const images = import.meta.glob<{ default: ImageMetadata }>('/public/images/writing/*.{png,jpg,jpeg,webp}', {
+  eager: true,
+});
 ---
 
 <Base
@@ -20,24 +27,46 @@ const posts = await getPosts();
       {posts.length === 0 ? (
         <p class="font-sans text-sm text-subtle py-2">No posts yet.</p>
       ) : (
-        <ul class="flex flex-col gap-8">
-          {posts.map((post) => (
-            <li>
-              <a href={`/writing/${post.id}/`} class="group block">
-                <p class="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-accent-strong">
-                  {formatDate(post.data.date)}
-                </p>
-                <h2 class="mt-2 font-serif text-2xl font-black leading-tight text-ink transition-colors group-hover:text-accent">
-                  {post.data.title}
-                </h2>
-                {post.data.summary && (
-                  <p class="mt-2 font-sans text-sm leading-[1.4rem] tracking-wide text-muted">
-                    {post.data.summary}
-                  </p>
-                )}
-              </a>
-            </li>
-          ))}
+        <ul class="divide-y divide-rule">
+          {posts.map((post) => {
+            const image = post.data.image ? images[`/public${post.data.image}`]?.default : undefined;
+            return (
+              <li>
+                <a href={`/writing/${post.id}/`} class="group flex gap-5 py-7 sm:gap-8">
+                  <div class="min-w-0 flex-1">
+                    <h2 class="font-serif text-xl font-black leading-tight text-ink transition-colors group-hover:text-accent sm:text-2xl">
+                      {post.data.title}
+                    </h2>
+                    {post.data.summary && (
+                      <p class="mt-2 font-sans text-sm leading-[1.4rem] tracking-wide text-muted line-clamp-2">
+                        {post.data.summary}
+                      </p>
+                    )}
+                    <p class="mt-3 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-subtle">
+                      {formatDate(post.data.date)}
+                    </p>
+                  </div>
+
+                  {image && (
+                    <div class="size-20 shrink-0 overflow-hidden rounded-lg border border-rule bg-panel sm:size-28">
+                      <Image
+                        src={image}
+                        alt=""
+                        width={112}
+                        height={112}
+                        densities={[2]}
+                        format="webp"
+                        quality={80}
+                        class="size-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                  )}
+                </a>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>

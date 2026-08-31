@@ -70,6 +70,8 @@ const writing = defineCollection({
     date: z.string(),
     // Teaser for the /writing/ index; the post still lists without one.
     summary: z.string().optional(),
+    // Public path (/images/writing/x.png) for the index thumbnail; optional.
+    image: z.string().optional(),
     // Unfinished posts stay in the folder but off the site.
     draft: z.boolean().optional(),
   }),
