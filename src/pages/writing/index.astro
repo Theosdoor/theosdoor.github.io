@@ -32,28 +32,28 @@ const images = import.meta.glob<{ default: ImageMetadata }>('/public/images/writ
             const image = post.data.image ? images[`/public${post.data.image}`]?.default : undefined;
             return (
               <li>
-                <a href={`/writing/${post.id}/`} class="group flex gap-5 py-7 sm:gap-8">
+                <a href={`/writing/${post.id}/`} class="group flex gap-4 py-4 sm:gap-6">
                   <div class="min-w-0 flex-1">
-                    <h2 class="font-serif text-xl font-black leading-tight text-ink transition-colors group-hover:text-accent sm:text-2xl">
+                    <h2 class="font-serif text-lg font-black leading-tight text-ink transition-colors group-hover:text-accent sm:text-xl">
                       {post.data.title}
                     </h2>
                     {post.data.summary && (
-                      <p class="mt-2 font-sans text-sm leading-[1.4rem] tracking-wide text-muted line-clamp-2">
+                      <p class="mt-1 font-sans text-sm leading-snug tracking-wide text-muted line-clamp-2">
                         {post.data.summary}
                       </p>
                     )}
-                    <p class="mt-3 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-subtle">
+                    <p class="mt-1.5 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-subtle">
                       {formatDate(post.data.date)}
                     </p>
                   </div>
 
                   {image && (
-                    <div class="size-20 shrink-0 overflow-hidden rounded-lg border border-rule bg-panel sm:size-28">
+                    <div class="size-16 shrink-0 overflow-hidden rounded-md border border-rule bg-panel sm:size-20">
                       <Image
                         src={image}
                         alt=""
-                        width={112}
-                        height={112}
+                        width={80}
+                        height={80}
                         densities={[2]}
                         format="webp"
                         quality={80}
