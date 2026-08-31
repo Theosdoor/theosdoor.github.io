@@ -63,7 +63,10 @@ const fieldBuilding = defineCollection({
 });
 
 const writing = defineCollection({
-  loader: glob({ pattern: '*.md', base: 'content/writing' }),
+  // Syncthing names conflicts `post.sync-conflict-<date>-<id>.md`, which would
+  // otherwise load as a duplicate post; excluded so a phone-side conflict can
+  // never reach a build.
+  loader: glob({ pattern: ['*.md', '!*.sync-conflict-*'], base: 'content/writing' }),
   schema: z.object({
     title: z.string(),
     // YYYY-MM-DD; drives ordering and the displayed date.
