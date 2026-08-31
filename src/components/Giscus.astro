@@ -1,0 +1,54 @@
+---
+import { giscus, giscusEnabled } from '../utils/giscus';
+
+interface Props {
+  /** Discussion term — the post slug, matching the index's count lookup. */
+  term: string;
+}
+
+const { term } = Astro.props;
+---
+
+{giscusEnabled && (
+  <section class="mt-12 border-t border-rule pt-8">
+    <h2 class="mb-6 font-serif text-xl font-black text-ink">Comments</h2>
+    <script
+      is:inline
+      src="https://giscus.app/client.js"
+      data-repo={giscus.repo}
+      data-repo-id={giscus.repoId}
+      data-category={giscus.category}
+      data-category-id={giscus.categoryId}
+      data-mapping="specific"
+      data-term={term}
+      data-strict="1"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-lang="en"
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async
+    />
+  </section>
+)}
+
+<script>
+  // giscus renders in an iframe, so the site's theme toggle has to be relayed
+  // in. The attribute it flips is the same one Base.astro sets at first paint.
+  const frameOrigin = 'https://giscus.app';
+
+  function sendTheme() {
+    const frame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+    const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+    frame?.contentWindow?.postMessage({ giscus: { setConfig: { theme } } }, frameOrigin);
+  }
+
+  new MutationObserver(sendTheme).observe(document.documentElement, {
+    attributeFilter: ['data-theme'],
+  });
+  window.addEventListener('message', (event) => {
+    // The frame announces itself once loaded; that is the cue to push the theme.
+    if (event.origin === frameOrigin) sendTheme();
+  });
+</script>

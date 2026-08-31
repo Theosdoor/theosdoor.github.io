@@ -1,8 +1,10 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
 import { formatDate } from '../../utils/formatters';
 import { getPosts } from '../../utils/writing';
+import { giscus, giscusEnabled } from '../../utils/giscus';
 
 const posts = await getPosts();
 
@@ -32,28 +34,15 @@ const images = import.meta.glob<{ default: ImageMetadata }>('/public/images/writ
             const image = post.data.image ? images[`/public${post.data.image}`]?.default : undefined;
             return (
               <li>
-                <a href={`/writing/${post.id}/`} class="group flex gap-4 py-4 sm:gap-6">
-                  <div class="min-w-0 flex-1">
-                    <h2 class="font-serif text-lg font-black leading-tight text-ink transition-colors group-hover:text-accent sm:text-xl">
-                      {post.data.title}
-                    </h2>
-                    {post.data.summary && (
-                      <p class="mt-1 font-sans text-sm leading-snug tracking-wide text-muted line-clamp-2">
-                        {post.data.summary}
-                      </p>
-                    )}
-                    <p class="mt-1.5 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-subtle">
-                      {formatDate(post.data.date)}
-                    </p>
-                  </div>
-
-                  {image && (
-                    <div class="size-16 shrink-0 overflow-hidden rounded-md border border-rule bg-panel sm:size-20">
+                <a href={`/writing/${post.id}/`} class="group flex items-center gap-4 py-3 sm:gap-5">
+                  {/* Thumbnail, or the article glyph so rows stay aligned either way. */}
+                  <div class="flex h-[4.5rem] w-24 shrink-0 items-center justify-center overflow-hidden rounded-md border border-rule bg-panel sm:h-20 sm:w-28">
+                    {image ? (
                       <Image
                         src={image}
                         alt=""
-                        width={80}
-                        height={80}
+                        width={126}
+                        height={90}
                         densities={[2]}
                         format="webp"
                         quality={80}
@@ -61,8 +50,42 @@ const images = import.meta.glob<{ default: ImageMetadata }>('/public/images/writ
                         loading="lazy"
                         decoding="async"
                       />
-                    </div>
-                  )}
+                    ) : (
+                      <img
+                        src="/images/icons/article.svg"
+                        alt=""
+                        class="size-7 opacity-30 select-none pointer-events-none"
+                        loading="lazy"
+                      />
+                    )}
+                  </div>
+
+                  <div class="min-w-0 flex-1">
+                    <h2 class="font-serif text-base font-black leading-snug text-ink transition-colors group-hover:text-accent sm:text-lg">
+                      {post.data.title}
+                    </h2>
+                    {post.data.summary && (
+                      <p class="mt-0.5 font-sans text-sm leading-snug tracking-wide text-muted line-clamp-1">
+                        {post.data.summary}
+                      </p>
+                    )}
+                    <p class="mt-1 flex flex-wrap items-center gap-x-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-subtle">
+                      <span>{formatDate(post.data.date)}</span>
+                      {giscusEnabled && (
+                        <span class="hidden items-center gap-x-2.5" data-counts={post.id}>
+                          <span class="opacity-50">·</span>
+                          <span class="inline-flex items-center gap-1" title="Comments">
+                            <Icon name="comment" class="size-3 fill-current" />
+                            <span data-comments>0</span>
+                          </span>
+                          <span class="inline-flex items-center gap-1" title="Reactions">
+                            <Icon name="heart" class="size-3 fill-current" />
+                            <span data-reactions>0</span>
+                          </span>
+                        </span>
+                      )}
+                    </p>
+                  </div>
                 </a>
               </li>
             );
@@ -70,5 +93,36 @@ const images = import.meta.glob<{ default: ImageMetadata }>('/public/images/writ
         </ul>
       )}
     </section>
+  {giscusEnabled && (
+    <script is:inline define:vars={{ giscus }}>
+      // Counts come from giscus' public API rather than the build, so they stay
+      // current between deploys. A post with no discussion yet 404s; the row then
+      // just shows its date, which is why the counts start hidden.
+      document.querySelectorAll('[data-counts]').forEach(async (el) => {
+        const params = new URLSearchParams({
+          repo: giscus.repo,
+          repoId: giscus.repoId,
+          category: giscus.category,
+          categoryId: giscus.categoryId,
+          term: el.dataset.counts,
+          strict: '1',
+          number: '0',
+          last: '1',
+        });
+        try {
+          const res = await fetch(`https://giscus.app/api/discussions?${params}`);
+          if (!res.ok) return;
+          const data = await res.json();
+          const comments = (data.totalCommentCount ?? 0) + (data.totalReplyCount ?? 0);
+          const reactions = data.reactionCount ?? 0;
+          if (!comments && !reactions) return;
+          el.querySelector('[data-comments]').textContent = comments;
+          el.querySelector('[data-reactions]').textContent = reactions;
+          el.classList.replace('hidden', 'flex');
+        } catch {}
+      });
+    </script>
+  )}
   </main>
 </Base>
+

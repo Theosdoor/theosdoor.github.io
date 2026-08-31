@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from 'astro';
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Giscus from '../../components/Giscus.astro';
 import { formatDate } from '../../utils/formatters';
 import { getPosts, type Post } from '../../utils/writing';
 
@@ -48,6 +49,8 @@ const { Content } = await render(post);
                   [&_img]:my-6 [&_img]:rounded-lg">
         <Content />
       </div>
+
+      <Giscus term={post.id} />
 
       <div class="mt-12 border-t border-rule pt-6">
         <a href="/writing/" class="inline-flex items-center gap-2 border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-ink hover:border-accent hover:text-accent transition-all">
