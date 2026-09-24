@@ -4,7 +4,9 @@
 
 ## Development
 
-This is a pnpm-managed Astro 7 + Tailwind v4 static site. Use Node `>=24.x` and keep `pnpm-lock.yaml` as the single lockfile. TypeScript stays on 6.x while `@astrojs/check` peers on `^5 || ^6`.
+This is a pnpm 12-managed Astro 7 + Tailwind v4 static site. Use Node `>=24.x` and keep `pnpm-lock.yaml` as the single lockfile; `packageManager` in `package.json` pins pnpm (change it with `corepack use pnpm@<version>`). TypeScript stays on 6.x while `@astrojs/check` peers on `^5 || ^6`.
+
+pnpm refuses releases younger than 24 hours (`minimumReleaseAge`, on by default), so a just-published version will not install yet; wait rather than excluding it. Only packages listed under `allowBuilds` in `pnpm-workspace.yaml` may run install scripts.
 
 ```bash
 pnpm install
@@ -17,7 +19,7 @@ pnpm exec astro dev status   # port and pid; also `dev stop` / `dev logs`
 
 `astro dev` runs in the background in Astro 7 and picks another port if yours is taken, so stop stale servers with `astro dev stop` rather than leaving them running — a server whose `node_modules` changed underneath it serves confusing errors.
 
-Deployed to GitHub Pages via `.github/workflows/deploy.yml` on push to `main`.
+`.github/workflows/deploy.yml` runs `astro check`, `pnpm test`, the build and an offline link check (lychee) on every PR, and deploys to GitHub Pages on push to `main`. `links.yml` checks external links weekly; LinkedIn and Scholar are excluded because they reject bots.
 
 ## Architecture
 
@@ -25,7 +27,7 @@ Astro static site (`output: 'static'`) with multiple static routes:
 
 - **`/`** (`src/pages/index.astro`) — intro/bio header, then `SelectedResearch` (the three most recent `key-role: true` papers, plain text, linking to `/research/`)
 - **`/research/`** (`src/pages/research/index.astro`) — `Publications` (h1) + `Reviewing` (h2) + `Talks` filtered to research (h2)
-- **`/cv/`** (`src/pages/cv/index.astro`) — collapsible sidebar + PDF iframe; sidebar state persisted in `localStorage`
+- **`/cv`** — no page: a redirect (`astro.config.mjs`) to the dated PDF in `public/cv/`, named by `src/data/cv-meta.json`. The resume repo's CI writes both, so never edit them by hand; share `/cv`, since each CV update deletes the previous dated file
 - **`/projects/`** (`src/pages/projects/index.astro`) — standalone projects page (same `Projects` component, with `urlSync` enabled)
 - **`/talks/`** (`src/pages/talks/index.astro`) — standalone talks page showing all talks (including non-research topics)
 - **`/field-building/`** (`src/pages/field-building/index.astro`) — standalone field-building projects page
@@ -35,15 +37,14 @@ Astro static site (`output: 'static'`) with multiple static routes:
 
 Every section is a real route. `src/components/Header.astro` holds a `navLinks` array and marks the active entry with `aria-current="page"` by comparing `Astro.url.pathname`; add new sections there and in `Footer.astro`. There is no client-side router — the header script only toggles the mobile menu.
 
-Keep the client-side JavaScript budget small: the theme toggle (`ThemeToggle.astro`), the mobile menu (`Header.astro`), the projects filter (`src/scripts/projects.ts`), and the CV sidebar. Prefer a static solution over a new script.
+Keep the client-side JavaScript budget small: the theme toggle (`ThemeToggle.astro`), the mobile menu (`Header.astro`), the projects filter (`src/scripts/projects.ts`), and Astro's prefetch script (`prefetch: true` loads a page on link hover or focus). Prefer a static solution over a new script. Page-to-page transitions are native CSS (`@view-transition` in `global.css`, skipped under reduced motion), not `<ClientRouter />`; the header carries `view-transition-name: site-header` so it stays still.
 
 ### Data-driven content
 
-All site content is managed and validated using **Astro Content Collections (Content Layer)** under `src/content.config.ts` with strict Zod validation schemas. Source files remain authored as raw YAML and Markdown under `content/`:
+All site content is managed and validated using **Astro Content Collections (Content Layer)** under `src/content.config.ts` with strict Zod validation schemas. Source files remain authored as raw YAML and Markdown under `content/`. YAML files hold one list under a named key and load through the shared `yamlList()` helper; never import a `.yaml` file directly (there is no Vite YAML plugin). `content/reviewing.yaml` is the `reviewing` collection, a plain list of venue names.
 
-**1. Publications (`content/pubs.yaml`)** — Loaded via `src/utils/pubs.ts` (`getPublications()`, newest first, plus the `Pub` type and `owner`), which is the single source for `Publications.astro` → `ResearchGrid` → `ResearchCard` on `/research/` and for `SelectedResearch.astro` on the homepage. `thumbnail` paths point into `public/images/pubs/`; `ResearchCard` imports them via `import.meta.glob` so Astro crops them to 370×278 and emits webp:
+**1. Publications (`content/pubs.yaml`)** — Loaded via `src/utils/pubs.ts` (`getPublications()`, newest first, plus the `Pub` type and `owner`, which is defined in `src/utils/constants.ts`), which is the single source for `Publications.astro` → `ResearchGrid` → `ResearchCard` on `/research/` and for `SelectedResearch.astro` on the homepage. `thumbnail` paths are site paths (`/images/pubs/x.png`) resolved by `resolveImage()` in `src/utils/images.ts`, so Astro crops them to 370×278 and emits webp:
 ```yaml
-owner: "Theo Farrell"
 publications:
   - title: "..."
     authors: [...]
@@ -60,7 +61,7 @@ projects:
   - title: "..."
     description: "..."
     url: "..."           # optional
-    image: "..."         # optional; .mp4/.gif renders as <video>, otherwise <img>
+    image: "..."         # optional; .mp4/.webm renders as <video>, .gif as a plain <img>, stills via the image pipeline
     role: lead | contributor
     category: research | side-project | coursework
     featured: true       # optional
@@ -74,10 +75,14 @@ projects:
 
 **4. Field-building (`content/field-building/*.md`)** — Markdown files loaded via `getCollection('fieldBuilding')` and rendered dynamically by `src/components/FieldBuilding.astro`.
 
+### Images
+
+Raster stills live in `src/assets/images/` but content YAML references them by site path (`/images/projects/x.png`); `resolveImage()` in `src/utils/images.ts` maps one to the other and fails the build on a missing file. Standalone SVG icons live in `src/assets/icons/` and are imported as components (`import X from '../assets/icons/x.svg'`) with `fill="currentColor"`, so they follow the theme. Only videos, GIFs, the favicon set and the 1200×630 social card (`public/images/og.jpg`) belong in `public/`, which is copied to `dist/` unoptimised. Strip EXIF before committing a photo (re-encode with sharp); phone photos carry GPS.
+
 ### Modularity & DRY
 
 *   **Formatters (`src/utils/formatters.ts`)**: Date parsing, markdown links parsing, and author list name bolding are fully centralized and tested.
-*   **Projects Filter (`src/scripts/projects.ts`)**: The extensive client-side filtering, sorting, keyboard access, and URL state-synchronization logic is isolated in a dedicated type-safe TypeScript module.
+*   **Projects Filter (`src/scripts/projects.ts`)**: The extensive client-side filtering, sorting, keyboard access, and URL state-synchronization logic is isolated in a dedicated type-safe TypeScript module. Filter and sort buttons are toggles: the script sets `aria-pressed` and the shared `pill` class string in `Projects.astro` styles them with `aria-pressed:` variants, so never toggle colour classes from JS.
 
 ### Styling
 
@@ -86,14 +91,15 @@ Tailwind v4 is the primary styling layer. `src/layouts/Base.astro` imports `src/
 | File | Contents |
 |------|----------|
 | `global.css` | Tailwind entrypoint, CSS-first theme variables, runtime light/dark tokens, base rules, and the `deco-frame` utility |
-| `cv.css` | CV-only sidebar state, PDF layout, and theme-toggle placement overrides |
 
 ### Design tokens
 
 All public utility tokens are declared in `src/styles/global.css` under `@theme inline`:
 - Semantic color utilities: `canvas`, `panel`, `ink`, `muted`, `subtle`, `rule`, `accent`, `accent-strong`, and `safety`
-- Typography utilities: `font-serif` and `font-sans`
-- Theme-sensitive values update through `--site-*` CSS variables on `html[data-theme="dark"]`
+- Typography utilities: `font-serif` (Merriweather) and `font-sans` (Raleway). The families are self-hosted through Astro's Fonts API (`fonts` in `astro.config.mjs`, `<Font />` in `Base.astro`); add weights there, not via a Google Fonts link
+- Motion: `ease-deco` and `animate-fade-up` (the entrance animation; `@keyframes` live inside `@theme`)
+- Theme-sensitive values update through `--site-*` CSS variables on `html[data-theme="dark"]`. There is deliberately no `dark:` variant (a test enforces it): add a token instead
+- Only reference theme variables that exist; an undefined `var()` inside an arbitrary-value utility silently drops the whole declaration
 
 ### Layout constraints
 

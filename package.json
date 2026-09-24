@@ -5,7 +5,7 @@
   "engines": {
     "node": ">=24.x"
   },
-  "packageManager": "pnpm@11.3.0+sha512.2c403d6594527287672b1f7056343a1f7c3634036a67ffabfcc2b3d7595d843768f8787148d1b57cf7956c90606bbd192857c363af19e96d2d0ec9ec5741d215",
+  "packageManager": "pnpm@12.6.0+sha512.3ef68f951cb111ac204b4a5a16f0b2ddf0da56a96e0413e81d855d9f0b55ef926714709028e1cd00c405c2c5fb7b9e8ec4dc46777c805d0373c2f2ff00fd20ec",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -14,17 +14,15 @@
     "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/sitemap": "^3.7.4",
     "@tailwindcss/vite": "^4.3.3",
-    "astro": "^7.2.2",
-    "sharp": "^0.34.5",
+    "astro": "^7.3.4",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@rollup/plugin-yaml": "^4.1.2",
-    "@types/js-yaml": "^4.0.9",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^5.4.2",
     "typescript": "^6.0.3"
   }
 }

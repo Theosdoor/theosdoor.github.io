@@ -1,7 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob, file } from 'astro/loaders';
-import yaml from 'js-yaml';
+import { load as loadYaml } from 'js-yaml';
 
 // Helper to safely slugify text for unique content collection IDs
 function slugify(text: string): string {
@@ -13,17 +13,19 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, ''); // Clean leading/trailing hyphens
 }
 
-const projects = defineCollection({
-  loader: file('content/projects.yaml', {
+// Each content YAML file holds one list under a named key (e.g. `projects:`);
+// this turns that list into collection entries with stable, unique ids.
+function yamlList<T extends object>(path: string, key: string, idOf: (item: T) => string) {
+  return file(path, {
     parser: (text) => {
-      const parsed = yaml.load(text) as { projects?: any[] } | null;
-      const list = parsed?.projects ?? [];
-      return list.map((item, index) => ({
-        id: slugify(item.title) || String(index),
-        ...item,
-      }));
-    }
-  }),
+      const parsed = loadYaml(text) as Record<string, T[] | undefined> | null;
+      return (parsed?.[key] ?? []).map((item, index) => ({ id: idOf(item) || String(index), ...item }));
+    },
+  });
+}
+
+const projects = defineCollection({
+  loader: yamlList<{ title: string }>('content/projects.yaml', 'projects', (p) => slugify(p.title)),
   schema: z.object({
     id: z.string(),
     title: z.string(),
@@ -63,16 +65,9 @@ const fieldBuilding = defineCollection({
 });
 
 const talks = defineCollection({
-  loader: file('content/talks.yaml', {
-    parser: (text) => {
-      const parsed = yaml.load(text) as { talks?: any[] } | null;
-      const list = parsed?.talks ?? [];
-      return list.map((item, index) => ({
-        id: item.event ? `${slugify(item.event)}-${item.date}` : String(index),
-        ...item,
-      }));
-    }
-  }),
+  loader: yamlList<{ event?: string; date: string }>('content/talks.yaml', 'talks', (t) =>
+    t.event ? `${slugify(t.event)}-${t.date}` : '',
+  ),
   schema: z.object({
     id: z.string(),
     date: z.string(),
@@ -84,16 +79,7 @@ const talks = defineCollection({
 });
 
 const pubs = defineCollection({
-  loader: file('content/pubs.yaml', {
-    parser: (text) => {
-      const parsed = yaml.load(text) as { publications?: any[] } | null;
-      const list = parsed?.publications ?? [];
-      return list.map((item, index) => ({
-        id: slugify(item.title) || String(index),
-        ...item,
-      }));
-    }
-  }),
+  loader: yamlList<{ title: string }>('content/pubs.yaml', 'publications', (p) => slugify(p.title)),
   schema: z.object({
     id: z.string(),
     title: z.string(),
@@ -107,4 +93,15 @@ const pubs = defineCollection({
   }),
 });
 
-export const collections = { projects, fieldBuilding, talks, pubs };
+// Plain strings in the YAML; wrapped as { name } so each is a collection entry.
+const reviewing = defineCollection({
+  loader: file('content/reviewing.yaml', {
+    parser: (text) => {
+      const parsed = loadYaml(text) as { reviewing?: string[] } | null;
+      return (parsed?.reviewing ?? []).map((name) => ({ id: slugify(name), name }));
+    },
+  }),
+  schema: z.object({ name: z.string() }),
+});
+
+export const collections = { projects, fieldBuilding, talks, pubs, reviewing };

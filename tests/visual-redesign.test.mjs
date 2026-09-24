@@ -69,16 +69,16 @@ test('Base serves the goat favicon package from public assets', async () => {
   await readFile(new URL('../public/icon-512.png', import.meta.url));
 });
 
-test('YAML content remains authorable with only project-specific type declarations', async () => {
-  const envTypes = await read('src/env.d.ts');
-  const projects = await read('src/components/Projects.astro');
-  const pubsUtil = await read('src/utils/pubs.ts');
+test('YAML content is loaded only through validated content collections', async () => {
+  const config = await read('src/content.config.ts');
+  const astroConfig = await read('astro.config.mjs');
 
-  assert.doesNotMatch(envTypes, /reference types="astro\/client"/);
-  assert.match(envTypes, /declare module "\*\.yaml"/);
-  assert.doesNotMatch(envTypes, /declare module "\*\.yml"/);
-  assert.match(projects, /content\/projects\.yaml/);
-  assert.match(pubsUtil, /content\/pubs\.yaml/);
+  for (const file of ['projects', 'talks', 'pubs', 'reviewing']) {
+    assert.match(config, new RegExp(`content/${file}\\.yaml`));
+  }
+  // No raw YAML imports, so no Vite YAML plugin or ambient module declaration.
+  assert.doesNotMatch(astroConfig, /plugin-yaml/);
+  await assert.rejects(read('src/env.d.ts'));
 });
 
 test('sections live at real routes instead of homepage tab panels', async () => {
@@ -200,7 +200,10 @@ test('projects retains data behavior hooks while using semantic utilities', asyn
   assert.match(projects, /proj-card-body flex flex-1 flex-col p-5/);
   assert.match(projects, /proj-chips mt-auto flex flex-wrap gap-2 pt-4/);
   assert.match(projects, /proj-tags mt-2 flex flex-wrap gap-2/);
-  assert.match(projects, /classList\.toggle\('border-accent', active\)/);
+  // Toggle state lives in aria-pressed; aria-pressed: variants style it.
+  const script = await read('src/scripts/projects.ts');
+  assert.match(script, /setAttribute\('aria-pressed', String\(active\)\)/);
+  assert.match(projects, /aria-pressed:border-accent/);
   assert.doesNotMatch(projects, /(?:text|bg|border)-\$\{/);
 });
 
@@ -210,8 +213,13 @@ test('CV is served as the PDF itself, with /cv redirecting to it', async () => {
   const header = await read('src/components/Header.astro');
   const footer = await read('src/components/Footer.astro');
 
-  assert.match(constants, /export const cvUrl = '\/cv\/TheoFarrell_CV\.pdf'/);
-  assert.match(config, /'\/cv':\s*'\/cv\/TheoFarrell_CV\.pdf'/);
+  const cvMeta = JSON.parse(await read('src/data/cv-meta.json'));
+
+  // The resume repo's deploy stamps a dated file name; the link and redirect read it.
+  assert.match(cvMeta.file, /^TheoFarrell_CV_[\d-]+\.pdf$/);
+  await readFile(new URL(`../public/cv/${cvMeta.file}`, import.meta.url));
+  assert.match(constants, /export const cvUrl = `\/cv\/\$\{cvMeta\.file\}`/);
+  assert.match(config, /'\/cv':\s*`\/cv\/\$\{cvMeta\.file\}`/);
   // Nav and footer link straight at the PDF via the shared constant.
   assert.match(header, /href=\{cvUrl\}/);
   assert.match(footer, /href=\{cvUrl\}/);

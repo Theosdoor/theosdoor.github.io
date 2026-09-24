@@ -3,6 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -10,29 +11,37 @@ permissions:
   pages: write
   id-token: write
 
+# Per ref, so PR checks never queue behind (or cancel) a production deploy.
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v7
+      # Installs the pnpm pinned in package.json (signature-checked), Node, and
+      # the frozen lockfile in one step.
+      - uses: pnpm/setup@v3
         with:
-          run_install: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-      - run: pnpm ci
+          runtime: node@24
+          cache: true
+          require-lockfile: true
+      - run: pnpm exec astro check
+      - run: pnpm test
       - run: pnpm run build
-      - uses: actions/upload-pages-artifact@v3
+      # Offline: checks internal links and anchors in the built site, not external URLs.
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --no-progress --root-dir "${{ github.workspace }}/dist" 'dist/**/*.html'
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist/
 
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:
@@ -40,4 +49,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

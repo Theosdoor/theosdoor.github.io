@@ -1,3 +1,6 @@
+/** Site owner's name; bolded wherever it appears in an author list. */
+export const owner = 'Theo Farrell';
+
 const emailUser = 'theo.farrell99';
 const emailDomain = 'outlook.com';
 const obfuscateEmailPart = (value: string) => value.replaceAll('.', '[dot]');

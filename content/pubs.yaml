@@ -1,7 +1,6 @@
 # Publications
 # Fields: title, authors (list), venue, year, url, key-role
-# Your name is automatically bolded — just write it exactly as it appears.
-owner: "Theo Farrell"
+# Your name (`owner` in src/utils/constants.ts) is bolded automatically; write it exactly as it appears there.
 
 publications:
   - title: "Order by Scale: Relative-Magnitude Relational Composition in Attention-Only Transformers"

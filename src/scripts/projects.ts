@@ -60,11 +60,9 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     return div;
   }
 
+  // Styling follows from aria-pressed via Tailwind's aria-pressed: variants.
   function setActiveStyle(el: Element, active: boolean) {
-    el.classList.toggle('border-accent', active);
-    el.classList.toggle('text-accent', active);
-    el.classList.toggle('border-rule', !active);
-    el.classList.toggle('text-muted', !active);
+    el.setAttribute('aria-pressed', String(active));
   }
 
   function syncToUrl() {
@@ -243,10 +241,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
       state.text !== '';
     
     if (btn) {
-      btn.classList.toggle('border-accent', isActive);
-      btn.classList.toggle('text-accent', isActive);
-      btn.classList.toggle('border-rule', !isActive);
-      btn.classList.toggle('text-muted', !isActive);
+      btn.toggleAttribute('data-active', isActive);
     }
   }
 
