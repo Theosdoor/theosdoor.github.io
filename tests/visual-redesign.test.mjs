@@ -210,8 +210,13 @@ test('CV is served as the PDF itself, with /cv redirecting to it', async () => {
   const header = await read('src/components/Header.astro');
   const footer = await read('src/components/Footer.astro');
 
-  assert.match(constants, /export const cvUrl = '\/cv\/TheoFarrell_CV\.pdf'/);
-  assert.match(config, /'\/cv':\s*'\/cv\/TheoFarrell_CV\.pdf'/);
+  const cvMeta = JSON.parse(await read('src/data/cv-meta.json'));
+
+  // The resume repo's deploy stamps a dated file name; the link and redirect read it.
+  assert.match(cvMeta.file, /^TheoFarrell_CV_[\d-]+\.pdf$/);
+  await readFile(new URL(`../public/cv/${cvMeta.file}`, import.meta.url));
+  assert.match(constants, /export const cvUrl = `\/cv\/\$\{cvMeta\.file\}`/);
+  assert.match(config, /'\/cv':\s*`\/cv\/\$\{cvMeta\.file\}`/);
   // Nav and footer link straight at the PDF via the shared constant.
   assert.match(header, /href=\{cvUrl\}/);
   assert.match(footer, /href=\{cvUrl\}/);

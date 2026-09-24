@@ -10,7 +10,7 @@ const {
   title,
   description,
   ogUrl,
-  ogImage = '/images/theocool.jpeg',
+  ogImage = '/images/og.jpg',
 } = Astro.props;
 
 const ogImageAbsolute = `https://theosdoor.github.io${ogImage}`;
@@ -34,6 +34,8 @@ import '../styles/global.css';
     <meta property="og:type" content="website" />
     <meta property="og:url" content={ogUrl} />
     <meta property="og:image" content={ogImageAbsolute} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

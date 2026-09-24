@@ -6,7 +6,7 @@ import SelectedFieldBuilding from '../components/SelectedFieldBuilding.astro';
 import Icon from '../components/Icon.astro';
 import { Content as IntroContent, frontmatter as introFrontmatter } from '../../content/intro.md';
 import { Image } from 'astro:assets';
-import profilePic from '../../public/images/theocool.jpeg';
+import profilePic from '../assets/images/theocool.jpeg';
 import { cvUrl, socialLinks } from '../utils/constants';
 
 const personSchema = {
@@ -14,7 +14,7 @@ const personSchema = {
   '@type': 'Person',
   name: introFrontmatter.name,
   url: 'https://theosdoor.github.io/',
-  image: 'https://theosdoor.github.io/images/theocool.jpeg',
+  image: 'https://theosdoor.github.io/images/og.jpg',
   jobTitle: introFrontmatter.subtitle,
   affiliation: [
     { '@type': 'CollegeOrUniversity', name: 'Durham University' },

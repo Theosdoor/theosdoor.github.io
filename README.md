@@ -2,15 +2,15 @@
 
 Personal website built with [Astro](https://astro.build) and [Tailwind CSS v4](https://tailwindcss.com), deployed to GitHub Pages.
 
-This is a modern, high-performance, data-driven static portfolio website designed with responsive light/dark themes, clean typography, premium animations, and modular architecture.
+A data-driven static site with light and dark themes; content lives in YAML and Markdown under `content/`.
 
 ## Architecture & Routes
 
-The site is built as a static Astro application. Every section has its own URL — there is no client-side routing, and the only JavaScript shipped is the theme toggle, the mobile menu, the projects filter, and the CV sidebar.
+The site is built as a static Astro application. Every section has its own URL — there is no client-side routing, and the only JavaScript shipped is the theme toggle, the mobile menu, and the projects filter.
 
 - **`/`** — Home page: intro and bio, followed by the three most recent key-role papers as a plain list linking on to `/research/`.
 - **`/research/`** — Publications (key-role and other contributions), reviewing activity, and research talks.
-- **`/cv/`** — CV viewer with a collapsible sidebar and an embedded interactive PDF viewer. The sidebar state is persisted across visits in `localStorage`.
+- **`/cv`** — Redirects to the current dated CV PDF.
 - **`/projects/`** — Standalone projects page with extensive client-side filtering, sorting, keyboard accessibility, and URL state-synchronization.
 - **`/talks/`** — Standalone talks page listing all presentations, talks, and panels.
 - **`/field-building/`** — Dedicated space highlighting leadership, community building, and public engagement initiatives.
@@ -30,13 +30,17 @@ pnpm install
 # manage it with `pnpm exec astro dev stop|status|logs`)
 pnpm dev
 
+# Type-check and run the regression tests (CI runs both)
+pnpm exec astro check
+pnpm test
+
 # Build production static bundle (outputs to dist/)
 pnpm build
 ```
 
 ### Deployment
 
-The site is configured for continuous integration and automatically deploys to GitHub Pages via GitHub Actions. Any merge or push to the `main` branch triggers the deployment pipeline defined in `.github/workflows/deploy.yml`.
+`.github/workflows/deploy.yml` type-checks, tests, builds and checks internal links on every pull request, and deploys to GitHub Pages on push to `main`. `links.yml` checks external links weekly.
 
 ## Managing Content
 
@@ -52,8 +56,8 @@ All content is managed through structured, type-safe data collections under `con
 
 ### Assets & Styling
 
-- **CV PDF**: Replace the CV file directly at `public/TheoFarrell_CV.pdf`.
-- **Publication thumbnails**: Drop images in `public/images/pubs/` and reference them from `content/pubs.yaml` as `/images/pubs/<file>`. `ResearchCard.astro` picks them up through Astro's image pipeline, cropping and converting to webp at build time.
+- **CV PDF**: Owned by the [resume repo](https://github.com/Theosdoor/resume), whose CI copies the compiled PDF to `public/cv/` and stamps `src/data/cv-meta.json`; do not edit either here.
+- **Images**: Put stills in `src/assets/images/{pubs,projects}/` and reference them from YAML as `/images/<dir>/<file>`; they are resized to webp at build time. Videos and GIFs go in `public/images/projects/`.
 - **Styling**: Powered by Tailwind v4. Utility tokens, semantic colors, and design variables are defined in `src/styles/global.css` under `@theme inline` for runtime adaptation.
 
 ## Acknowledgements

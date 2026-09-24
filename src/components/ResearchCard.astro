@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import { formatAuthors } from '../utils/formatters';
 import { owner, type Pub } from '../utils/pubs';
+import { resolveImage } from '../utils/images';
 
 interface Props {
   pub: Pub;
@@ -10,12 +11,7 @@ interface Props {
 
 const { pub } = Astro.props;
 
-// Thumbnails are authored in content/pubs.yaml as public paths (/images/pubs/x.png);
-// importing them here hands them to Astro for resizing and webp conversion.
-const thumbnails = import.meta.glob<{ default: ImageMetadata }>('/public/images/pubs/*.{png,jpg,jpeg,webp}', {
-  eager: true,
-});
-const thumbnail = pub.thumbnail ? thumbnails[`/public${pub.thumbnail}`]?.default : undefined;
+const thumbnail = pub.thumbnail ? resolveImage(pub.thumbnail) : undefined;
 ---
 
 <a
