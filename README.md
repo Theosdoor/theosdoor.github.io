@@ -18,7 +18,7 @@ The site is built as a static Astro application. Every section has its own URL â
 
 ## Development
 
-The project is pnpm-managed and requires Node `>=24.x`.
+The project is managed with pnpm 12 (pinned in `package.json`) and requires Node `>=24.x`.
 
 ### Local Setup & Dev Commands
 

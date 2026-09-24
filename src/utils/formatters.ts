@@ -82,7 +82,7 @@ export function formatRole(role: Role): string {
 /**
  * Bolds the site owner's name inside the list of publication authors.
  */
-export function formatAuthors(authors: string[], owner: string = "Theo Farrell"): string {
+export function formatAuthors(authors: string[], owner: string): string {
   const [ownerFirst, ...ownerRest] = owner.split(' ');
   const ownerLast = ownerRest.at(-1) ?? '';
   return authors

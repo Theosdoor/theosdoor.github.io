@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-serif: "Merriweather", Georgia, serif;
-  --font-sans: "Raleway", system-ui, -apple-system, sans-serif;
+  /* Families and fallbacks are configured in astro.config.mjs (Fonts API). */
+  --font-serif: var(--font-merriweather);
+  --font-sans: var(--font-raleway);
   --color-canvas: var(--site-canvas);
   --color-panel: var(--site-panel);
   --color-ink: var(--site-ink);
@@ -13,6 +14,12 @@
   --color-accent-strong: var(--site-accent-strong);
   --color-safety: var(--site-safety);
   --ease-deco: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-fade-up: fade-up 0.7s var(--ease-deco) both;
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 }
 
 :root {
@@ -117,9 +124,12 @@ html[data-theme="dark"] {
   }
 }
 
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Native cross-document view transitions: pages cross-fade on navigation with
+   no client router. The header is named so it stays put instead of fading. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

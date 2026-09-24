@@ -4,6 +4,7 @@ import Icon from './Icon.astro';
 import { formatAuthors } from '../utils/formatters';
 import { owner, type Pub } from '../utils/pubs';
 import { resolveImage } from '../utils/images';
+import ArticleIcon from '../assets/icons/article.svg';
 
 interface Props {
   pub: Pub;
@@ -37,12 +38,7 @@ const thumbnail = pub.thumbnail ? resolveImage(pub.thumbnail) : undefined;
         decoding="async"
       />
     ) : (
-      <img
-        src="/images/icons/article.svg"
-        alt="Publication icon"
-        class="size-16 opacity-40 select-none pointer-events-none"
-        loading="lazy"
-      />
+      <ArticleIcon class="size-16 text-subtle opacity-60" aria-hidden="true" />
     )}
   </div>
 

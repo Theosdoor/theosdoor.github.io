@@ -1,5 +1,5 @@
 import { getCollection } from 'astro:content';
-import pubsData from '../../content/pubs.yaml';
+export { owner } from './constants';
 
 export interface Pub {
   title: string;
@@ -11,9 +11,6 @@ export interface Pub {
   thumbnail?: string;
   'key-role': boolean;
 }
-
-/** Site owner's name, as written in content/pubs.yaml. */
-export const owner: string = pubsData.owner;
 
 /**
  * Loads every publication from the `pubs` collection, newest year first.

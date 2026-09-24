@@ -13,15 +13,14 @@ jobs:
   links:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v7
+      # Installs the pnpm pinned in package.json (signature-checked), Node, and
+      # the frozen lockfile in one step.
+      - uses: pnpm/setup@v3
         with:
-          run_install: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-      - run: pnpm ci
+          runtime: node@24
+          cache: true
+          require-lockfile: true
       - run: pnpm run build
       # LinkedIn and Scholar reject bot requests, so they always look dead.
       - uses: lycheeverse/lychee-action@v2
