@@ -1,0 +1,45 @@
+---
+import Base from '../../layouts/Base.astro';
+import { formatDate } from '../../utils/formatters';
+import { getPosts } from '../../utils/writing';
+
+const posts = await getPosts();
+---
+
+<Base
+  title="Writing — Theo Farrell"
+  description="Essays and one-pagers on AI safety by Theo Farrell"
+  ogUrl="https://theosdoor.github.io/writing/"
+>
+  <main class="mx-auto w-full max-w-[800px] px-5 py-16 sm:px-8" id="main" tabindex="-1">
+    <section class="space-y-8 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]">
+      <div class="mb-8 border-b border-rule pb-3">
+        <h1 class="font-serif text-3xl font-black text-ink">Writing</h1>
+      </div>
+
+      {posts.length === 0 ? (
+        <p class="font-sans text-sm text-subtle py-2">No posts yet.</p>
+      ) : (
+        <ul class="flex flex-col gap-8">
+          {posts.map((post) => (
+            <li>
+              <a href={`/writing/${post.id}/`} class="group block">
+                <p class="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-accent-strong">
+                  {formatDate(post.data.date)}
+                </p>
+                <h2 class="mt-2 font-serif text-2xl font-black leading-tight text-ink transition-colors group-hover:text-accent">
+                  {post.data.title}
+                </h2>
+                {post.data.summary && (
+                  <p class="mt-2 font-sans text-sm leading-[1.4rem] tracking-wide text-muted">
+                    {post.data.summary}
+                  </p>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  </main>
+</Base>
