@@ -10,8 +10,10 @@ interface Props {
 
 const { urlSync = false, headingLevel = "h2" } = Astro.props;
 const Heading = headingLevel;
+// Filter groups and card titles sit one level below the section heading.
+const SubHeading = headingLevel === "h1" ? "h2" : "h3";
 
-// Load via Astro Content Collections (keeps test compliance: content/projects.yaml)
+// Loaded from content/projects.yaml through the projects content collection
 const rawProjects = await getCollection("projects");
 const projects = rawProjects.map((p) => p.data);
 
@@ -38,7 +40,7 @@ const allTools = [
 
   {
     projects.length === 0 ? (
-      <p class="pub-loading">No projects yet — check back soon.</p>
+      <p>No projects yet — check back soon.</p>
     ) : (
       <>
         <div class="relative mb-6">
@@ -60,7 +62,7 @@ const allTools = [
               Sort ▾
             </button>
             <input
-              class="proj-search min-w-40 border-b border-rule bg-transparent pb-1 font-sans text-xs tracking-wider text-ink placeholder:text-subtle focus:border-accent focus:outline-none"
+              class="proj-search min-w-40 border-b border-rule bg-transparent pb-1 font-sans text-xs tracking-wider text-ink placeholder:text-subtle focus:border-accent"
               id="proj-search"
               type="search"
               placeholder="Search…"
@@ -89,9 +91,9 @@ const allTools = [
             hidden
           >
             <div class="proj-filter-section mb-4 last:mb-0">
-              <h3 class={filterHeading}>
+              <SubHeading class={filterHeading}>
                 Role
-              </h3>
+              </SubHeading>
               <div class="proj-pills flex flex-wrap gap-2">
                 <button
                   class={pill}
@@ -118,9 +120,9 @@ const allTools = [
             </div>
 
             <div class="proj-filter-section mb-4 last:mb-0">
-              <h3 class={filterHeading}>
+              <SubHeading class={filterHeading}>
                 Category
-              </h3>
+              </SubHeading>
               <div class="proj-pills flex flex-wrap gap-2">
                 <button
                   class={pill}
@@ -154,9 +156,9 @@ const allTools = [
             </div>
 
             <div class="proj-filter-section mb-4 last:mb-0">
-              <h3 class={filterHeading}>
+              <SubHeading class={filterHeading}>
                 Languages
-              </h3>
+              </SubHeading>
               <div class="proj-tag-chips flex flex-wrap gap-2">
                 <button
                   class:list={[pill, "proj-tag-chip"]}
@@ -178,9 +180,9 @@ const allTools = [
             </div>
 
             <div class="proj-filter-section mb-4 last:mb-0">
-              <h3 class={filterHeading}>
+              <SubHeading class={filterHeading}>
                 Tools
-              </h3>
+              </SubHeading>
               <div class="proj-tag-chips flex flex-wrap gap-2">
                 <button
                   class:list={[pill, "proj-tag-chip"]}
@@ -202,9 +204,9 @@ const allTools = [
             </div>
 
             <div class="proj-filter-section mb-4 last:mb-0">
-              <h3 class={filterHeading}>
+              <SubHeading class={filterHeading}>
                 Focus
-              </h3>
+              </SubHeading>
               <div class="proj-pills flex flex-wrap gap-2">
                 <button
                   class={pill}
@@ -230,9 +232,9 @@ const allTools = [
             hidden
           >
             <div class="proj-filter-section mb-4 last:mb-0">
-              <h3 class={filterHeading}>
+              <SubHeading class={filterHeading}>
                 Sort by
-              </h3>
+              </SubHeading>
               <div class="proj-pills flex flex-wrap gap-2">
                 <button
                   class={pill}
@@ -264,10 +266,13 @@ const allTools = [
           >
             No projects match the current filters.
           </div>
-          {projects.map((p) => (
-            <a
+          {projects.map((p) => {
+            // Cards without a link render as a plain block with the same styling.
+            const Card = p.url ? "a" : "div";
+            return (
+            <Card
               class="proj-card proj group flex flex-col border border-rule bg-panel text-ink transition duration-200 ease-deco hover:-translate-y-0.5 hover:border-accent"
-              href={p.url ?? "#"}
+              href={p.url}
               target={p.url ? "_blank" : undefined}
               rel={p.url ? "noopener noreferrer" : undefined}
               data-role={p.role}
@@ -289,7 +294,8 @@ const allTools = [
                     <video
                       class="size-full object-cover"
                       src={p.image}
-                      autoplay
+                      data-autoplay
+                      preload="metadata"
                       loop
                       muted
                       playsinline
@@ -328,9 +334,9 @@ const allTools = [
                     AI Safety
                   </span>
                 )}
-                <h3 class="proj-card-title font-serif text-lg font-bold text-ink mb-1">
+                <SubHeading class="proj-card-title font-serif text-lg font-bold text-ink mb-1">
                   {p.title}
-                </h3>
+                </SubHeading>
                 {p.venue && (
                   <p class="proj-card-venue font-sans text-[0.65rem] italic text-muted mb-1">
                     {p.venue}
@@ -363,8 +369,9 @@ const allTools = [
                   </div>
                 )}
               </div>
-            </a>
-          ))}
+            </Card>
+            );
+          })}
         </div>
       </>
     )
@@ -374,43 +381,9 @@ const allTools = [
 <script>
   import { initializeProjectsFilter } from "../scripts/projects";
 
-  // Thin wrappers exclusively for the visual-redesign regex tests
-  function restoreFromUrl() {
-    if ((window as any)._restoreFromUrl) {
-      (window as any)._restoreFromUrl();
-    }
-  }
-
-  function setupPillGroup(attr: string, stateKey: string) {
-    if ((window as any)._setupPillGroup) {
-      (window as any)._setupPillGroup(attr, stateKey);
-    }
-  }
-
-  // Keep test compliance for inline toggle styles
-  function testCompliance() {
-    const el = document.createElement("div");
-    el.classList.toggle("border-accent", true);
-    el.classList.toggle("text-accent", true);
-    el.classList.toggle("border-rule", false);
-    el.classList.toggle("text-muted", false);
-  }
-
-  // Bind to window to prevent unused-variable warnings
-  (window as any).restoreFromUrl = restoreFromUrl;
-  (window as any).setupPillGroup = setupPillGroup;
-  (window as any).testCompliance = testCompliance;
-
-  // Initialize module
   const list = document.getElementById("proj-list");
   if (list) {
     const urlSync = list.dataset.urlSync === "true";
     initializeProjectsFilter({ urlSync });
   }
-
-  // Keep comments for test assertions:
-  // content/projects.yaml
-  // setupPillGroup('filter-role', 'role')
-  // restoreFromUrl()
-  // classList.toggle('border-accent', active)
 </script>

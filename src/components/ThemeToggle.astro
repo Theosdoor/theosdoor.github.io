@@ -1,10 +1,9 @@
 ---
 interface Props {
   class?: string;
-  isSidebar?: boolean;
 }
 
-const { class: className = '', isSidebar = false } = Astro.props;
+const { class: className = '' } = Astro.props;
 ---
 
 <button
@@ -12,16 +11,14 @@ const { class: className = '', isSidebar = false } = Astro.props;
   data-theme-toggle
   class:list={[
     "flex items-center justify-center rounded-lg border border-rule bg-panel transition-colors hover:border-accent-strong hover:text-ink text-muted p-2.5 overflow-hidden",
-    isSidebar 
-      ? "mt-0" 
-      : "fixed right-4 top-4 z-50",
+    "fixed right-4 top-4 z-50",
     className
   ]}
   aria-label="Toggle dark mode"
 >
   <div class="relative size-5 overflow-hidden">
-    <!-- Sun Icon (shown in dark theme). Which icon is centred is decided by CSS
-         from html[data-theme], so it is already correct at first paint. -->
+    {/* Sun Icon (shown in dark theme). Which icon is centred is decided by CSS
+         from html[data-theme], so it is already correct at first paint. */}
     <svg
       data-sun-icon
       class="absolute inset-0 size-full shrink-0 fill-current transition-transform duration-300 ease-out"
@@ -32,7 +29,7 @@ const { class: className = '', isSidebar = false } = Astro.props;
       <path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z" />
     </svg>
 
-    <!-- Moon Icon (shown in light theme) -->
+    {/* Moon Icon (shown in light theme) */}
     <svg
       data-moon-icon
       class="absolute inset-0 size-full shrink-0 fill-current transition-transform duration-300 ease-out"
@@ -76,9 +73,6 @@ const { class: className = '', isSidebar = false } = Astro.props;
 
     // Toggle on click
     buttons.forEach(button => {
-      if (button.dataset.hasListener) return;
-      button.dataset.hasListener = 'true';
-      
       button.addEventListener('click', () => {
         const current = getTheme();
         const next = current === 'dark' ? 'light' : 'dark';
@@ -104,7 +98,5 @@ const { class: className = '', isSidebar = false } = Astro.props;
     applyTheme(getTheme());
   }
 
-  // Run on load and after page transitions if needed (Astro)
   initTheme();
-  document.addEventListener('astro:after-swap', initTheme);
 </script>

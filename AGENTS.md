@@ -95,7 +95,7 @@ Tailwind v4 is the primary styling layer. `src/layouts/Base.astro` imports `src/
 ### Design tokens
 
 All public utility tokens are declared in `src/styles/global.css` under `@theme inline`:
-- Semantic color utilities: `canvas`, `panel`, `ink`, `muted`, `subtle`, `rule`, `accent`, `accent-strong`, and `safety`
+- Semantic color utilities: `canvas`, `panel`, `ink`, `muted`, `subtle`, `rule`, `accent`, `accent-strong`, `on-accent` (text on an accent fill), and `safety`
 - Typography utilities: `font-serif` (Merriweather) and `font-sans` (Raleway). The families are self-hosted through Astro's Fonts API (`fonts` in `astro.config.mjs`, `<Font />` in `Base.astro`); add weights there, not via a Google Fonts link
 - Motion: `ease-deco` and `animate-fade-up` (the entrance animation; `@keyframes` live inside `@theme`)
 - Theme-sensitive values update through `--site-*` CSS variables on `html[data-theme="dark"]`. There is deliberately no `dark:` variant (a test enforces it): add a token instead
