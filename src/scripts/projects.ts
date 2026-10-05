@@ -60,11 +60,9 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     return div;
   }
 
+  // Styling follows from aria-pressed via Tailwind's aria-pressed: variants.
   function setActiveStyle(el: Element, active: boolean) {
-    el.classList.toggle('border-accent', active);
-    el.classList.toggle('text-accent', active);
-    el.classList.toggle('border-rule', !active);
-    el.classList.toggle('text-muted', !active);
+    el.setAttribute('aria-pressed', String(active));
   }
 
   function syncToUrl() {
@@ -149,6 +147,16 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     }
   }
 
+  // Card videos ship without autoplay so reduced-motion visitors get a still
+  // first frame; everyone else gets the looping preview.
+  const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  function playPreviews() {
+    if (!motionOk) return;
+    list!.querySelectorAll<HTMLVideoElement>('video[data-autoplay]').forEach((video) => {
+      video.play().catch(() => {});
+    });
+  }
+
   function filterAndRender() {
     syncToUrl();
     list!.querySelectorAll('.proj-group-heading').forEach(h => h.remove());
@@ -219,6 +227,8 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     }
 
     list!.appendChild(fragment);
+    // Re-attaching a card pauses its video, so resume previews after every render
+    playPreviews();
 
     const placeholder = document.getElementById('proj-empty-state');
     if (placeholder) {
@@ -243,10 +253,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
       state.text !== '';
     
     if (btn) {
-      btn.classList.toggle('border-accent', isActive);
-      btn.classList.toggle('text-accent', isActive);
-      btn.classList.toggle('border-rule', !isActive);
-      btn.classList.toggle('text-muted', !isActive);
+      btn.toggleAttribute('data-active', isActive);
     }
   }
 
@@ -384,9 +391,4 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
 
   restoreFromUrl();
   filterAndRender();
-
-  // Export internal components on window context exclusively for unit-test regex compliance
-  (window as any)._restoreFromUrl = restoreFromUrl;
-  (window as any)._setupPillGroup = setupPillGroup;
-  (window as any)._setActiveStyle = setActiveStyle;
 }

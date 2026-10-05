@@ -22,14 +22,20 @@ const entries = (await getCollection('fieldBuilding'))
     <ul class="space-y-6">
       {entries.map((entry) => (
         <li>
-          <a
-            href={entry.data.url}
-            target="_blank"
-            rel="noopener"
-            class="font-serif text-base font-bold leading-snug text-ink transition-colors hover:text-accent"
-          >
-            {entry.data.projectName}
-          </a>
+          {entry.data.url ? (
+            <a
+              href={entry.data.url}
+              target="_blank"
+              rel="noopener"
+              class="font-serif text-base font-bold leading-snug text-ink transition-colors hover:text-accent"
+            >
+              {entry.data.projectName}
+            </a>
+          ) : (
+            <span class="font-serif text-base font-bold leading-snug text-ink">
+              {entry.data.projectName}
+            </span>
+          )}
           <p class="mt-1 font-sans text-xs leading-5 text-muted">{entry.data.summary}</p>
           <ul class="mt-1 font-sans text-[0.65rem] uppercase tracking-wider text-accent-strong">
             {sortRolesByRecency(entry.data.roles).map((role) => (

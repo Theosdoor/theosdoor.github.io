@@ -8,6 +8,6 @@ interface Props {
 const { class: className = '' } = Astro.props;
 ---
 
-<!-- wrap-anywhere: the obfuscated address has no spaces, so it would otherwise
-     overflow narrow containers such as the CV sidebar. -->
+{/* wrap-anywhere: the obfuscated address has no spaces, so it would otherwise
+     overflow narrow containers such as the CV sidebar. */}
 <span class:list={['inline-flex items-center wrap-anywhere', className]}>{contactConfig.emailObfuscatedText}</span>

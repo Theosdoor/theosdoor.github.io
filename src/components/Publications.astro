@@ -8,35 +8,38 @@ interface Props {
 
 const { headingLevel = 'h2' } = Astro.props;
 const Heading = headingLevel;
+const GridHeading = headingLevel === 'h1' ? 'h2' : 'h3';
 
 const allPubs = await getPublications();
 const keyPubs = allPubs.filter((p) => p['key-role'] === true);
 const otherPubs = allPubs.filter((p) => p['key-role'] === false);
 ---
 
-<section class="space-y-0 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="research-section">
+<section class="space-y-0 animate-fade-up" id="research-section">
   <Heading class="mb-4 border-b border-rule pb-3 font-serif text-3xl font-black text-ink">Research</Heading>
   
-  <!-- Jump Navigation -->
+  {/* Jump Navigation */}
   <nav class="mb-10 flex flex-wrap gap-3 font-sans text-xs font-semibold uppercase tracking-[0.16em]" aria-label="Research sections">
-    <a href="#key-role" class="border border-accent rounded-lg px-4 py-2 text-accent hover:bg-accent hover:text-white transition-all">Key Role Papers</a>
-    <a href="#other-papers" class="border border-accent rounded-lg px-4 py-2 text-accent hover:bg-accent hover:text-white transition-all">Other Contributions</a>
-    <a href="#reviewing" class="border border-accent rounded-lg px-4 py-2 text-accent hover:bg-accent hover:text-white transition-all">Reviewing</a>
-    <a href="#talks" class="border border-accent rounded-lg px-4 py-2 text-accent hover:bg-accent hover:text-white transition-all">Talks</a>
+    <a href="#key-role" class="border border-accent rounded-lg px-4 py-2 text-accent hover:bg-accent hover:text-on-accent transition-all">Key Role Papers</a>
+    <a href="#other-papers" class="border border-accent rounded-lg px-4 py-2 text-accent hover:bg-accent hover:text-on-accent transition-all">Other Contributions</a>
+    <a href="#reviewing" class="border border-accent rounded-lg px-4 py-2 text-accent hover:bg-accent hover:text-on-accent transition-all">Reviewing</a>
+    <a href="#talks" class="border border-accent rounded-lg px-4 py-2 text-accent hover:bg-accent hover:text-on-accent transition-all">Talks</a>
   </nav>
 
-  <!-- Section 1: Key Role Papers -->
+  {/* Section 1: Key Role Papers */}
   <div class="pt-2 mb-12 scroll-mt-20" id="key-role">
     <ResearchGrid
       title="Published papers I played a key role in creating:"
+      headingLevel={GridHeading}
       papers={keyPubs}
     />
   </div>
 
-  <!-- Section 2: Other Contributions -->
+  {/* Section 2: Other Contributions */}
   <div class="pt-2 scroll-mt-20" id="other-papers">
     <ResearchGrid
       title="Other published papers I’ve helped with:"
+      headingLevel={GridHeading}
       papers={otherPubs}
     />
   </div>

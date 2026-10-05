@@ -3,6 +3,16 @@ import { getCollection, render } from 'astro:content';
 import Icon from './Icon.astro';
 import { formatRole, parseRolesForSort, sortRolesByRecency } from '../utils/formatters';
 
+interface Props {
+  headingLevel?: 'h1' | 'h2';
+}
+
+const { headingLevel = 'h1' } = Astro.props;
+const Heading = headingLevel;
+// Card headings follow on from the section heading so levels never skip.
+const ProjectHeading = headingLevel === 'h1' ? 'h2' : 'h3';
+const HeadlineHeading = headingLevel === 'h1' ? 'h3' : 'h4';
+
 // Fetch all markdown files via Astro content collections
 // import.meta.glob
 const sortedEntries = await getCollection('fieldBuilding');
@@ -24,9 +34,9 @@ const renderedEntries = await Promise.all(
 );
 ---
 
-<section class="space-y-8 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="field-building-section">
+<section class="space-y-8 animate-fade-up" id="field-building-section">
   <div class="mb-8 border-b border-rule pb-3">
-    <h2 class="font-serif text-3xl font-black text-ink">Field-building</h2>
+    <Heading class="font-serif text-3xl font-black text-ink">Field-building</Heading>
   </div>
 
   {renderedEntries.length === 0 ? (
@@ -39,9 +49,9 @@ const renderedEntries = await Promise.all(
           <article class="relative bg-panel border border-rule p-6 sm:p-8 rounded-xl transition-all duration-300 hover:shadow-md">
             {/* Card Header */}
             <div class="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between mb-4">
-              <h3 class="font-sans text-xs font-bold uppercase tracking-[0.2em] text-accent-strong">
+              <ProjectHeading class="font-sans text-xs font-bold uppercase tracking-[0.2em] text-accent-strong">
                 {entry.data.projectName}
-              </h3>
+              </ProjectHeading>
               <ul class="font-sans text-xs font-semibold italic text-subtle sm:text-right">
                 {sortRolesByRecency(entry.data.roles).map((role) => (
                   <li>{formatRole(role)}</li>
@@ -50,9 +60,9 @@ const renderedEntries = await Promise.all(
             </div>
 
             {/* Headline */}
-            <h4 class="font-serif text-2xl font-black leading-tight text-ink mb-6">
+            <HeadlineHeading class="font-serif text-2xl font-black leading-tight text-ink mb-6">
               {entry.data.headline}
-            </h4>
+            </HeadlineHeading>
 
             {/* Content (Description and Bullets parsed by Markdown compiler) */}
             <div class="prose max-w-none font-sans text-sm leading-[1.4rem] tracking-wide text-muted
@@ -76,7 +86,7 @@ const renderedEntries = await Promise.all(
                   class="inline-flex items-center gap-2 border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-ink hover:border-accent hover:text-accent transition-all"
                 >
                   <Icon name="external-link" class="size-3" />
-                  Visit website
+                  Visit website<span class="sr-only">: {entry.data.projectName} (opens in new tab)</span>
                 </a>
               </div>
             )}

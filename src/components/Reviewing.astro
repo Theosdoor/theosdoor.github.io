@@ -1,5 +1,5 @@
 ---
-import reviewingData from '../../content/reviewing.yaml';
+import { getCollection } from 'astro:content';
 
 interface Props {
   headingLevel?: 'h2' | 'h3';
@@ -8,10 +8,10 @@ interface Props {
 const { headingLevel = 'h3' } = Astro.props;
 const Heading = headingLevel;
 
-const activities: string[] = reviewingData.reviewing;
+const activities = (await getCollection('reviewing')).map((r) => r.data.name);
 ---
 
-<section class="space-y-0 scroll-mt-20 animate-[fade-up_0.7s_var(--ease-smooth)_forwards]" id="reviewing">
+<section class="space-y-0 scroll-mt-20 animate-fade-up" id="reviewing">
   <div class="mb-6 border-b border-rule pb-3">
     <Heading class="font-serif text-2xl font-black text-ink">Reviewing</Heading>
   </div>

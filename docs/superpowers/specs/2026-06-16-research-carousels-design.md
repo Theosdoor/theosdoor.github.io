@@ -1,3 +1,5 @@
+> **Superseded:** the research carousels were removed; publications now render as a static grid (`ResearchGrid.astro`).
+
 # Spec: Research Carousels on Research Page
 
 **Date**: 2026-06-16  

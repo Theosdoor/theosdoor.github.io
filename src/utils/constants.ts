@@ -1,3 +1,6 @@
+/** Site owner's name; bolded wherever it appears in an author list. */
+export const owner = 'Theo Farrell';
+
 const emailUser = 'theo.farrell99';
 const emailDomain = 'outlook.com';
 const obfuscateEmailPart = (value: string) => value.replaceAll('.', '[dot]');
@@ -12,7 +15,6 @@ export const contactConfig = {
 // The stable /cv redirect (see astro.config.mjs) also points at this file.
 import cvMeta from '../data/cv-meta.json';
 export const cvUrl = `/cv/${cvMeta.file}`;
-export const cvUpdated = cvMeta.updated;
 
 // `icon` values must be names Icon.astro knows about.
 export const socialLinks = [
