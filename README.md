@@ -6,7 +6,7 @@ A data-driven static site with light and dark themes; content lives in YAML and 
 
 ## Architecture & Routes
 
-The site is built as a static Astro application. Every section has its own URL — there is no client-side routing, and the only JavaScript shipped is the theme toggle, the mobile menu, and the projects filter.
+The site is built as a static Astro application. Every section has its own URL — there is no client-side routing, and the only JavaScript shipped is the theme toggle, the mobile menu, the projects filter, Astro's prefetch script (loads a page when its link is hovered or focused), and the third-party zcal booking embed on `/lets-chat/`.
 
 - **`/`** — Home page: intro and bio, followed by the three most recent key-role papers as a plain list linking on to `/research/`.
 - **`/research/`** — Publications (key-role and other contributions), reviewing activity, and research talks.
@@ -44,7 +44,7 @@ pnpm build
 
 ## Managing Content
 
-All content is managed through structured, type-safe data collections under `content/` with validation schemas defined in `src/content.config.ts`. To update site content, you only need to modify these files:
+Content lives under `content/`. Everything except the intro is a type-safe content collection with validation schemas defined in `src/content.config.ts`. To update site content, you only need to modify these files:
 
 ### Data-Driven Collections
 
@@ -52,7 +52,7 @@ All content is managed through structured, type-safe data collections under `con
 - **Projects** (`content/projects.yaml`): Track research, coursework, or side projects (supports image previews, `.mp4`/`.gif` video clips, tags, and languages).
 - **Talks** (`content/talks.yaml`): List public lectures, panels, and academic talks.
 - **Field-Building** (`content/field-building/*.md`): Markdown files representing field-building projects, dynamically rendered on the site.
-- **Intro** (`content/intro.md`): Markdown file for the main intro/bio displayed on the home page.
+- **Intro** (`content/intro.md`): Markdown file for the main intro/bio displayed on the home page. Not a collection: `src/pages/index.astro` imports it directly.
 
 ### Assets & Styling
 

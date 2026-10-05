@@ -1,3 +1,8 @@
+const months = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
 /**
  * Formats a date string (YYYY-MM-DD) into standard representation (D MMMM YYYY).
  */
@@ -8,10 +13,6 @@ export function formatDate(dateStr: string): string {
   const monthIdx = parseInt(parts[1], 10) - 1;
   const day = parseInt(parts[2], 10);
   const date = new Date(year, monthIdx, day);
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
   return `${day} ${months[date.getMonth()]} ${year}`;
 }
 
@@ -27,10 +28,6 @@ export function formatMonthYear(dateStr: string): string {
   if (isNaN(year) || isNaN(monthIdx) || monthIdx < 0 || monthIdx > 11) {
     return dateStr;
   }
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
   return `${months[monthIdx]} ${year}`;
 }
 
@@ -102,6 +99,6 @@ export function parseMarkdownLinks(text: string): string {
   if (!text) return '';
   return text.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
-    '<a class="border-b border-rule hover:border-accent hover:text-accent transition-colors font-semibold" href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+    '<a class="text-accent underline decoration-accent/55 decoration-[1.5px] underline-offset-4 hover:text-accent-strong hover:decoration-accent-strong transition-colors font-semibold" href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
   );
 }

@@ -51,7 +51,7 @@ const thumbnail = pub.thumbnail ? resolveImage(pub.thumbnail) : undefined;
     <p class="font-sans text-xs leading-5 text-muted mb-2" set:html={formatAuthors(pub.authors, owner)} />
 
     <p class="font-sans text-[0.65rem] uppercase tracking-wider text-accent-strong mb-4">
-       {pub.venue} <!-- ({pub.year}) --> <!-- NOTE venue usually includes year so don't include year-->
+       {pub.venue} {/* ({pub.year}) left out: the venue usually includes the year */}
     </p>
 
     <span class="mt-auto inline-flex items-center gap-2 font-sans text-[0.65rem] font-bold uppercase tracking-widest text-ink group-hover:text-accent transition duration-200">

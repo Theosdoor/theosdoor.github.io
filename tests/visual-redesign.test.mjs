@@ -59,9 +59,10 @@ test('Base serves the goat favicon package from public assets', async () => {
   assert.doesNotMatch(base, /data:image\/svg\+xml/);
   assert.match(favicon, /🐐/);
   assert.equal(manifest.theme_color, '#7d3c52');
+  // One entry per purpose: "any maskable" makes browsers pad the regular icon.
   assert.deepEqual(
-    manifest.icons.map((icon) => icon.src),
-    ['/icon-192.png', '/icon-512.png'],
+    manifest.icons.map((icon) => `${icon.src} ${icon.purpose}`),
+    ['/icon-192.png any', '/icon-512.png any', '/icon-192.png maskable', '/icon-512.png maskable'],
   );
   await readFile(new URL('../public/favicon.ico', import.meta.url));
   await readFile(new URL('../public/apple-touch-icon.png', import.meta.url));
@@ -167,7 +168,6 @@ test('ThemeToggle supports alternating light and dark themes via sun and moon ic
 test('home UI is composed from DecoDivider and semantic Tailwind surfaces', async () => {
   const divider = await read('src/components/DecoDivider.astro');
   const icon = await read('src/components/Icon.astro');
-  const card = await read('src/components/Card.astro');
   const researchCard = await read('src/components/ResearchCard.astro');
   const index = await read('src/pages/index.astro');
 
@@ -177,12 +177,12 @@ test('home UI is composed from DecoDivider and semantic Tailwind surfaces', asyn
   assert.match(icon, /aria-hidden="true"/);
   assert.match(icon, /'external-link'/);
   assert.match(icon, /fontawesome\.com\/license\/free/);
-  assert.match(card, /import Icon/);
-  assert.match(card, /<Icon name=\{icon\}/);
-  assert.doesNotMatch(card, /images\/icons|<img/);
   assert.match(researchCard, /<Icon name="external-link"/);
-  assert.match(card, /border-rule/);
-  assert.match(card, /bg-panel/);
+  assert.doesNotMatch(researchCard, /images\/icons/);
+  assert.match(researchCard, /border-rule/);
+  assert.match(researchCard, /bg-panel/);
+  // The generic Card was never used and is gone.
+  await assert.rejects(read('src/components/Card.astro'));
   assert.match(index, /import DecoDivider/);
   assert.doesNotMatch(index, /icon="resume"/);
   assert.doesNotMatch(index, /<em>Farrell<\/em>/);
@@ -190,10 +190,14 @@ test('home UI is composed from DecoDivider and semantic Tailwind surfaces', asyn
 
 test('projects retains data behavior hooks while using semantic utilities', async () => {
   const projects = await read('src/components/Projects.astro');
+  const script = await read('src/scripts/projects.ts');
 
   assert.match(projects, /data-url-sync/);
-  assert.match(projects, /setupPillGroup\('filter-role', 'role'\)/);
-  assert.match(projects, /restoreFromUrl\(\)/);
+  assert.match(projects, /initializeProjectsFilter\(\{ urlSync \}\)/);
+  assert.match(script, /setupPillGroup\('filter-role', 'role'\)/);
+  assert.match(script, /restoreFromUrl\(\)/);
+  // No test-only shims leak onto window.
+  assert.doesNotMatch(projects + script, /window as any/);
   assert.match(projects, /bg-panel/);
   assert.match(projects, /border-rule/);
   assert.match(projects, /text-safety/);
@@ -201,7 +205,6 @@ test('projects retains data behavior hooks while using semantic utilities', asyn
   assert.match(projects, /proj-chips mt-auto flex flex-wrap gap-2 pt-4/);
   assert.match(projects, /proj-tags mt-2 flex flex-wrap gap-2/);
   // Toggle state lives in aria-pressed; aria-pressed: variants style it.
-  const script = await read('src/scripts/projects.ts');
   assert.match(script, /setAttribute\('aria-pressed', String\(active\)\)/);
   assert.match(projects, /aria-pressed:border-accent/);
   assert.doesNotMatch(projects, /(?:text|bg|border)-\$\{/);
@@ -310,7 +313,6 @@ test('legacy palette and superseded component styles are removed', async () => {
     'src/styles/global.css',
     'src/pages/index.astro',
     'src/pages/projects/index.astro',
-    'src/components/Card.astro',
     'src/components/Icon.astro',
     'src/components/SelectedResearch.astro',
     'src/components/SelectedFieldBuilding.astro',

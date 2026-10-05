@@ -2,14 +2,6 @@
 import { getCollection } from 'astro:content';
 import { formatDate, parseMarkdownLinks } from '../utils/formatters';
 
-interface Talk {
-  date: string;
-  event: string;
-  venue: string;
-  topic: 'research' | 'other';
-  description: string;
-}
-
 interface Props {
   filterResearchOnly?: boolean;
   headingLevel?: 'h1' | 'h2' | 'h3';
@@ -17,9 +9,11 @@ interface Props {
 
 const { filterResearchOnly = false, headingLevel = 'h3' } = Astro.props;
 const Heading = headingLevel;
+// Each talk's title sits one level below the section heading.
+const ItemHeading = ({ h1: 'h2', h2: 'h3', h3: 'h4' } as const)[headingLevel];
 
 const rawTalks = await getCollection('talks');
-const allTalks: Talk[] = rawTalks.map(t => t.data).sort(
+const allTalks = rawTalks.map(t => t.data).sort(
   (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 );
 
@@ -32,7 +26,7 @@ const talks = filterResearchOnly
   <div class="mb-6 border-b border-rule pb-3 flex items-center justify-between">
     <Heading class="font-serif text-2xl font-black text-ink">Talks</Heading>
     {filterResearchOnly && (
-      <a href="/talks/" class="border border-accent rounded-lg px-3 py-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-accent hover:bg-accent hover:text-white transition-all">
+      <a href="/talks/" class="border border-accent rounded-lg px-3 py-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-accent hover:bg-accent hover:text-on-accent transition-all">
         See All Talks &rarr;
       </a>
     )}
@@ -44,10 +38,10 @@ const talks = filterResearchOnly
     <div class="divide-y divide-rule/50">
       {talks.map((talk) => (
         <article class="py-6 first:pt-0 last:pb-0">
-          <h4 class="mb-2 font-serif text-xl font-bold leading-snug text-ink">{talk.event}</h4>
+          <ItemHeading class="mb-2 font-serif text-xl font-bold leading-snug text-ink">{talk.event}</ItemHeading>
           <div class="mb-4 flex flex-wrap items-center gap-2 text-xs font-sans text-subtle font-semibold uppercase tracking-wider">
             <span>{formatDate(talk.date)}</span>
-            <span>&bull;</span>
+            <span aria-hidden="true">&bull;</span>
             <span>{talk.venue}</span>
           </div>
           <p class="font-sans text-sm leading-8 text-muted" set:html={parseMarkdownLinks(talk.description)} />

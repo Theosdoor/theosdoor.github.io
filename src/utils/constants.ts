@@ -15,7 +15,6 @@ export const contactConfig = {
 // The stable /cv redirect (see astro.config.mjs) also points at this file.
 import cvMeta from '../data/cv-meta.json';
 export const cvUrl = `/cv/${cvMeta.file}`;
-export const cvUpdated = cvMeta.updated;
 
 // `icon` values must be names Icon.astro knows about.
 export const socialLinks = [
