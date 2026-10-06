@@ -37,7 +37,11 @@ Astro static site (`output: 'static'`) with multiple static routes:
 
 Every section is a real route. `src/components/Header.astro` holds a `navLinks` array and marks the active entry with `aria-current="page"` by comparing `Astro.url.pathname`; add new sections there and in `Footer.astro`. There is no client-side router — the header script only toggles the mobile menu.
 
-Keep the client-side JavaScript budget small: the theme toggle (`ThemeToggle.astro`), the mobile menu (`Header.astro`), the projects filter (`src/scripts/projects.ts`), and Astro's prefetch script (`prefetch: true` loads a page on link hover or focus). Prefer a static solution over a new script. Page-to-page transitions are native CSS (`@view-transition` in `global.css`, skipped under reduced motion), not `<ClientRouter />`; the header carries `view-transition-name: site-header` so it stays still.
+Keep the client-side JavaScript budget small: the theme toggle (`ThemeToggle.astro`), the mobile menu (`Header.astro`), the projects filter (`src/scripts/projects.ts`), the secret 2000s mode (`RetroMode.astro`), and Astro's prefetch script (`prefetch: true` loads a page on link hover or focus). Prefer a static solution over a new script. Page-to-page transitions are native CSS (`@view-transition` in `global.css`, skipped under reduced motion), not `<ClientRouter />`; the header carries `view-transition-name: site-header` so it stays still.
+
+### Secret 2000s mode
+
+Triple-clicking the footer's "Last updated" button (`data-era-trigger`), or typing the Konami code, toggles a GeoCities-style skin. `RetroMode.astro` stores `era=2000s` in `localStorage` and sets `html[data-era="2000s"]`; the inline head script in `Base.astro` restores it before first paint. `src/styles/retro.css` restyles everything under `:root[data-era="2000s"]` by overriding the `--site-*` tokens, so it has no dark variant and hides the theme toggle. Mark elements `retro-only` or `modern-only` to show them in one era; keep the header, footer and `DecoDivider` hooks (`data-site-header`, `data-brand`, `data-deco-divider`) when editing those components.
 
 ### Data-driven content
 
