@@ -4,6 +4,15 @@ import test from 'node:test';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
+test('Comic Neue is self-hosted for retro mode but never preloaded', async () => {
+  const base = await read('src/layouts/Base.astro');
+  const config = await read('astro.config.mjs');
+
+  assert.match(config, /name: 'Comic Neue',\s*cssVariable: '--font-comic-neue'/);
+  assert.match(base, /<Font cssVariable="--font-comic-neue" \/>/);
+  assert.doesNotMatch(base, /--font-comic-neue" preload/);
+});
+
 test('Base restores the 2000s era before first paint and mounts both retro parts', async () => {
   const base = await read('src/layouts/Base.astro');
 
@@ -47,13 +56,13 @@ test('retro.css overrides tokens for both themes, hides the theme toggle and res
   assert.match(css, /:root\[data-era="2000s"\] \.modern-only/);
   assert.match(css, /:root\[data-era="2000s"\] \[data-theme-toggle\]/);
   assert.match(css, /--site-canvas:\s*#000018;/);
-  assert.match(css, /--font-merriweather:\s*"Comic Sans MS"/);
   // One palette, no dark variant (the header comment explains why, so skip comments).
   const rules = css.replace(/\/\*[\s\S]*?\*\//g, '');
   assert.doesNotMatch(rules, /data-theme="dark"|prefers-color-scheme/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*animation:\s*none/);
-  // System fonts only: nothing fetched.
+  // Fonts come from the Astro Fonts API, never fetched from retro.css itself.
   assert.doesNotMatch(rules, /@import|@font-face|url\(/);
+  assert.match(css, /--font-merriweather:\s*"Comic Sans MS", "Comic Sans", var\(--font-comic-neue\)/);
   assert.match(header, /<header data-site-header/);
   assert.match(header, /data-brand/);
   assert.match(divider, /data-deco-divider/);

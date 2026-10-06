@@ -40,6 +40,17 @@ export default defineConfig({
       subsets: ['latin'],
       fallbacks: ['system-ui', 'sans-serif'],
     },
+    {
+      // Secret 2000s mode only (retro.css): an open-licence Comic Sans lookalike for
+      // devices without Comic Sans MS. Not preloaded, so other visitors never fetch it.
+      provider: fontProviders.google(),
+      name: 'Comic Neue',
+      cssVariable: '--font-comic-neue',
+      weights: [400, 700],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['cursive'],
+    },
   ],
 
   // Static multi-page site: fetch a page when its link is hovered or focused.

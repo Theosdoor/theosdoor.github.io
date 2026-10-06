@@ -49,6 +49,8 @@ import '../styles/retro.css';
     {/* Fonts: each family is one variable woff2 covering every weight, so preload both */}
     <Font cssVariable="--font-merriweather" preload />
     <Font cssVariable="--font-raleway" preload />
+    {/* Used only by the secret 2000s mode; browsers fetch it only when retro text needs it */}
+    <Font cssVariable="--font-comic-neue" />
     {/* Favicon */}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />

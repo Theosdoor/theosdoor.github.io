@@ -25,7 +25,7 @@
   --retro-link: #00ffff;
   --retro-visited: #ff80ff;
   --retro-rainbow: linear-gradient(90deg, #ff6060, #ffb040, #ffff40, #60ff60, #40ffff, #8080ff, #ff80ff);
-  --font-merriweather: "Comic Sans MS", "Comic Sans", "Chalkboard SE", "Comic Neue", cursive;
+  --font-merriweather: "Comic Sans MS", "Comic Sans", var(--font-comic-neue);
   --font-raleway: "Times New Roman", Times, serif;
 }
 

@@ -41,7 +41,7 @@ Keep the client-side JavaScript budget small: the theme toggle (`ThemeToggle.ast
 
 ### Secret 2000s mode
 
-Triple-clicking the footer's "Last updated" button (`data-era-trigger`), or typing the Konami code, toggles a GeoCities-style skin. `RetroMode.astro` stores `era=2000s` in `localStorage` and sets `html[data-era="2000s"]`; the inline head script in `Base.astro` restores it before first paint. `src/styles/retro.css` restyles everything under `:root[data-era="2000s"]` by overriding the `--site-*` tokens, so it has no dark variant and hides the theme toggle. Mark elements `retro-only` or `modern-only` to show them in one era; keep the header, footer and `DecoDivider` hooks (`data-site-header`, `data-brand`, `data-deco-divider`) when editing those components.
+Triple-clicking the footer's "Last updated" button (`data-era-trigger`), or typing the Konami code, toggles a GeoCities-style skin. `RetroMode.astro` stores `era=2000s` in `localStorage` and sets `html[data-era="2000s"]`; the inline head script in `Base.astro` restores it before first paint. `src/styles/retro.css` restyles everything under `:root[data-era="2000s"]` by overriding the `--site-*` tokens, so it has no dark variant and hides the theme toggle. Headings use Comic Sans MS where installed, else Comic Neue, self-hosted through the Fonts API but deliberately not preloaded so only retro visitors download it. Mark elements `retro-only` or `modern-only` to show them in one era; keep the header, footer and `DecoDivider` hooks (`data-site-header`, `data-brand`, `data-deco-divider`) when editing those components.
 
 ### Data-driven content
 
