@@ -77,6 +77,8 @@ const { part } = Astro.props;
   document.addEventListener('keydown', (event) => {
     const target = event.target as HTMLElement | null;
     if (target?.closest('input, textarea, select, [contenteditable]')) return;
+    // Shift (for a capital B or A), held-key repeats and IME composition are not presses.
+    if (['Shift', 'Control', 'Alt', 'Meta'].includes(event.key) || event.repeat || event.isComposing) return;
     const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
     recent = [...recent, key].slice(-konami.length);
     if (recent.join() === konami.join()) {

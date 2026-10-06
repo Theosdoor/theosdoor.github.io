@@ -43,6 +43,8 @@ test('RetroMode toggles via triple click, Konami code and an exit button', async
   assert.match(retro, /Return to 2026/);
   assert.match(retro, /localStorage\.setItem\('era', ERA\)/);
   assert.match(retro, /localStorage\.removeItem\('era'\)/);
+  // Shift for a capital B or A must not break the sequence.
+  assert.match(retro, /\['Shift', 'Control', 'Alt', 'Meta'\]\.includes\(event\.key\)/);
   // Konami must not fire while someone is typing.
   assert.match(retro, /input, textarea, select, \[contenteditable\]/);
 });
@@ -63,6 +65,12 @@ test('retro.css overrides tokens for both themes, hides the theme toggle and res
   // Fonts come from the Astro Fonts API, never fetched from retro.css itself.
   assert.doesNotMatch(rules, /@import|@font-face|url\(/);
   assert.match(css, /--font-merriweather:\s*"Comic Sans MS", "Comic Sans", var\(--font-comic-neue\)/);
+  // Hover and focus colours that stay visible on the grey header and cyan pills.
+  assert.match(css, /\[data-site-header\] a:hover \{\s*color: #000080;/);
+  assert.match(css, /a\[class~="hover:bg-accent"\]:hover \{\s*color: #000000;/);
+  assert.match(css, /\[data-site-header\] :focus-visible \{\s*outline-color: #000080;/);
+  // The fixed exit button must not cover the footer's trigger or Source link.
+  assert.match(css, /body > footer \{\s*padding-bottom: 80px;/);
   assert.match(header, /<header data-site-header/);
   assert.match(header, /data-brand/);
   assert.match(divider, /data-deco-divider/);

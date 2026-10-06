@@ -58,9 +58,33 @@
   color: #ffff00;
 }
 
+/* Yellow hover would vanish on the grey header and on cyan-filled pills. */
+:root[data-era="2000s"] [data-site-header] a:hover {
+  color: #000080;
+}
+
+:root[data-era="2000s"] a[class~="hover:bg-accent"]:hover {
+  color: #000000;
+}
+
+/* The mobile menu's "Let's Talk" fills with the header's navy accent instead. */
+:root[data-era="2000s"] [data-site-header] .mobile-nav-link[class~="hover:bg-accent"]:hover {
+  color: #ffffff;
+}
+
+:root[data-era="2000s"] :focus-visible {
+  outline: 2px solid #ffff00;
+}
+
+:root[data-era="2000s"] [data-site-header] :focus-visible {
+  outline-color: #000080;
+}
+
 /* Whole-card links (projects, research) would otherwise underline every line
    of the card, so only their headings keep the link styling. */
-:root[data-era="2000s"] a:has(h2, h3, p, div, img) {
+:root[data-era="2000s"] a:has(h2, h3, p, div, img),
+:root[data-era="2000s"] a:has(h2, h3, p, div, img):visited,
+:root[data-era="2000s"] a:has(h2, h3, p, div, img):hover {
   color: var(--site-ink);
   text-decoration: none;
 }
@@ -68,6 +92,10 @@
 :root[data-era="2000s"] a:has(h2, h3, p, div, img) :is(h2, h3) {
   color: var(--retro-link);
   text-decoration: underline;
+}
+
+:root[data-era="2000s"] a:has(h2, h3, p, div, img):hover :is(h2, h3) {
+  color: #ffff00;
 }
 
 :root[data-era="2000s"] h1 {
@@ -108,7 +136,8 @@
 }
 
 :root[data-era="2000s"] [data-brand] {
-  background: linear-gradient(90deg, #c00000, #c06000, #808000, #008000, #008080, #0000c0, #800080);
+  /* Dark stops so every colour keeps 4.5:1 against the #c0c0c0 toolbar. */
+  background: linear-gradient(90deg, #a00000, #804000, #505000, #006000, #005050, #0000a0, #700070);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -132,6 +161,15 @@
 :root[data-era="2000s"] .nav-link:active,
 :root[data-era="2000s"] .nav-link[aria-current="page"] {
   border-style: inset;
+}
+
+:root[data-era="2000s"] .mobile-nav-link[aria-current="page"] {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+:root[data-era="2000s"] .mobile-nav-link[aria-current="page"]::before {
+  content: "► ";
 }
 
 :root[data-era="2000s"] .deco-frame {
@@ -236,6 +274,11 @@
   font-family: Verdana, Tahoma, sans-serif;
   font-size: 9px;
   line-height: 1.1;
+}
+
+/* Room for the fixed exit button, so it never covers the footer's trigger or Source link. */
+:root[data-era="2000s"] body > footer {
+  padding-bottom: 80px;
 }
 
 .retro-exit {
