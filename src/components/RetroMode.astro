@@ -1,0 +1,89 @@
+---
+// Secret 2000s mode. Base.astro restores html[data-era="2000s"] from
+// localStorage before first paint; src/styles/retro.css does the restyling.
+// Everything here is hidden (.retro-only) until the mode is on.
+interface Props {
+  part: 'top' | 'bottom';
+}
+
+const { part } = Astro.props;
+---
+
+{part === 'top' && (
+  <div class="retro-only retro-marquee" aria-hidden="true">
+    <span>★ Welcome 2 Theo's HoMePaGe!!! ★ Sign my guestbook ★ This site is best viewed in Netscape Navigator 4 at 800×600 ★</span>
+  </div>
+)}
+
+{part === 'bottom' && (
+  <>
+    <aside class="retro-only retro-extras" aria-label="Retro extras">
+      <p class="retro-construction">🚧 Under Construction 🚧</p>
+      <p class="retro-counter">You are visitor number <span class="retro-counter-digits">001337</span></p>
+      <ul class="retro-badges">
+        <li>Netscape NOW!</li>
+        <li>Best viewed at 800×600</li>
+        <li>« AI Safety Webring »</li>
+        <li>Made with Notepad</li>
+      </ul>
+    </aside>
+    <button type="button" class="retro-only retro-exit" data-era-exit>⏏ Return to 2026</button>
+    <p class="sr-only" aria-live="polite" data-era-status></p>
+  </>
+)}
+
+<script>
+  const ERA = '2000s';
+  const root = document.documentElement;
+  const status = document.querySelector<HTMLElement>('[data-era-status]');
+
+  function setEra(on: boolean) {
+    if (on) root.dataset.era = ERA;
+    else delete root.dataset.era;
+    try {
+      if (on) localStorage.setItem('era', ERA);
+      else localStorage.removeItem('era');
+    } catch {}
+    if (status) status.textContent = on ? 'Welcome to 2004.' : 'Back in 2026.';
+  }
+
+  const toggle = () => setEra(root.dataset.era !== ERA);
+
+  // Three clicks on the footer's "Last updated" line, each within a second of the last.
+  let clicks = 0;
+  let resetTimer: ReturnType<typeof setTimeout> | undefined;
+  document.querySelectorAll('[data-era-trigger]').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      clearTimeout(resetTimer);
+      clicks += 1;
+      if (clicks >= 3) {
+        clicks = 0;
+        toggle();
+      } else {
+        resetTimer = setTimeout(() => (clicks = 0), 1000);
+      }
+    });
+  });
+
+  document.querySelector('[data-era-exit]')?.addEventListener('click', () => {
+    setEra(false);
+    // The exit button is about to vanish, so keep focus somewhere sensible.
+    document.querySelector<HTMLElement>('[data-era-trigger]')?.focus();
+  });
+
+  // Konami code: ↑ ↑ ↓ ↓ ← → ← → B A.
+  const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+  let recent: string[] = [];
+  document.addEventListener('keydown', (event) => {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('input, textarea, select, [contenteditable]')) return;
+    // Shift (for a capital B or A), held-key repeats and IME composition are not presses.
+    if (['Shift', 'Control', 'Alt', 'Meta'].includes(event.key) || event.repeat || event.isComposing) return;
+    const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+    recent = [...recent, key].slice(-konami.length);
+    if (recent.join() === konami.join()) {
+      recent = [];
+      toggle();
+    }
+  });
+</script>

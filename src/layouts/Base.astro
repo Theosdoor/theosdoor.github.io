@@ -23,7 +23,9 @@ const ogImageAbsolute = new URL(ogImage, Astro.site).href;
 import { Font } from 'astro:assets';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import RetroMode from '../components/RetroMode.astro';
 import '../styles/global.css';
+import '../styles/retro.css';
 ---
 
 <!doctype html>
@@ -47,6 +49,8 @@ import '../styles/global.css';
     {/* Fonts: each family is one variable woff2 covering every weight, so preload both */}
     <Font cssVariable="--font-merriweather" preload />
     <Font cssVariable="--font-raleway" preload />
+    {/* Used only by the secret 2000s mode; browsers fetch it only when retro text needs it */}
+    <Font cssVariable="--font-comic-neue" />
     {/* Favicon */}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -63,13 +67,19 @@ import '../styles/global.css';
         } catch {}
         theme ||= window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         document.documentElement.dataset.theme = theme;
+        // Secret 2000s mode (RetroMode.astro), restored before first paint like the theme.
+        try {
+          if (localStorage.getItem('era') === '2000s') document.documentElement.dataset.era = '2000s';
+        } catch {}
       })();
     </script>
   </head>
   <body class="min-h-screen bg-canvas font-sans text-ink">
     <a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:border focus:border-accent focus:bg-panel focus:px-4 focus:py-2 focus:text-ink" href="#main">Skip to main content</a>
+    <RetroMode part="top" />
     <Header />
     <slot />
+    <RetroMode part="bottom" />
     <Footer />
   </body>
 </html>

@@ -34,9 +34,15 @@ try {
       <a href="/lets-chat/" class="text-subtle hover:text-accent transition-colors duration-200">Let's Talk</a>
     </nav>
 
-    <!-- Metadata & Repository Link (Fine Print) -->
-    <a href="https://github.com/Theosdoor/theosdoor.github.io" target="_blank" rel="noopener noreferrer" class="font-sans text-[9px] sm:text-[10px] uppercase tracking-[0.16em] text-subtle/80 hover:text-accent transition-colors duration-200">
-      Last updated: {lastUpdated}
-    </a>
+    <!-- Metadata & Repository Link (Fine Print). Triple-clicking "Last updated"
+         toggles the secret 2000s mode (RetroMode.astro), so it is a button, not a link. -->
+    <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 font-sans text-[9px] sm:text-[10px] uppercase tracking-[0.16em] text-subtle/80">
+      <button type="button" data-era-trigger class="uppercase">
+        Last updated: <span class="modern-only">{lastUpdated}</span><span class="retro-only">14 Mar 2004</span>
+      </button>
+      <a href="https://github.com/Theosdoor/theosdoor.github.io" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors duration-200">
+        Source
+      </a>
+    </div>
   </div>
 </footer>
