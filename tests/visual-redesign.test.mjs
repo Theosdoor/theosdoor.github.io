@@ -244,6 +244,7 @@ test('social links live in the header, defined once, and not in the footer', asy
     "'https://github.com/Theosdoor'",
     "'https://www.linkedin.com/in/theofarrell/'",
     "'https://scholar.google.com/citations",
+    "'https://x.com/vimasjellyhead'",
   ]) {
     assert.ok(constants.includes(url), `constants.ts should own ${url}`);
     assert.ok(!header.includes(url), `header should not hardcode ${url}`);
@@ -265,7 +266,7 @@ test('homepage repeats the social and CV links below the intro', async () => {
   // The CV keeps a visible label rather than being an unmarked icon.
   assert.match(home, /<Icon name="resume"[\s\S]*?\n\s*CV\n/);
   // Still sourced from the shared constant, never hardcoded per page.
-  assert.doesNotMatch(home, /github\.com|linkedin\.com|scholar\.google|TheoFarrell_CV/);
+  assert.doesNotMatch(home, /github\.com|linkedin\.com|scholar\.google|x\.com|TheoFarrell_CV/);
 });
 
 test('homepage highlights field-building from the content collection', async () => {

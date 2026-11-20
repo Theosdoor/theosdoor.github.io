@@ -22,11 +22,15 @@ jobs:
           cache: true
           require-lockfile: true
       - run: pnpm run build
-      # LinkedIn and Scholar reject bot requests, so they always look dead.
+      # LinkedIn, Scholar and X reject bot requests, so they always look dead.
+      # Anchored: --exclude is an unanchored regex, so a bare 'x\.com' would
+      # also skip netflix.com, linux.com and any other host ending in x.com.
       - uses: lycheeverse/lychee-action@v2
         with:
           args: >-
             --no-progress --root-dir "${{ github.workspace }}/dist"
-            --exclude 'linkedin\.com' --exclude 'scholar\.google\.com'
+            --exclude '^https?://(www\.)?linkedin\.com/'
+            --exclude '^https?://scholar\.google\.com/'
+            --exclude '^https?://(www\.)?x\.com/'
             --accept '200..=299,403,429'
             'dist/**/*.html'

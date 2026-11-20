@@ -20,5 +20,6 @@ export const cvUrl = `/cv/${cvMeta.file}`;
 export const socialLinks = [
   { href: 'https://github.com/Theosdoor', label: 'GitHub', icon: 'github' },
   { href: 'https://www.linkedin.com/in/theofarrell/', label: 'LinkedIn', icon: 'linkedin' },
+  { href: 'https://x.com/vimasjellyhead', label: 'X (Twitter)', icon: 'x' },
   { href: 'https://scholar.google.com/citations?user=wbiptScAAAAJ', label: 'Google Scholar', icon: 'scholar' },
 ] as const;
