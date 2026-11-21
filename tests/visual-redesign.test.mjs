@@ -95,7 +95,11 @@ test('sections live at real routes instead of homepage tab panels', async () => 
   // Nav points at real routes
   assert.match(header, /href: '\/research\/'/);
   assert.match(header, /href: '\/projects\/'/);
-  assert.match(header, /href="\/lets-chat\/"/);
+  // The booking page is disabled: the route is parked at src/pages/_lets-chat/
+  // (Astro skips underscore-prefixed paths) and nothing links to it.
+  assert.doesNotMatch(header, /lets-chat/);
+  assert.doesNotMatch(await read('src/components/Footer.astro'), /lets-chat/);
+  await assert.rejects(read('src/pages/lets-chat/index.astro'));
   assert.match(header, /aria-current=/);
 
   // Homepage keeps the intro and leads with selected research

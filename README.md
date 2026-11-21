@@ -6,7 +6,7 @@ A data-driven static site with light and dark themes; content lives in YAML and 
 
 ## Architecture & Routes
 
-The site is built as a static Astro application. Every section has its own URL — there is no client-side routing, and the only JavaScript shipped is the theme toggle, the mobile menu, the projects filter, Astro's prefetch script (loads a page when its link is hovered or focused), and the third-party zcal booking embed on `/lets-chat/`.
+The site is built as a static Astro application. Every section has its own URL — there is no client-side routing, and the only JavaScript shipped is the theme toggle, the mobile menu, the projects filter, and Astro's prefetch script (loads a page when its link is hovered or focused).
 
 - **`/`** — Home page: intro and bio, followed by the three most recent key-role papers as a plain list linking on to `/research/`.
 - **`/research/`** — Publications (key-role and other contributions), reviewing activity, and research talks.
@@ -14,7 +14,6 @@ The site is built as a static Astro application. Every section has its own URL �
 - **`/projects/`** — Standalone projects page with extensive client-side filtering, sorting, keyboard accessibility, and URL state-synchronization.
 - **`/talks/`** — Standalone talks page listing all presentations, talks, and panels.
 - **`/field-building/`** — Dedicated space highlighting leadership, community building, and public engagement initiatives.
-- **`/lets-chat/`** — Booking and meeting scheduling interface integrating zcal.
 
 ## Development
 

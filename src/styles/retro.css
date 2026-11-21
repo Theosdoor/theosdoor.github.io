@@ -67,11 +67,6 @@
   color: #000000;
 }
 
-/* The mobile menu's "Let's Talk" fills with the header's navy accent instead. */
-:root[data-era="2000s"] [data-site-header] .mobile-nav-link[class~="hover:bg-accent"]:hover {
-  color: #ffffff;
-}
-
 :root[data-era="2000s"] :focus-visible {
   outline: 2px solid #ffff00;
 }

@@ -31,7 +31,7 @@ Astro static site (`output: 'static'`) with multiple static routes:
 - **`/projects/`** (`src/pages/projects/index.astro`) — standalone projects page (same `Projects` component, with `urlSync` enabled)
 - **`/talks/`** (`src/pages/talks/index.astro`) — standalone talks page showing all talks (including non-research topics)
 - **`/field-building/`** (`src/pages/field-building/index.astro`) — standalone field-building projects page
-- **`/lets-chat/`** (`src/pages/lets-chat/index.astro`) — standalone booking and scheduling meeting widget
+- **`/lets-chat/`** — **disabled**: the page is parked at `src/pages/_lets-chat/index.astro`, and Astro skips underscore-prefixed paths, so it is not built, not in the sitemap and not linked from the header or footer. Re-enable by renaming the directory back to `lets-chat` and restoring the "Let's Talk" links in `Header.astro` (desktop + mobile) and `Footer.astro` (the mobile pill also needs its retro white-on-navy hover rule back in `retro.css`)
 
 ### Navigation
 
