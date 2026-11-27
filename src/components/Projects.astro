@@ -73,7 +73,20 @@ const allTools = [
             />
           </div>
 
+          {/* Without JS the switch cannot work, so show every card and hide the
+               switch instead of stranding the non-highlights. Tailwind's `[hidden]`
+               reset is !important inside @layer base, and a layered !important beats
+               an unlayered one, so this sits in the same layer and wins on specificity. */}
+          <noscript>
+            <style is:inline>
+              @layer base {
+                #proj-list .proj[hidden] { display: flex !important; }
+                #proj-show-switch { display: none !important; }
+              }
+            </style>
+          </noscript>
           <div
+            id="proj-show-switch"
             class="mt-4 flex flex-wrap items-center gap-2"
             role="group"
             aria-label="Show projects"
