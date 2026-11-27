@@ -1,9 +1,12 @@
+import { curatedCompare, moreInEverythingCount, newestCompare, type ProjectsView } from '../utils/projects-view';
+
 export interface FilterState {
   role: string;
   category: string;
   languages: Set<string>;
   tools: Set<string>;
   sort: string;
+  view: ProjectsView;
   text: string;
   ais: string;
 }
@@ -13,16 +16,13 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   if (!list) return;
 
   const allArticles = [...list.querySelectorAll('.proj')];
-  // On first load we hide non-featured coursework so the research/side-project
-  // work leads. Cleared the moment the user touches a category pill, opens a
-  // shared filter URL, or clicks "show everything" — nothing is deleted.
-  let hideMinorCoursework = true;
   const state: FilterState = {
     role: 'all',
     category: 'all',
     languages: new Set<string>(),
     tools: new Set<string>(),
-    sort: 'featured',
+    sort: 'curated',
+    view: 'highlights',
     text: '',
     ais: 'all',
   };
@@ -30,10 +30,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   function matches(el: Element) {
     const article = el as HTMLElement;
     const roleOk = state.role === 'all' || article.dataset.role === state.role;
-    const minorCoursework = article.dataset.category === 'coursework' && article.dataset.featured !== 'true';
-    const catOk = state.category === 'all'
-      ? !(hideMinorCoursework && minorCoursework)
-      : article.dataset.category === state.category;
+    const catOk = state.category === 'all' || article.dataset.category === state.category;
     const aisOk = state.ais === 'all' || article.dataset.ais === 'true';
     const elLangs = article.dataset.languages ? article.dataset.languages.split(',') : [];
     const elTools = article.dataset.tools ? article.dataset.tools.split(',') : [];
@@ -48,14 +45,24 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     return roleOk && catOk && aisOk && langOk && toolOk && textOk;
   }
 
-  function getYear(el: Element) {
-    return parseInt((el as HTMLElement).dataset.year || '0', 10) || 0;
+  // Sortable view of a card, read from its data attributes and title.
+  function cardInfo(el: Element) {
+    const d = (el as HTMLElement).dataset;
+    return {
+      highlight: d.highlight ? parseInt(d.highlight, 10) : undefined,
+      year: parseInt(d.year || '0', 10) || 0,
+      title: el.querySelector('.proj-card-title')?.textContent ?? '',
+    };
   }
 
-  function makeHeading(text: string, type: 'featured' | 'year' = 'year') {
+  function isHighlight(el: Element) {
+    return (el as HTMLElement).dataset.highlight !== undefined;
+  }
+
+  function makeHeading(text: string) {
     const div = document.createElement('div');
     div.className = 'proj-group-heading col-span-full font-serif text-2xl font-bold text-ink';
-    div.dataset.groupType = type;
+    div.dataset.groupType = 'year';
     div.textContent = text;
     return div;
   }
@@ -73,7 +80,8 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     if (state.ais !== 'all') params.set('ais', 'true');
     if (state.languages.size > 0) params.set('lang', [...state.languages].join(','));
     if (state.tools.size > 0) params.set('tool', [...state.tools].join(','));
-    if (state.sort !== 'featured') params.set('sort', state.sort);
+    if (state.view !== 'highlights') params.set('show', 'all');
+    if (state.sort !== 'curated') params.set('sort', state.sort);
     if (state.text) params.set('q', state.text);
     const qs = params.toString();
     history.replaceState(null, '', qs ? '?' + qs : location.pathname);
@@ -82,8 +90,8 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   function restoreFromUrl() {
     if (!options.urlSync) return;
     const params = new URLSearchParams(location.search);
-    // A shared/deep link means the visitor arrived with intent — show the full set.
-    if ([...params].length > 0) hideMinorCoursework = false;
+    state.view = params.get('show') === 'all' ? 'all' : 'highlights';
+    syncViewButtons();
 
     const role = params.get('role') || 'all';
     state.role = role;
@@ -127,7 +135,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
       setActiveStyle(b, active);
     });
 
-    const sort = params.get('sort') || 'featured';
+    const sort = params.get('sort') === 'newest' ? 'newest' : 'curated';
     state.sort = sort;
     document.querySelectorAll('[data-sort]').forEach(b =>
       setActiveStyle(b, (b as HTMLElement).dataset.sort === sort)
@@ -161,70 +169,36 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     syncToUrl();
     list!.querySelectorAll('.proj-group-heading').forEach(h => h.remove());
 
-    const visible = allArticles.filter(matches);
+    const matching = allArticles.filter(matches);
+    const visible = matching.filter(el => state.view === 'all' || isHighlight(el));
     const visibleSet = new Set(visible);
     const hidden = allArticles.filter(el => !visibleSet.has(el));
     const fragment = document.createDocumentFragment();
 
-    if (state.sort === 'featured') {
-      const featured = visible.filter(el => (el as HTMLElement).dataset.featured === 'true');
-      const rest = visible
-        .filter(el => (el as HTMLElement).dataset.featured !== 'true')
-        .sort((a, b) => {
-          const yearDiff = getYear(b) - getYear(a);
-          if (yearDiff !== 0) return yearDiff;
-          return (a.querySelector('.proj-card-title')?.textContent ?? '')
-            .localeCompare(b.querySelector('.proj-card-title')?.textContent ?? '');
-        });
-
-      if (featured.length > 0) {
-        fragment.appendChild(makeHeading('Highlighted', 'featured'));
-      }
-      featured.forEach(el => {
+    if (state.sort === 'curated') {
+      visible.sort((a, b) => curatedCompare(cardInfo(a), cardInfo(b)));
+      visible.forEach(el => {
         (el as HTMLElement).hidden = false;
-        fragment.appendChild(el);
-      });
-
-      if (rest.length > 0) {
-        fragment.appendChild(makeHeading('Other projects', 'featured'));
-      }
-      rest.forEach(el => {
-        (el as HTMLElement).hidden = false;
-        fragment.appendChild(el);
-      });
-
-      hidden.forEach(el => {
-        (el as HTMLElement).hidden = true;
         fragment.appendChild(el);
       });
     } else {
-      const sorted = [...visible].sort((a, b) => {
-        const yearDiff = getYear(b) - getYear(a);
-        if (yearDiff !== 0) return yearDiff;
-        const aFeat = (a as HTMLElement).dataset.featured === 'true' ? 1 : 0;
-        const bFeat = (b as HTMLElement).dataset.featured === 'true' ? 1 : 0;
-        if (bFeat !== aFeat) return bFeat - aFeat;
-        return (a.querySelector('.proj-card-title')?.textContent ?? '')
-          .localeCompare(b.querySelector('.proj-card-title')?.textContent ?? '');
-      });
-
+      visible.sort((a, b) => newestCompare(cardInfo(a), cardInfo(b)));
       let currentYear: string | null = null;
-      sorted.forEach(el => {
+      visible.forEach(el => {
         const year = (el as HTMLElement).dataset.year ?? '0';
-        const displayYear = year === '0' ? '—' : year;
         if (year !== currentYear) {
           currentYear = year;
-          fragment.appendChild(makeHeading(displayYear));
+          fragment.appendChild(makeHeading(year === '0' ? '—' : year));
         }
         (el as HTMLElement).hidden = false;
         fragment.appendChild(el);
       });
-
-      hidden.forEach(el => {
-        (el as HTMLElement).hidden = true;
-        fragment.appendChild(el);
-      });
     }
+
+    hidden.forEach(el => {
+      (el as HTMLElement).hidden = true;
+      fragment.appendChild(el);
+    });
 
     list!.appendChild(fragment);
     // Re-attaching a card pauses its video, so resume previews after every render
@@ -238,8 +212,16 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     list!.dataset.empty = visible.length === 0 ? 'true' : 'false';
     updateFilterIndicator();
 
-    const note = document.getElementById('proj-coursework-note');
-    if (note) note.hidden = !(hideMinorCoursework && state.category === 'all');
+    const more = moreInEverythingCount(
+      state.view,
+      allArticles.map(el => ({ matchesFilters: matching.includes(el), isHighlight: isHighlight(el) })),
+    );
+    const moreLine = document.getElementById('proj-more');
+    const moreBtn = document.getElementById('proj-show-all');
+    if (moreLine && moreBtn) {
+      moreBtn.textContent = `${more} more in Everything`;
+      moreLine.hidden = more === 0;
+    }
   }
 
   function updateFilterIndicator() {
@@ -336,19 +318,24 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     });
   }
 
-  // Any explicit category choice means the user is browsing deliberately — stop
-  // hiding coursework. Registered before setupPillGroup so it runs first.
-  document.querySelectorAll('[data-filter-category]').forEach(b =>
-    b.addEventListener('click', () => { hideMinorCoursework = false; })
-  );
-  document.getElementById('proj-show-all')?.addEventListener('click', () => {
-    hideMinorCoursework = false;
-    state.category = 'all';
-    document.querySelectorAll('[data-filter-category]').forEach(b =>
-      setActiveStyle(b, (b as HTMLElement).dataset.filterCategory === 'all')
+  function syncViewButtons() {
+    document.querySelectorAll('[data-show]').forEach(b =>
+      setActiveStyle(b, (b as HTMLElement).dataset.show === state.view)
     );
+  }
+
+  function setView(view: ProjectsView) {
+    state.view = view;
+    syncViewButtons();
     filterAndRender();
-  });
+  }
+
+  document.querySelectorAll('[data-show]').forEach(b =>
+    b.addEventListener('click', () =>
+      setView((b as HTMLElement).dataset.show === 'all' ? 'all' : 'highlights')
+    )
+  );
+  document.getElementById('proj-show-all')?.addEventListener('click', () => setView('all'));
 
   setupPillGroup('filter-role', 'role');
   setupPillGroup('filter-category', 'category');

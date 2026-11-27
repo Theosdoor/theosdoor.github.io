@@ -68,7 +68,7 @@ projects:
     image: "..."         # optional; .mp4/.webm renders as <video>, .gif as a plain <img>, stills via the image pipeline
     role: lead | contributor
     category: research | side-project | coursework
-    featured: true       # optional
+    highlight: 1         # optional; unique positive integer, 1 = first. Highlighted projects form the default view
     year: 2025
     languages: [...]     # optional
     tools: [...]         # optional
