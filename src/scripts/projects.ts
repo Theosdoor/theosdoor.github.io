@@ -208,6 +208,9 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   }
 
   function filterAndRender() {
+    // Moving a node into the fragment below blurs it, so note what has focus
+    // (the divider button the reader just pressed, say) to give it back after.
+    const focused = document.activeElement as HTMLElement | null;
     syncToUrl();
     list!.querySelectorAll('.proj-group-heading').forEach(h => h.remove());
 
@@ -229,6 +232,9 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     });
 
     list!.appendChild(fragment);
+    if (focused && focused !== document.activeElement && focused.isConnected) {
+      focused.focus({ preventScroll: true });
+    }
     // Re-attaching a card pauses its video, so resume previews after every render
     playPreviews();
 
