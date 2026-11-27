@@ -79,9 +79,13 @@ projects:
 
 **4. Field-building (`content/field-building/*.md`)** — Markdown files loaded via `getCollection('fieldBuilding')` and rendered dynamically by `src/components/FieldBuilding.astro`.
 
+### CMS and current position
+
+Content is editable at `/admin` through Sveltia CMS: `public/admin/index.html` (noindex, version pinned) and `public/admin/config.yml`; see `docs/cms.md` for sign-in and local mode. The collection schemas live in `src/content-schemas.ts` (wrapped by `content.config.ts`), and `tests/cms-config.test.mjs` fails when `config.yml` drifts from them, so change both together. The front matter of `content/intro.md` (`description`, `affiliations`) is the single source for the homepage meta description and the JSON-LD `affiliation`; `index.astro` validates it with `introSchema`. Update a role change there, not in components.
+
 ### Images
 
-Raster stills live in `src/assets/images/` but content YAML references them by site path (`/images/projects/x.png`); `resolveImage()` in `src/utils/images.ts` maps one to the other and fails the build on a missing file. Standalone SVG icons live in `src/assets/icons/` and are imported as components (`import X from '../assets/icons/x.svg'`) with `fill="currentColor"`, so they follow the theme. Only videos, GIFs, the favicon set and the 1200×630 social card (`public/images/og.jpg`) belong in `public/`, which is copied to `dist/` unoptimised. Strip EXIF before committing a photo (re-encode with sharp); phone photos carry GPS.
+Raster stills live in `src/assets/images/` but content YAML references them by site path (`/images/projects/x.png`); `resolveImage()` in `src/utils/images.ts` maps one to the other and fails the build on a missing file. Standalone SVG icons live in `src/assets/icons/` and are imported as components (`import X from '../assets/icons/x.svg'`) with `fill="currentColor"`, so they follow the theme. Only videos, GIFs, the favicon set, the 1200×630 social card (`public/images/og.jpg`) and the CMS admin page (`public/admin/`, a deliberate exception) belong in `public/`, which is copied to `dist/` unoptimised. Strip EXIF before committing a photo (re-encode with sharp); phone photos carry GPS.
 
 ### Modularity & DRY
 

@@ -278,7 +278,7 @@ test('homepage repeats the social and CV links below the intro', async () => {
 test('homepage highlights field-building from the content collection', async () => {
   const home = await read('src/pages/index.astro');
   const section = await read('src/components/SelectedFieldBuilding.astro');
-  const config = await read('src/content.config.ts');
+  const config = await read('src/content-schemas.ts');
   const daisi = await read('content/field-building/durham-ai-safety.md');
 
   assert.match(home, /<SelectedFieldBuilding \/>/);
