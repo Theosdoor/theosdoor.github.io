@@ -22,6 +22,7 @@ projects:
   - title: "MOBench"
     description: "Framework for implanting behaviours into LLM model organisms and evaluating which implantation method works best"
     url: "https://github.com/science-of-model-organisms/mobench"
+    image: /images/projects/mobench.png
     venue: "LASR Labs"
     role: contributor
     category: research
@@ -33,6 +34,7 @@ projects:
   - title: "Graded Latents"
     description: "Code for research showing sparse autoencoders can learn graded latents that mediate relational composition in attention-only transformers"
     url: "https://github.com/Theosdoor/graded-latents"
+    image: /images/projects/graded-latents.png
     venue: "MechInterp Workshop @ ICML 2026"
     role: lead
     category: research
