@@ -13,7 +13,7 @@ Sveltia's GitHub backend supports two methods ([docs](https://sveltiacms.app/doc
 
 ## Local mode (no sign-in)
 
-[Docs](https://sveltiacms.app/docs/workflows/local): "If you plan to only work with your local repository, you don't need to set up authentication with your Git backend." It "relies on the File System Access API, which only Chromium-based browsers support" (Chrome, Edge, Brave; not Firefox or Safari). Run the site locally (`pnpm dev`), open `/admin/`, click "Work with Local Repository" and pick the repository root. Edits write to your working tree; commit and push yourself.
+[Docs](https://sveltiacms.app/docs/workflows/local): "If you plan to only work with your local repository, you don't need to set up authentication with your Git backend." It "relies on the File System Access API, which only Chromium-based browsers support" (Chrome, Edge, Brave; not Firefox or Safari). Run the site locally (`pnpm dev`), open `http://localhost:4321/admin/index.html` (the dev server does not map `/admin/` to the file; the deployed site does), click "Work with Local Repository" and pick the repository root. Edits write to your working tree; commit and push yourself.
 
 ## How saves deploy
 
