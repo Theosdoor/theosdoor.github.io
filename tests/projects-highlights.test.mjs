@@ -7,6 +7,7 @@ import {
   duplicateHighlights,
   highlightOrder,
   moreInEverythingCount,
+  parseSort,
 } from '../src/utils/projects-view.ts';
 
 const { projects } = load(await readFile(new URL('../content/projects.yaml', import.meta.url), 'utf8'));
@@ -57,4 +58,11 @@ test('moreInEverythingCount counts matching non-highlights only in the Highlight
   assert.equal(moreInEverythingCount('all', cards), 0);
   assert.equal(moreInEverythingCount('highlights', cards.filter((c) => c.isHighlight)), 0);
   assert.equal(moreInEverythingCount('highlights', []), 0);
+});
+
+test('old ?sort=recent links open Newest', () => {
+  assert.equal(parseSort('recent'), 'newest');
+  assert.equal(parseSort('newest'), 'newest');
+  assert.equal(parseSort(null), 'curated');
+  assert.equal(parseSort('bogus'), 'curated');
 });

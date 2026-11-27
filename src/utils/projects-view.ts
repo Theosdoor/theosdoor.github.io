@@ -59,3 +59,10 @@ export function newestCompare(
   const yd = (b.year ?? 0) - (a.year ?? 0);
   return yd !== 0 ? yd : a.title.localeCompare(b.title);
 }
+
+export type ProjectsSort = 'curated' | 'newest';
+
+/** Reads ?sort=. `recent` was the old name for Newest, so shared links keep working. */
+export function parseSort(value: string | null): ProjectsSort {
+  return value === 'newest' || value === 'recent' ? 'newest' : 'curated';
+}

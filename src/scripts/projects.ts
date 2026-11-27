@@ -1,4 +1,4 @@
-import { curatedCompare, moreInEverythingCount, newestCompare, type ProjectsView } from '../utils/projects-view';
+import { curatedCompare, moreInEverythingCount, newestCompare, parseSort, type ProjectsView } from '../utils/projects-view';
 
 export interface FilterState {
   role: string;
@@ -136,7 +136,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
       setActiveStyle(b, active);
     });
 
-    const sort = params.get('sort') === 'newest' ? 'newest' : 'curated';
+    const sort = parseSort(params.get('sort'));
     state.sort = sort;
     document.querySelectorAll('[data-sort]').forEach(b =>
       setActiveStyle(b, (b as HTMLElement).dataset.sort === sort)
