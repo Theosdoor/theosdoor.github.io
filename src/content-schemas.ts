@@ -20,7 +20,7 @@ export const projectSchema = z.object({
   image: z.string().nullable().optional(),
   role: z.enum(['lead', 'contributor']),
   category: z.enum(['research', 'side-project', 'coursework']),
-  featured: z.boolean().optional(),
+  highlight: z.number().int().positive().optional(),
   year: z.number().nullable().optional(),
   languages: z.array(z.string()).optional(),
   tools: z.array(z.string()).optional(),

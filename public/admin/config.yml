@@ -64,7 +64,7 @@ collections:
               - { name: image, label: Image (stills only; videos and GIFs go in public/), widget: image, required: false }
               - { name: role, label: Role, widget: select, options: [lead, contributor] }
               - { name: category, label: Category, widget: select, options: [research, side-project, coursework] }
-              - { name: featured, label: Featured, widget: boolean, required: false }
+              - { name: highlight, label: "Highlight (1 = first; leave blank for the rest; numbers must be unique)", widget: number, value_type: int, min: 1, required: false }
               - { name: year, label: Year, widget: number, value_type: int, required: false }
               - { name: languages, label: Languages, widget: list, field: { name: language, widget: string }, required: false }
               - { name: tools, label: Tools, widget: list, field: { name: tool, widget: string }, required: false }

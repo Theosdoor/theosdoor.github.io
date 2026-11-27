@@ -22,5 +22,5 @@ With a token, each save is a commit to `main` made through the GitHub API (`publ
 ## Limits
 
 - Images go to `src/assets/images/<collection>/` and are referenced as `/images/...`. Videos and GIFs belong in `public/`, so add them by hand.
-- The `featured` flag is shown as in `src/content-schemas.ts`.
+- Highlight numbers must be unique (1 = first). The CMS does not check this; `pnpm test` does, so a clash fails the deploy rather than reaching the site.
 - Not verified: how Sveltia round-trips YAML comments and formatting in `content/*.yaml` (expect comments such as the header in `pubs.yaml` may be dropped on first save).
