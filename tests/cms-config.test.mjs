@@ -135,3 +135,11 @@ test('blank optional fields are omitted, not saved as ""', () => {
   assert.equal(config.output?.omit_empty_optional_fields, true);
   assert.equal(projectSchema.shape.url.safeParse('').success, false);
 });
+
+test('the footer Admin link is hidden unless this browser has opened /admin', async () => {
+  const admin = await read('public/admin/index.html');
+  const footer = await read('src/components/Footer.astro');
+  assert.match(admin, /localStorage\.setItem\('cms-admin', '1'\)/);
+  assert.match(footer, /<a href="\/admin\/" data-admin-link hidden/);
+  assert.match(footer, /localStorage\.getItem\('cms-admin'\)/);
+});
