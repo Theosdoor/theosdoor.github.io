@@ -21,7 +21,7 @@ const rawProjects = await getCollection("projects");
 const projects = rawProjects.map((p) => p.data).sort(curatedCompare);
 const restCount = projects.filter((p) => p.highlight === undefined).length;
 
-// Filter and sort buttons are toggles: projects.ts flips aria-pressed and the
+// Filter buttons are toggles: projects.ts flips aria-pressed and the
 // aria-pressed: variants restyle them, so state and styling cannot drift apart.
 const pill =
   "proj-pill border border-rule px-3 py-1 font-sans text-xs uppercase tracking-wider text-muted transition duration-150 hover:border-accent hover:text-ink aria-pressed:border-accent aria-pressed:text-accent";

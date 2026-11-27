@@ -86,7 +86,7 @@ Raster stills live in `src/assets/images/` but content YAML references them by s
 ### Modularity & DRY
 
 *   **Formatters (`src/utils/formatters.ts`)**: Date parsing, markdown links parsing, and author list name bolding are fully centralized and tested.
-*   **Projects Filter (`src/scripts/projects.ts`)**: The extensive client-side filtering, sorting, keyboard access, and URL state-synchronization logic is isolated in a dedicated type-safe TypeScript module. Filter and sort buttons are toggles: the script sets `aria-pressed` and the shared `pill` class string in `Projects.astro` styles them with `aria-pressed:` variants, so never toggle colour classes from JS.
+*   **Projects Filter (`src/scripts/projects.ts`)**: The extensive client-side filtering, sorting, keyboard access, and URL state-synchronization logic is isolated in a dedicated type-safe TypeScript module. Filter buttons are toggles: the script sets `aria-pressed` and the shared `pill` class string in `Projects.astro` styles them with `aria-pressed:` variants, so never toggle colour classes from JS. The Curated/Newest sort is one `role="switch"` button styled the same way from `aria-checked` (`group-aria-checked:` variants).
 
 ### Styling
 
