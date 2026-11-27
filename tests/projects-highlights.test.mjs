@@ -62,3 +62,12 @@ test('old ?sort=recent links open Newest', () => {
   assert.equal(parseSort(null), 'curated');
   assert.equal(parseSort('bogus'), 'curated');
 });
+
+test('sort is a Curated/Newest switch, not a dropdown', async () => {
+  const astro = await readFile(new URL('../src/components/Projects.astro', import.meta.url), 'utf8');
+  const script = await readFile(new URL('../src/scripts/projects.ts', import.meta.url), 'utf8');
+  assert.match(astro, /id="proj-sort-switch"[\s\S]*?role="switch"/);
+  assert.doesNotMatch(astro, /proj-sort-panel|data-sort=/);
+  // Newest lists everything in one run, so the divider split is Curated-only
+  assert.match(script, /const split = state\.sort === 'curated';/);
+});

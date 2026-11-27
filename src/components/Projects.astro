@@ -57,13 +57,21 @@ const allTools = [
             >
               Filter ▾
             </button>
+            {/* Sort switch: aria-checked="true" means Newest. The words and the
+                 diamond knob restyle from it through group-aria-checked: variants. */}
             <button
-              class="proj-sort-btn border-b border-rule pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-muted hover:border-accent hover:text-accent aria-expanded:border-accent aria-expanded:text-accent"
-              id="proj-sort-btn"
-              aria-expanded="false"
-              aria-controls="proj-sort-panel"
+              id="proj-sort-switch"
+              type="button"
+              role="switch"
+              aria-checked="false"
+              aria-label="Sort by newest"
+              class="group inline-flex items-center gap-2 pb-1 font-sans text-xs font-semibold uppercase tracking-[0.16em]"
             >
-              Sort ▾
+              <span class="text-accent transition-colors duration-150 group-aria-checked:text-muted" aria-hidden="true">Curated</span>
+              <span class="relative inline-block h-3 w-7 border border-rule transition-colors duration-150 group-hover:border-accent" aria-hidden="true">
+                <span class="absolute left-[3px] top-1/2 size-1.5 -translate-y-1/2 rotate-45 bg-accent transition-transform duration-200 ease-deco group-aria-checked:translate-x-[14px] motion-reduce:transition-none"></span>
+              </span>
+              <span class="text-muted transition-colors duration-150 group-aria-checked:text-accent" aria-hidden="true">Newest</span>
             </button>
             <input
               class="proj-search min-w-40 border-b border-rule bg-transparent pb-1 font-sans text-xs tracking-wider text-ink placeholder:text-subtle focus:border-accent"
@@ -228,33 +236,6 @@ const allTools = [
             </div>
           </div>
 
-          <div
-            class="proj-dropdown absolute z-20 mt-3 min-w-[280px] border border-rule bg-panel p-4 text-ink"
-            id="proj-sort-panel"
-            hidden
-          >
-            <div class="proj-filter-section mb-4 last:mb-0">
-              <SubHeading class={filterHeading}>
-                Sort by
-              </SubHeading>
-              <div class="proj-pills flex flex-wrap gap-2">
-                <button
-                  class={pill}
-                  aria-pressed="true"
-                  data-sort="curated"
-                >
-                  Curated
-                </button>
-                <button
-                  class={pill}
-                  aria-pressed="false"
-                  data-sort="newest"
-                >
-                  Newest
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div

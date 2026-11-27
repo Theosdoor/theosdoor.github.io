@@ -81,7 +81,8 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     if (state.ais !== 'all') params.set('ais', 'true');
     if (state.languages.size > 0) params.set('lang', [...state.languages].join(','));
     if (state.tools.size > 0) params.set('tool', [...state.tools].join(','));
-    if (state.expanded) params.set('show', 'all');
+    // Newest always lists everything, so `show` only means something under Curated
+    if (state.expanded && state.sort === 'curated') params.set('show', 'all');
     if (state.sort !== 'curated') params.set('sort', state.sort);
     if (state.text) params.set('q', state.text);
     const qs = params.toString();
@@ -135,11 +136,8 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
       setActiveStyle(b, active);
     });
 
-    const sort = parseSort(params.get('sort'));
-    state.sort = sort;
-    document.querySelectorAll('[data-sort]').forEach(b =>
-      setActiveStyle(b, (b as HTMLElement).dataset.sort === sort)
-    );
+    state.sort = parseSort(params.get('sort'));
+    syncSortSwitch();
 
     const ais = params.get('ais') === 'true' ? 'true' : 'all';
     state.ais = ais;
@@ -215,8 +213,11 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     list!.querySelectorAll('.proj-group-heading').forEach(h => h.remove());
 
     const matching = allArticles.filter(matches);
-    const highlights = matching.filter(isHighlight);
-    const rest = matching.filter(el => !isHighlight(el));
+    // Newest is one dated list of everything that matches; Curated splits the
+    // highlights from the rest with the divider.
+    const split = state.sort === 'curated';
+    const highlights = split ? matching.filter(isHighlight) : matching;
+    const rest = split ? matching.filter(el => !isHighlight(el)) : [];
     const shownRest = state.expanded ? rest : [];
     const visibleSet = new Set([...highlights, ...shownRest]);
     const fragment = document.createDocumentFragment();
@@ -246,7 +247,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     const placeholder = document.getElementById('proj-empty-state');
     if (placeholder) {
       const none = matching.length === 0;
-      const noHighlights = highlights.length === 0 && !state.expanded;
+      const noHighlights = split && highlights.length === 0 && !state.expanded;
       placeholder.textContent = none
         ? 'No projects match the current filters.'
         : 'No highlights match the current filters.';
@@ -270,7 +271,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     document.querySelectorAll('.proj-dropdown').forEach(p => {
       (p as HTMLElement).hidden = true;
     });
-    document.querySelectorAll('.proj-filter-btn, .proj-sort-btn')
+    document.querySelectorAll('.proj-filter-btn')
       .forEach(b => b.setAttribute('aria-expanded', 'false'));
   }
 
@@ -330,9 +331,8 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   });
 
   setupDropdown('proj-filter-btn', 'proj-filter-panel');
-  setupDropdown('proj-sort-btn', 'proj-sort-panel');
 
-  function setupPillGroup(attr: string, stateKey: 'role' | 'category' | 'sort' | 'ais') {
+  function setupPillGroup(attr: string, stateKey: 'role' | 'category' | 'ais') {
     const datasetKey = attr.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
     document.querySelectorAll(`[data-${attr}]`).forEach(btn => {
       btn.addEventListener('click', () => {
@@ -362,7 +362,17 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   setupPillGroup('filter-role', 'role');
   setupPillGroup('filter-category', 'category');
   setupPillGroup('filter-ais', 'ais');
-  setupPillGroup('sort', 'sort');
+
+  // The sort switch: aria-checked="true" is Newest.
+  const sortSwitch = document.getElementById('proj-sort-switch');
+  function syncSortSwitch() {
+    sortSwitch?.setAttribute('aria-checked', String(state.sort === 'newest'));
+  }
+  sortSwitch?.addEventListener('click', () => {
+    state.sort = state.sort === 'newest' ? 'curated' : 'newest';
+    syncSortSwitch();
+    filterAndRender();
+  });
 
   function setupTagGroup(attr: string, stateSet: Set<string>) {
     const datasetKey = attr.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
