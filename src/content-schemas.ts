@@ -20,7 +20,8 @@ export const projectSchema = z.object({
   image: z.string().nullable().optional(),
   role: z.enum(['lead', 'contributor']),
   category: z.enum(['research', 'side-project', 'coursework']),
-  highlight: z.number().int().positive().optional(),
+  // Nullable as well: Sveltia stores a cleared optional number as null
+  highlight: z.number().int().positive().nullable().optional(),
   year: z.number().nullable().optional(),
   languages: z.array(z.string()).optional(),
   tools: z.array(z.string()).optional(),

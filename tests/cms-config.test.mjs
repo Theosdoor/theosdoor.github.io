@@ -134,6 +134,9 @@ test('blank optional fields are omitted, not saved as ""', () => {
   // Optional z.url() fields reject "", so a blank URL saved by the CMS would break the build.
   assert.equal(config.output?.omit_empty_optional_fields, true);
   assert.equal(projectSchema.shape.url.safeParse('').success, false);
+  // Sveltia saves a cleared optional number as null, so a blank highlight must still parse
+  assert.equal(projectSchema.shape.highlight.safeParse(null).success, true);
+  assert.equal(projectSchema.shape.highlight.safeParse(0).success, false);
 });
 
 test('the footer Admin link is hidden unless this browser has opened /admin', async () => {
