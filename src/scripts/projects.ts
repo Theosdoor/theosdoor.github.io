@@ -56,7 +56,8 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   }
 
   function isHighlight(el: Element) {
-    return (el as HTMLElement).dataset.highlight !== undefined;
+    // Non-highlights render data-highlight="", so test for a value, not presence
+    return Boolean((el as HTMLElement).dataset.highlight);
   }
 
   function makeHeading(text: string) {
