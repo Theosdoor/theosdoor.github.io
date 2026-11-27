@@ -19,6 +19,29 @@ projects:
     languages: [HTML, JavaScript]
     tools: []
 
+  - title: "MOBench"
+    description: "Framework for implanting behaviours into LLM model organisms and evaluating which implantation method works best"
+    url: "https://github.com/science-of-model-organisms/mobench"
+    venue: "LASR Labs"
+    role: contributor
+    category: research
+    year: 2026
+    ais: true
+    languages: [Python]
+    tools: [Inspect, vLLM]
+
+  - title: "Graded Latents"
+    description: "Code for research showing sparse autoencoders can learn graded latents that mediate relational composition in attention-only transformers"
+    url: "https://github.com/Theosdoor/graded-latents"
+    venue: "MechInterp Workshop @ ICML 2026"
+    role: lead
+    category: research
+    featured: true
+    year: 2026
+    ais: true
+    languages: [Python]
+    tools: [TransformerLens, PyTorch]
+
   - title: "Order by Scale"
     description: "Implementation of research on relative-magnitude relational composition in attention-only transformers"
     url: "https://github.com/Theosdoor/order-by-scale"
