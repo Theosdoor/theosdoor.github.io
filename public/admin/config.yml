@@ -11,6 +11,11 @@ site_url: https://theosdoor.github.io
 display_url: https://theosdoor.github.io
 
 # Images live in src/assets/images/ but content references them as /images/... site paths.
+# Sveltia saves a blank optional field as "" by default, which fails the
+# optional z.url() fields in src/content-schemas.ts; omit them instead.
+output:
+  omit_empty_optional_fields: true
+
 media_folder: src/assets/images
 public_folder: /images
 

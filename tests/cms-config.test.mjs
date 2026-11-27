@@ -129,3 +129,9 @@ test('every image folder maps /images/... site paths onto src/assets/images', ()
     assert.equal(c.media_folder.replace('src/assets', ''), c.public_folder);
   }
 });
+
+test('blank optional fields are omitted, not saved as ""', () => {
+  // Optional z.url() fields reject "", so a blank URL saved by the CMS would break the build.
+  assert.equal(config.output?.omit_empty_optional_fields, true);
+  assert.equal(projectSchema.shape.url.safeParse('').success, false);
+});
