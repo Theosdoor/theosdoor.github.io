@@ -18,7 +18,6 @@ const personSchema = {
   jobTitle: introFrontmatter.subtitle,
   affiliation: [
     { '@type': 'CollegeOrUniversity', name: 'Durham University' },
-    { '@type': 'Organization', name: 'LASR Labs' },
   ],
   sameAs: socialLinks.map((s) => s.href),
 };
@@ -26,7 +25,7 @@ const personSchema = {
 
 <Base
   title="Theo Farrell"
-  description="Theo Farrell — Durham University MSci Natural Sciences, AI safety researcher & group organiser"
+  description="Theo Farrell — AI safety PhD student at Durham University, working on control and monitoring of LLMs"
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(personSchema)} is:inline />
   <main id="main" class="w-full px-5 py-16 sm:px-8" tabindex="-1">

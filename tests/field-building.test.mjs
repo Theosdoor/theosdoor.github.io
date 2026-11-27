@@ -27,7 +27,7 @@ test('FieldBuilding component exists and implements dynamic loading and premium 
   assert.match(markdown, /projectName:\s*"Durham AI Safety Initiative"/);
   assert.match(markdown, /^roles:$/m);
   assert.match(markdown, /- title: "Advisor"\n\s+startDate: "2026-02"\n\s+endDate: "ongoing"/);
-  assert.match(markdown, /- title: "Lead Organiser"\n\s+startDate: "2023-10"\n\s+endDate: "2026-02"/);
+  assert.match(markdown, /- title: "Lead Organiser"\n\s+startDate: "2023-09"\n\s+endDate: "2026-02"/);
   assert.match(markdown, /url:\s*"https:\/\/durhamaisafety\.uk\/"/);
   // The flat single-role fields are gone.
   assert.doesNotMatch(markdown, /^role:|^startDate:|^endDate:/m);
@@ -38,7 +38,7 @@ test('roles are ordered newest first and rank a project by its latest one', asyn
     '../src/utils/formatters.ts'
   );
   const roles = [
-    { title: 'Lead Organiser', startDate: '2023-10', endDate: '2026-02' },
+    { title: 'Lead Organiser', startDate: '2023-09', endDate: '2026-02' },
     { title: 'Advisor', startDate: '2026-02', endDate: 'ongoing' },
   ];
 
