@@ -1,0 +1,144 @@
+---
+// 2000s-mode easter egg: an invisible button over Theo's nose in the homepage
+// photo. Each click pumps the nose bigger (a bike-pump hiss); the last pump
+// pops it (a soft pop) and it snaps back. Nothing is stored, so a reload
+// resets it. Rendered inside the photo's positioned wrapper in index.astro.
+interface Props {
+  /** Nose position in the displayed (cropped) photo, as % of its width and height. */
+  x: number;
+  y: number;
+}
+
+const { x, y } = Astro.props;
+---
+
+<span
+  class="retro-only pointer-events-none absolute inset-0 z-10"
+  data-nose-bulge
+  style={`--nose-x: ${x}%; --nose-y: ${y}%;`}
+  aria-hidden="true"
+></span>
+<button
+  type="button"
+  class="retro-only absolute z-20 size-[18%] -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full"
+  style={`left: ${x}%; top: ${y}%;`}
+  data-nose-button
+  aria-label="Pump up Theo's nose"
+></button>
+
+<script>
+  const MAX_PUMPS = 8;
+  const button = document.querySelector<HTMLButtonElement>('[data-nose-button]');
+  const bulge = document.querySelector<HTMLElement>('[data-nose-bulge]');
+  const photo = bulge?.parentElement?.querySelector<HTMLImageElement>('img:not([data-nose-copy])');
+
+  if (button && bulge && photo) {
+    const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+    let pumps = 0;
+    let audio: AudioContext | null = null;
+
+    // A copy of the photo, clipped to a circle round the nose and scaled about
+    // it, so the nose swells out of the face like a balloon.
+    const copy = document.createElement('img');
+    copy.dataset.noseCopy = '';
+    copy.alt = '';
+    copy.decoding = 'async';
+    copy.className = photo.className;
+    copy.style.cssText = [
+      'position:absolute', 'inset:0', 'width:100%', 'height:100%',
+      'clip-path:circle(6.5% at var(--nose-x) var(--nose-y))',
+      'transform-origin:var(--nose-x) var(--nose-y)',
+      'transform:scale(1)', 'opacity:0',
+      motionOk ? 'transition:transform 250ms cubic-bezier(.34,1.56,.64,1), opacity 120ms' : '',
+    ].join(';');
+    bulge.appendChild(copy);
+
+    function ctx() {
+      audio ??= new AudioContext();
+      return audio;
+    }
+
+    // White noise through a filter: a rising band-pass for the pump's hiss,
+    // a quick low-pass thump for the pop. Kept quiet on purpose.
+    function noise(seconds: number) {
+      const a = ctx();
+      const buffer = a.createBuffer(1, Math.ceil(a.sampleRate * seconds), a.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      const source = a.createBufferSource();
+      source.buffer = buffer;
+      return source;
+    }
+
+    function pumpSound(step: number) {
+      const a = ctx();
+      const t = a.currentTime;
+      const src = noise(0.3);
+      const filter = a.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.Q.value = 4;
+      // Each pump starts a little higher, like a filling balloon
+      filter.frequency.setValueAtTime(500 + step * 120, t);
+      filter.frequency.exponentialRampToValueAtTime(1800 + step * 200, t + 0.25);
+      const gain = a.createGain();
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.18, t + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
+      src.connect(filter).connect(gain).connect(a.destination);
+      src.start(t);
+      src.stop(t + 0.3);
+    }
+
+    function popSound() {
+      const a = ctx();
+      const t = a.currentTime;
+      const src = noise(0.15);
+      const filter = a.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(2500, t);
+      filter.frequency.exponentialRampToValueAtTime(300, t + 0.12);
+      const gain = a.createGain();
+      gain.gain.setValueAtTime(0.25, t);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+      src.connect(filter).connect(gain).connect(a.destination);
+      src.start(t);
+      src.stop(t + 0.15);
+    }
+
+    function show(scale: number) {
+      copy.style.opacity = scale > 1 ? '1' : '0';
+      copy.style.transform = `scale(${scale})`;
+    }
+
+    // Sound is a bonus: if Web Audio is missing or refuses, the nose still swells.
+    function play(sound: () => void) {
+      try {
+        sound();
+      } catch {}
+    }
+
+    let popping = false;
+
+    button.addEventListener('click', () => {
+      // Ignore clicks while the last pump pops, so a double-click cannot pump a
+      // ninth time or leave a second timer to reset the next round.
+      if (popping) return;
+      // Set on first use: by then the photo has loaded and currentSrc names the
+      // file the browser picked, so the copy reuses it rather than downloading again.
+      if (!copy.getAttribute('src')) copy.src = photo.currentSrc || photo.src;
+      pumps += 1;
+      show(1 + pumps * 0.35);
+      play(() => pumpSound(pumps));
+      if (pumps < MAX_PUMPS) return;
+      // Last pump: a final swell, then pop back to normal
+      popping = true;
+      window.setTimeout(() => {
+        // No pop sound if the visitor left 2000s mode in the meantime
+        if (document.documentElement.dataset.era === '2000s') play(popSound);
+        show(1);
+        pumps = 0;
+        popping = false;
+      }, motionOk ? 260 : 0);
+    });
+  }
+</script>

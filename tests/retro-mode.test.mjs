@@ -75,3 +75,16 @@ test('retro.css overrides tokens for both themes, hides the theme toggle and res
   assert.match(header, /data-brand/);
   assert.match(divider, /data-deco-divider/);
 });
+
+test('the homepage nose is retro-only, sits on the photo and stores nothing', async () => {
+  const nose = await read('src/components/RetroNose.astro');
+  const index = await read('src/pages/index.astro');
+  assert.match(index, /<RetroNose x=\{\d+\} y=\{\d+\} \/>/);
+  // Each element on its own: both must carry retro-only
+  assert.match(nose, /<span\s+class="retro-only[^"]*"[^>]*data-nose-bulge/);
+  assert.match(nose, /<button\s+type="button"\s+class="retro-only[^"]*"[^>]*data-nose-button/);
+  // A double-click on the last pump must not pump again
+  assert.match(nose, /if \(popping\) return;/);
+  // Resets on reload: no storage of the pump count
+  assert.doesNotMatch(nose, /localStorage|sessionStorage/);
+});
