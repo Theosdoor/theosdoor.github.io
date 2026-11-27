@@ -1,7 +1,5 @@
-// Pure helpers for the /projects/ "Show: Highlights | Everything" switch.
+// Pure helpers for the /projects/ highlights and the "Show N more" divider.
 // Kept dependency-free so node tests can import them directly.
-
-export type ProjectsView = 'highlights' | 'all';
 
 export interface ProjectLike {
   highlight?: number | null;
@@ -27,16 +25,16 @@ export function duplicateHighlights(projects: ProjectLike[]): number[] {
 }
 
 /**
- * How many cards match the current search/filters but are hidden because the
- * Highlights view is active. `matchesFilters` is true for each card that passes
- * search and filters, `isHighlight` for each highlighted card (same order).
+ * Text for the divider between the highlights and the rest, or null when it
+ * should not show. `restMatches` counts non-highlights that pass the current
+ * search and filters; `filtering` is true while any search or filter is set.
  */
-export function moreInEverythingCount(
-  view: ProjectsView,
-  cards: { matchesFilters: boolean; isHighlight: boolean }[],
-): number {
-  if (view !== 'highlights') return 0;
-  return cards.filter((c) => c.matchesFilters && !c.isHighlight).length;
+export function dividerLabel(o: { expanded: boolean; restMatches: number; filtering: boolean }): string | null {
+  const n = o.restMatches;
+  if (n <= 0) return null;
+  if (o.expanded) return 'Show fewer';
+  const noun = o.filtering ? (n === 1 ? 'match' : 'matches') : (n === 1 ? 'project' : 'projects');
+  return `Show ${n} more ${noun}`;
 }
 
 /** Curated order: highlights by number, then the rest newest year first, ties by title. */

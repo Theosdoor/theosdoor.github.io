@@ -4,9 +4,9 @@ import { readFile } from 'node:fs/promises';
 import { load } from 'js-yaml';
 import {
   curatedCompare,
+  dividerLabel,
   duplicateHighlights,
   highlightOrder,
-  moreInEverythingCount,
   parseSort,
 } from '../src/utils/projects-view.ts';
 
@@ -46,18 +46,14 @@ test('curated order: highlights first, then newest year, ties by title', () => {
   }
 });
 
-test('moreInEverythingCount counts matching non-highlights only in the Highlights view', () => {
-  const cards = [
-    { matchesFilters: true, isHighlight: true },
-    { matchesFilters: true, isHighlight: false },
-    { matchesFilters: true, isHighlight: false },
-    { matchesFilters: false, isHighlight: false },
-    { matchesFilters: false, isHighlight: true },
-  ];
-  assert.equal(moreInEverythingCount('highlights', cards), 2);
-  assert.equal(moreInEverythingCount('all', cards), 0);
-  assert.equal(moreInEverythingCount('highlights', cards.filter((c) => c.isHighlight)), 0);
-  assert.equal(moreInEverythingCount('highlights', []), 0);
+test('divider label counts the hidden non-highlights, and hides when there are none', () => {
+  assert.equal(dividerLabel({ expanded: false, restMatches: 12, filtering: false }), 'Show 12 more projects');
+  assert.equal(dividerLabel({ expanded: false, restMatches: 1, filtering: false }), 'Show 1 more project');
+  assert.equal(dividerLabel({ expanded: false, restMatches: 3, filtering: true }), 'Show 3 more matches');
+  assert.equal(dividerLabel({ expanded: false, restMatches: 1, filtering: true }), 'Show 1 more match');
+  assert.equal(dividerLabel({ expanded: true, restMatches: 12, filtering: false }), 'Show fewer');
+  assert.equal(dividerLabel({ expanded: true, restMatches: 0, filtering: true }), null);
+  assert.equal(dividerLabel({ expanded: false, restMatches: 0, filtering: true }), null);
 });
 
 test('old ?sort=recent links open Newest', () => {

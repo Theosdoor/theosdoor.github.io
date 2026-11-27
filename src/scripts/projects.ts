@@ -1,4 +1,4 @@
-import { curatedCompare, moreInEverythingCount, newestCompare, parseSort, type ProjectsView } from '../utils/projects-view';
+import { curatedCompare, dividerLabel, newestCompare, parseSort } from '../utils/projects-view';
 
 export interface FilterState {
   role: string;
@@ -6,7 +6,7 @@ export interface FilterState {
   languages: Set<string>;
   tools: Set<string>;
   sort: string;
-  view: ProjectsView;
+  expanded: boolean;
   text: string;
   ais: string;
 }
@@ -22,7 +22,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     languages: new Set<string>(),
     tools: new Set<string>(),
     sort: 'curated',
-    view: 'highlights',
+    expanded: false,
     text: '',
     ais: 'all',
   };
@@ -81,7 +81,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     if (state.ais !== 'all') params.set('ais', 'true');
     if (state.languages.size > 0) params.set('lang', [...state.languages].join(','));
     if (state.tools.size > 0) params.set('tool', [...state.tools].join(','));
-    if (state.view !== 'highlights') params.set('show', 'all');
+    if (state.expanded) params.set('show', 'all');
     if (state.sort !== 'curated') params.set('sort', state.sort);
     if (state.text) params.set('q', state.text);
     const qs = params.toString();
@@ -91,8 +91,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   function restoreFromUrl() {
     if (!options.urlSync) return;
     const params = new URLSearchParams(location.search);
-    state.view = params.get('show') === 'all' ? 'all' : 'highlights';
-    syncViewButtons();
+    state.expanded = params.get('show') === 'all';
 
     const role = params.get('role') || 'all';
     state.role = role;
@@ -166,37 +165,65 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     });
   }
 
-  function filterAndRender() {
-    syncToUrl();
-    list!.querySelectorAll('.proj-group-heading').forEach(h => h.remove());
+  const dividers = [...list.querySelectorAll<HTMLElement>('.proj-divider')];
+  const topDivider = dividers.find(d => d.dataset.divider === 'top');
+  const bottomDivider = dividers.find(d => d.dataset.divider === 'bottom');
 
-    const matching = allArticles.filter(matches);
-    const visible = matching.filter(el => state.view === 'all' || isHighlight(el));
-    const visibleSet = new Set(visible);
-    const hidden = allArticles.filter(el => !visibleSet.has(el));
-    const fragment = document.createDocumentFragment();
+  function isFiltering() {
+    return state.role !== 'all' ||
+      state.category !== 'all' ||
+      state.ais !== 'all' ||
+      state.languages.size > 0 ||
+      state.tools.size > 0 ||
+      state.text !== '';
+  }
 
+  // Appends cards to the fragment in the current sort, with year headings for Newest.
+  function appendGroup(fragment: DocumentFragment, cards: Element[]) {
     if (state.sort === 'curated') {
-      visible.sort((a, b) => curatedCompare(cardInfo(a), cardInfo(b)));
-      visible.forEach(el => {
-        (el as HTMLElement).hidden = false;
-        fragment.appendChild(el);
-      });
+      cards.sort((a, b) => curatedCompare(cardInfo(a), cardInfo(b)));
     } else {
-      visible.sort((a, b) => newestCompare(cardInfo(a), cardInfo(b)));
-      let currentYear: string | null = null;
-      visible.forEach(el => {
+      cards.sort((a, b) => newestCompare(cardInfo(a), cardInfo(b)));
+    }
+    let currentYear: string | null = null;
+    cards.forEach(el => {
+      if (state.sort !== 'curated') {
         const year = (el as HTMLElement).dataset.year ?? '0';
         if (year !== currentYear) {
           currentYear = year;
           fragment.appendChild(makeHeading(year === '0' ? '—' : year));
         }
-        (el as HTMLElement).hidden = false;
-        fragment.appendChild(el);
-      });
-    }
+      }
+      (el as HTMLElement).hidden = false;
+      fragment.appendChild(el);
+    });
+  }
 
-    hidden.forEach(el => {
+  function setDivider(divider: HTMLElement | undefined, label: string | null, show: boolean) {
+    if (!divider) return;
+    divider.hidden = !show || label === null;
+    const text = divider.querySelector('.proj-divider-label');
+    if (text && label) text.textContent = label;
+    divider.querySelector('button')?.setAttribute('aria-expanded', String(state.expanded));
+  }
+
+  function filterAndRender() {
+    syncToUrl();
+    list!.querySelectorAll('.proj-group-heading').forEach(h => h.remove());
+
+    const matching = allArticles.filter(matches);
+    const highlights = matching.filter(isHighlight);
+    const rest = matching.filter(el => !isHighlight(el));
+    const shownRest = state.expanded ? rest : [];
+    const visibleSet = new Set([...highlights, ...shownRest]);
+    const fragment = document.createDocumentFragment();
+
+    // Highlights, the divider, the rest (when open), a closing divider, then hidden cards.
+    appendGroup(fragment, highlights);
+    if (topDivider) fragment.appendChild(topDivider);
+    appendGroup(fragment, shownRest);
+    if (bottomDivider) fragment.appendChild(bottomDivider);
+    allArticles.filter(el => !visibleSet.has(el)).forEach(el => {
       (el as HTMLElement).hidden = true;
       fragment.appendChild(el);
     });
@@ -205,36 +232,29 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     // Re-attaching a card pauses its video, so resume previews after every render
     playPreviews();
 
+    const label = dividerLabel({ expanded: state.expanded, restMatches: rest.length, filtering: isFiltering() });
+    setDivider(topDivider, label, true);
+    setDivider(bottomDivider, label, state.expanded);
+
+    // The empty note covers "nothing matches", and "no highlight matches" while closed.
     const placeholder = document.getElementById('proj-empty-state');
     if (placeholder) {
-      placeholder.classList.toggle('hidden', visible.length > 0);
+      const none = matching.length === 0;
+      const noHighlights = highlights.length === 0 && !state.expanded;
+      placeholder.textContent = none
+        ? 'No projects match the current filters.'
+        : 'No highlights match the current filters.';
+      placeholder.classList.toggle('hidden', !(none || noHighlights));
     }
 
-    list!.dataset.empty = visible.length === 0 ? 'true' : 'false';
+    list!.dataset.empty = visibleSet.size === 0 ? 'true' : 'false';
     updateFilterIndicator();
-
-    const more = moreInEverythingCount(
-      state.view,
-      allArticles.map(el => ({ matchesFilters: matching.includes(el), isHighlight: isHighlight(el) })),
-    );
-    const moreLine = document.getElementById('proj-more');
-    const moreBtn = document.getElementById('proj-show-all');
-    if (moreLine && moreBtn) {
-      moreBtn.textContent = `${more} more in Everything`;
-      moreLine.hidden = more === 0;
-    }
   }
 
   function updateFilterIndicator() {
     const btn = document.getElementById('proj-filter-btn');
-    const isActive =
-      state.role !== 'all' ||
-      state.category !== 'all' ||
-      state.ais !== 'all' ||
-      state.languages.size > 0 ||
-      state.tools.size > 0 ||
-      state.text !== '';
-    
+    const isActive = isFiltering();
+
     if (btn) {
       btn.toggleAttribute('data-active', isActive);
     }
@@ -319,24 +339,19 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     });
   }
 
-  function syncViewButtons() {
-    document.querySelectorAll('[data-show]').forEach(b =>
-      setActiveStyle(b, (b as HTMLElement).dataset.show === state.view)
-    );
-  }
-
-  function setView(view: ProjectsView) {
-    state.view = view;
-    syncViewButtons();
+  // The top divider opens and closes the rest; the bottom one closes it and
+  // returns the reader to the top divider, since the cards above them vanish.
+  topDivider?.querySelector('button')?.addEventListener('click', () => {
+    state.expanded = !state.expanded;
     filterAndRender();
-  }
-
-  document.querySelectorAll('[data-show]').forEach(b =>
-    b.addEventListener('click', () =>
-      setView((b as HTMLElement).dataset.show === 'all' ? 'all' : 'highlights')
-    )
-  );
-  document.getElementById('proj-show-all')?.addEventListener('click', () => setView('all'));
+  });
+  bottomDivider?.querySelector('button')?.addEventListener('click', () => {
+    state.expanded = false;
+    filterAndRender();
+    const btn = topDivider?.querySelector<HTMLElement>('button');
+    btn?.focus({ preventScroll: true });
+    topDivider?.scrollIntoView({ block: 'center', behavior: motionOk ? 'smooth' : 'auto' });
+  });
 
   setupPillGroup('filter-role', 'role');
   setupPillGroup('filter-category', 'category');

@@ -16,9 +16,10 @@ const SubHeading = headingLevel === "h1" ? "h2" : "h3";
 
 // Loaded from content/projects.yaml through the projects content collection
 const rawProjects = await getCollection("projects");
-// Server-rendered in curated order; non-highlights start hidden because the
-// default view is Highlights (projects.ts takes over from here).
+// Server-rendered in curated order; non-highlights start hidden behind the
+// "Show N more" divider (projects.ts takes over from here).
 const projects = rawProjects.map((p) => p.data).sort(curatedCompare);
+const restCount = projects.filter((p) => p.highlight === undefined).length;
 
 // Filter and sort buttons are toggles: projects.ts flips aria-pressed and the
 // aria-pressed: variants restyle them, so state and styling cannot drift apart.
@@ -73,45 +74,18 @@ const allTools = [
             />
           </div>
 
-          {/* Without JS the switch cannot work, so show every card and hide the
-               switch instead of stranding the non-highlights. Tailwind's `[hidden]`
+          {/* Without JS the dividers cannot open, so show every card and hide
+               them instead of stranding the non-highlights. Tailwind's `[hidden]`
                reset is !important inside @layer base, and a layered !important beats
                an unlayered one, so this sits in the same layer and wins on specificity. */}
           <noscript>
             <style is:inline>
               @layer base {
                 #proj-list .proj[hidden] { display: flex !important; }
-                #proj-show-switch { display: none !important; }
+                #proj-list .proj-divider { display: none !important; }
               }
             </style>
           </noscript>
-          <div
-            id="proj-show-switch"
-            class="mt-4 flex flex-wrap items-center gap-2"
-            role="group"
-            aria-label="Show projects"
-          >
-            <span
-              class="mr-1 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-muted"
-              >Show:</span
-            >
-            <button
-              class={pill}
-              type="button"
-              aria-pressed="true"
-              data-show="highlights"
-            >
-              Highlights
-            </button>
-            <button
-              class={pill}
-              type="button"
-              aria-pressed="false"
-              data-show="all"
-            >
-              Everything
-            </button>
-          </div>
 
           <div
             class="proj-dropdown absolute z-20 mt-3 min-w-[280px] border border-rule bg-panel p-4 text-ink"
@@ -401,19 +375,38 @@ const allTools = [
             </Card>
             );
           })}
+          {/* Dividers between the highlights and the rest; projects.ts places them
+               and sets their text. Server-rendered closed, as the page loads. */}
+          {["top", "bottom"].map((pos) => (
+            <div
+              class="proj-divider col-span-full flex items-center gap-4 py-2"
+              data-divider={pos}
+              hidden={pos === "bottom" || restCount === 0}
+            >
+              <span class="h-px flex-1 bg-rule" aria-hidden="true" />
+              <button
+                type="button"
+                class="group inline-flex items-center gap-2 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-muted transition-colors duration-150 hover:text-accent focus-visible:text-accent"
+                aria-expanded="false"
+                aria-controls="proj-list"
+              >
+                <span class="proj-divider-label">{`Show ${restCount} more ${restCount === 1 ? "project" : "projects"}`}</span>
+                <svg
+                  class="size-3 transition-transform duration-300 ease-deco group-aria-expanded:rotate-180 motion-reduce:transition-none"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  aria-hidden="true"
+                >
+                  <path d="M2 4.5 6 8.5 10 4.5" />
+                </svg>
+              </button>
+              <span class="h-px flex-1 bg-rule" aria-hidden="true" />
+            </div>
+          ))}
         </div>
 
-        <p
-          id="proj-more"
-          class="mt-4 font-sans text-xs tracking-wide text-subtle"
-          hidden
-        >
-          <button
-            id="proj-show-all"
-            type="button"
-            class="text-accent underline underline-offset-2 hover:text-accent-strong"
-          ></button>
-        </p>
       </>
     )
   }
