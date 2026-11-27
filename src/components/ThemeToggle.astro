@@ -76,8 +76,12 @@ const { class: className = '' } = Astro.props;
       button.addEventListener('click', () => {
         const current = getTheme();
         const next = current === 'dark' ? 'light' : 'dark';
+        // Clicking back to the system's own theme forgets the saved choice, so
+        // the site follows the system again (there is no separate "system" state).
+        const system = media.matches ? 'dark' : 'light';
         try {
-          localStorage.setItem('theme', next);
+          if (next === system) localStorage.removeItem('theme');
+          else localStorage.setItem('theme', next);
         } catch {}
         applyTheme(next);
       });

@@ -166,6 +166,8 @@ test('ThemeToggle supports alternating light and dark themes via sun and moon ic
   assert.match(toggle, /data-sun-icon/);
   assert.match(toggle, /data-moon-icon/);
   assert.match(toggle, /localStorage\.setItem\('theme', next\)/);
+  // Clicking back to the system's theme forgets the choice, so the site follows the system again
+  assert.match(toggle, /if \(next === system\) localStorage\.removeItem\('theme'\)/);
   assert.match(toggle, /Switch to/);
 });
 

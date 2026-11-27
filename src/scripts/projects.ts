@@ -1,9 +1,12 @@
+import { curatedCompare, dividerLabel, newestCompare, parseSort } from '../utils/projects-view';
+
 export interface FilterState {
   role: string;
   category: string;
   languages: Set<string>;
   tools: Set<string>;
   sort: string;
+  expanded: boolean;
   text: string;
   ais: string;
 }
@@ -13,16 +16,13 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   if (!list) return;
 
   const allArticles = [...list.querySelectorAll('.proj')];
-  // On first load we hide non-featured coursework so the research/side-project
-  // work leads. Cleared the moment the user touches a category pill, opens a
-  // shared filter URL, or clicks "show everything" — nothing is deleted.
-  let hideMinorCoursework = true;
   const state: FilterState = {
     role: 'all',
     category: 'all',
     languages: new Set<string>(),
     tools: new Set<string>(),
-    sort: 'featured',
+    sort: 'curated',
+    expanded: false,
     text: '',
     ais: 'all',
   };
@@ -30,10 +30,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   function matches(el: Element) {
     const article = el as HTMLElement;
     const roleOk = state.role === 'all' || article.dataset.role === state.role;
-    const minorCoursework = article.dataset.category === 'coursework' && article.dataset.featured !== 'true';
-    const catOk = state.category === 'all'
-      ? !(hideMinorCoursework && minorCoursework)
-      : article.dataset.category === state.category;
+    const catOk = state.category === 'all' || article.dataset.category === state.category;
     const aisOk = state.ais === 'all' || article.dataset.ais === 'true';
     const elLangs = article.dataset.languages ? article.dataset.languages.split(',') : [];
     const elTools = article.dataset.tools ? article.dataset.tools.split(',') : [];
@@ -48,14 +45,25 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     return roleOk && catOk && aisOk && langOk && toolOk && textOk;
   }
 
-  function getYear(el: Element) {
-    return parseInt((el as HTMLElement).dataset.year || '0', 10) || 0;
+  // Sortable view of a card, read from its data attributes and title.
+  function cardInfo(el: Element) {
+    const d = (el as HTMLElement).dataset;
+    return {
+      highlight: d.highlight ? parseInt(d.highlight, 10) : undefined,
+      year: parseInt(d.year || '0', 10) || 0,
+      title: el.querySelector('.proj-card-title')?.textContent ?? '',
+    };
   }
 
-  function makeHeading(text: string, type: 'featured' | 'year' = 'year') {
+  function isHighlight(el: Element) {
+    // Non-highlights render data-highlight="", so test for a value, not presence
+    return Boolean((el as HTMLElement).dataset.highlight);
+  }
+
+  function makeHeading(text: string) {
     const div = document.createElement('div');
     div.className = 'proj-group-heading col-span-full font-serif text-2xl font-bold text-ink';
-    div.dataset.groupType = type;
+    div.dataset.groupType = 'year';
     div.textContent = text;
     return div;
   }
@@ -73,7 +81,9 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     if (state.ais !== 'all') params.set('ais', 'true');
     if (state.languages.size > 0) params.set('lang', [...state.languages].join(','));
     if (state.tools.size > 0) params.set('tool', [...state.tools].join(','));
-    if (state.sort !== 'featured') params.set('sort', state.sort);
+    // Newest always lists everything, so `show` only means something under Curated
+    if (state.expanded && state.sort === 'curated') params.set('show', 'all');
+    if (state.sort !== 'curated') params.set('sort', state.sort);
     if (state.text) params.set('q', state.text);
     const qs = params.toString();
     history.replaceState(null, '', qs ? '?' + qs : location.pathname);
@@ -82,8 +92,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   function restoreFromUrl() {
     if (!options.urlSync) return;
     const params = new URLSearchParams(location.search);
-    // A shared/deep link means the visitor arrived with intent — show the full set.
-    if ([...params].length > 0) hideMinorCoursework = false;
+    state.expanded = params.get('show') === 'all';
 
     const role = params.get('role') || 'all';
     state.role = role;
@@ -127,11 +136,8 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
       setActiveStyle(b, active);
     });
 
-    const sort = params.get('sort') || 'featured';
-    state.sort = sort;
-    document.querySelectorAll('[data-sort]').forEach(b =>
-      setActiveStyle(b, (b as HTMLElement).dataset.sort === sort)
-    );
+    state.sort = parseSort(params.get('sort'));
+    syncSortSwitch();
 
     const ais = params.get('ais') === 'true' ? 'true' : 'all';
     state.ais = ais;
@@ -157,101 +163,105 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     });
   }
 
-  function filterAndRender() {
-    syncToUrl();
-    list!.querySelectorAll('.proj-group-heading').forEach(h => h.remove());
+  const dividers = [...list.querySelectorAll<HTMLElement>('.proj-divider')];
+  const topDivider = dividers.find(d => d.dataset.divider === 'top');
+  const bottomDivider = dividers.find(d => d.dataset.divider === 'bottom');
 
-    const visible = allArticles.filter(matches);
-    const visibleSet = new Set(visible);
-    const hidden = allArticles.filter(el => !visibleSet.has(el));
-    const fragment = document.createDocumentFragment();
-
-    if (state.sort === 'featured') {
-      const featured = visible.filter(el => (el as HTMLElement).dataset.featured === 'true');
-      const rest = visible
-        .filter(el => (el as HTMLElement).dataset.featured !== 'true')
-        .sort((a, b) => {
-          const yearDiff = getYear(b) - getYear(a);
-          if (yearDiff !== 0) return yearDiff;
-          return (a.querySelector('.proj-card-title')?.textContent ?? '')
-            .localeCompare(b.querySelector('.proj-card-title')?.textContent ?? '');
-        });
-
-      if (featured.length > 0) {
-        fragment.appendChild(makeHeading('Highlighted', 'featured'));
-      }
-      featured.forEach(el => {
-        (el as HTMLElement).hidden = false;
-        fragment.appendChild(el);
-      });
-
-      if (rest.length > 0) {
-        fragment.appendChild(makeHeading('Other projects', 'featured'));
-      }
-      rest.forEach(el => {
-        (el as HTMLElement).hidden = false;
-        fragment.appendChild(el);
-      });
-
-      hidden.forEach(el => {
-        (el as HTMLElement).hidden = true;
-        fragment.appendChild(el);
-      });
-    } else {
-      const sorted = [...visible].sort((a, b) => {
-        const yearDiff = getYear(b) - getYear(a);
-        if (yearDiff !== 0) return yearDiff;
-        const aFeat = (a as HTMLElement).dataset.featured === 'true' ? 1 : 0;
-        const bFeat = (b as HTMLElement).dataset.featured === 'true' ? 1 : 0;
-        if (bFeat !== aFeat) return bFeat - aFeat;
-        return (a.querySelector('.proj-card-title')?.textContent ?? '')
-          .localeCompare(b.querySelector('.proj-card-title')?.textContent ?? '');
-      });
-
-      let currentYear: string | null = null;
-      sorted.forEach(el => {
-        const year = (el as HTMLElement).dataset.year ?? '0';
-        const displayYear = year === '0' ? '—' : year;
-        if (year !== currentYear) {
-          currentYear = year;
-          fragment.appendChild(makeHeading(displayYear));
-        }
-        (el as HTMLElement).hidden = false;
-        fragment.appendChild(el);
-      });
-
-      hidden.forEach(el => {
-        (el as HTMLElement).hidden = true;
-        fragment.appendChild(el);
-      });
-    }
-
-    list!.appendChild(fragment);
-    // Re-attaching a card pauses its video, so resume previews after every render
-    playPreviews();
-
-    const placeholder = document.getElementById('proj-empty-state');
-    if (placeholder) {
-      placeholder.classList.toggle('hidden', visible.length > 0);
-    }
-
-    list!.dataset.empty = visible.length === 0 ? 'true' : 'false';
-    updateFilterIndicator();
-
-    const note = document.getElementById('proj-coursework-note');
-    if (note) note.hidden = !(hideMinorCoursework && state.category === 'all');
-  }
-
-  function updateFilterIndicator() {
-    const btn = document.getElementById('proj-filter-btn');
-    const isActive =
-      state.role !== 'all' ||
+  function isFiltering() {
+    return state.role !== 'all' ||
       state.category !== 'all' ||
       state.ais !== 'all' ||
       state.languages.size > 0 ||
       state.tools.size > 0 ||
       state.text !== '';
-    
+  }
+
+  // Appends cards to the fragment in the current sort, with year headings for Newest.
+  function appendGroup(fragment: DocumentFragment, cards: Element[]) {
+    if (state.sort === 'curated') {
+      cards.sort((a, b) => curatedCompare(cardInfo(a), cardInfo(b)));
+    } else {
+      cards.sort((a, b) => newestCompare(cardInfo(a), cardInfo(b)));
+    }
+    let currentYear: string | null = null;
+    cards.forEach(el => {
+      if (state.sort !== 'curated') {
+        const year = (el as HTMLElement).dataset.year ?? '0';
+        if (year !== currentYear) {
+          currentYear = year;
+          fragment.appendChild(makeHeading(year === '0' ? '—' : year));
+        }
+      }
+      (el as HTMLElement).hidden = false;
+      fragment.appendChild(el);
+    });
+  }
+
+  function setDivider(divider: HTMLElement | undefined, label: string | null, show: boolean) {
+    if (!divider) return;
+    divider.hidden = !show || label === null;
+    const text = divider.querySelector('.proj-divider-label');
+    if (text && label) text.textContent = label;
+    divider.querySelector('button')?.setAttribute('aria-expanded', String(state.expanded));
+  }
+
+  function filterAndRender() {
+    // Moving a node into the fragment below blurs it, so note what has focus
+    // (the divider button the reader just pressed, say) to give it back after.
+    const focused = document.activeElement as HTMLElement | null;
+    syncToUrl();
+    list!.querySelectorAll('.proj-group-heading').forEach(h => h.remove());
+
+    const matching = allArticles.filter(matches);
+    // Newest is one dated list of everything that matches; Curated splits the
+    // highlights from the rest with the divider.
+    const split = state.sort === 'curated';
+    const highlights = split ? matching.filter(isHighlight) : matching;
+    const rest = split ? matching.filter(el => !isHighlight(el)) : [];
+    const shownRest = state.expanded ? rest : [];
+    const visibleSet = new Set([...highlights, ...shownRest]);
+    const fragment = document.createDocumentFragment();
+
+    // Highlights, the divider, the rest (when open), a closing divider, then hidden cards.
+    appendGroup(fragment, highlights);
+    if (topDivider) fragment.appendChild(topDivider);
+    appendGroup(fragment, shownRest);
+    if (bottomDivider) fragment.appendChild(bottomDivider);
+    allArticles.filter(el => !visibleSet.has(el)).forEach(el => {
+      (el as HTMLElement).hidden = true;
+      fragment.appendChild(el);
+    });
+
+    list!.appendChild(fragment);
+    if (focused && focused !== document.activeElement && focused.isConnected) {
+      focused.focus({ preventScroll: true });
+    }
+    // Re-attaching a card pauses its video, so resume previews after every render
+    playPreviews();
+
+    const label = dividerLabel({ expanded: state.expanded, restMatches: rest.length, filtering: isFiltering() });
+    setDivider(topDivider, label, true);
+    setDivider(bottomDivider, label, state.expanded);
+
+    // The empty note covers "nothing matches", and "no highlight matches" while closed.
+    const placeholder = document.getElementById('proj-empty-state');
+    if (placeholder) {
+      const none = matching.length === 0;
+      const noHighlights = split && highlights.length === 0 && !state.expanded;
+      placeholder.textContent = none
+        ? 'No projects match the current filters.'
+        : 'No highlights match the current filters.';
+      placeholder.classList.toggle('hidden', !(none || noHighlights));
+    }
+
+    list!.dataset.empty = visibleSet.size === 0 ? 'true' : 'false';
+    updateFilterIndicator();
+  }
+
+  function updateFilterIndicator() {
+    const btn = document.getElementById('proj-filter-btn');
+    const isActive = isFiltering();
+
     if (btn) {
       btn.toggleAttribute('data-active', isActive);
     }
@@ -261,7 +271,7 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     document.querySelectorAll('.proj-dropdown').forEach(p => {
       (p as HTMLElement).hidden = true;
     });
-    document.querySelectorAll('.proj-filter-btn, .proj-sort-btn')
+    document.querySelectorAll('.proj-filter-btn')
       .forEach(b => b.setAttribute('aria-expanded', 'false'));
   }
 
@@ -321,9 +331,8 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
   });
 
   setupDropdown('proj-filter-btn', 'proj-filter-panel');
-  setupDropdown('proj-sort-btn', 'proj-sort-panel');
 
-  function setupPillGroup(attr: string, stateKey: 'role' | 'category' | 'sort' | 'ais') {
+  function setupPillGroup(attr: string, stateKey: 'role' | 'category' | 'ais') {
     const datasetKey = attr.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
     document.querySelectorAll(`[data-${attr}]`).forEach(btn => {
       btn.addEventListener('click', () => {
@@ -336,24 +345,34 @@ export function initializeProjectsFilter(options: { urlSync: boolean }) {
     });
   }
 
-  // Any explicit category choice means the user is browsing deliberately — stop
-  // hiding coursework. Registered before setupPillGroup so it runs first.
-  document.querySelectorAll('[data-filter-category]').forEach(b =>
-    b.addEventListener('click', () => { hideMinorCoursework = false; })
-  );
-  document.getElementById('proj-show-all')?.addEventListener('click', () => {
-    hideMinorCoursework = false;
-    state.category = 'all';
-    document.querySelectorAll('[data-filter-category]').forEach(b =>
-      setActiveStyle(b, (b as HTMLElement).dataset.filterCategory === 'all')
-    );
+  // The top divider opens and closes the rest; the bottom one closes it and
+  // returns the reader to the top divider, since the cards above them vanish.
+  topDivider?.querySelector('button')?.addEventListener('click', () => {
+    state.expanded = !state.expanded;
     filterAndRender();
+  });
+  bottomDivider?.querySelector('button')?.addEventListener('click', () => {
+    state.expanded = false;
+    filterAndRender();
+    const btn = topDivider?.querySelector<HTMLElement>('button');
+    btn?.focus({ preventScroll: true });
+    topDivider?.scrollIntoView({ block: 'center', behavior: motionOk ? 'smooth' : 'auto' });
   });
 
   setupPillGroup('filter-role', 'role');
   setupPillGroup('filter-category', 'category');
   setupPillGroup('filter-ais', 'ais');
-  setupPillGroup('sort', 'sort');
+
+  // The sort switch: aria-checked="true" is Newest.
+  const sortSwitch = document.getElementById('proj-sort-switch');
+  function syncSortSwitch() {
+    sortSwitch?.setAttribute('aria-checked', String(state.sort === 'newest'));
+  }
+  sortSwitch?.addEventListener('click', () => {
+    state.sort = state.sort === 'newest' ? 'curated' : 'newest';
+    syncSortSwitch();
+    filterAndRender();
+  });
 
   function setupTagGroup(attr: string, stateSet: Set<string>) {
     const datasetKey = attr.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());

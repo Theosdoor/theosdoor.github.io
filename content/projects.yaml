@@ -15,6 +15,7 @@ projects:
     image: /images/projects/prog-matter-lab.png
     role: lead
     category: side-project
+    highlight: 7
     year: 2025
     languages: [HTML, JavaScript]
     tools: []
@@ -26,6 +27,7 @@ projects:
     venue: "LASR Labs"
     role: lead
     category: research
+    highlight: 1
     year: 2026
     ais: true
     languages: [Python]
@@ -38,7 +40,7 @@ projects:
     venue: "MechInterp Workshop @ ICML 2026"
     role: lead
     category: research
-    featured: true
+    highlight: 3
     year: 2026
     ais: true
     languages: [Python]
@@ -51,7 +53,7 @@ projects:
     venue: "ResponsibleFM @ NeurIPS 2025"
     role: lead
     category: research
-    featured: true
+    highlight: 4
     year: 2025
     ais: true
     languages: [Python]
@@ -73,7 +75,7 @@ projects:
     image: /images/projects/bipedal-rl.mp4
     role: lead
     category: coursework
-    featured: true
+    highlight: 2
     year: 2025
     languages: [Python]
     tools: [Gymnasium]
@@ -85,7 +87,7 @@ projects:
     venue: "d/acc Hackathon @ Apart Research"
     role: lead
     category: side-project
-    featured: true
+    highlight: 5
     year: 2025
     ais: true
     languages: [Python]
@@ -98,6 +100,7 @@ projects:
     venue: "IASEAI 2026"
     role: contributor
     category: research
+    highlight: 6
     year: 2026
     ais: true
     languages: [Python]
