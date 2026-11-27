@@ -1,10 +1,11 @@
 ---
-name: Theo Farrell
-subtitle: AI Safety Research and Field-building
-description: AI safety researcher and PhD student at Durham University
+subtitle: "AI Safety Research and Field-building"
+name: "Theo Farrell"
+# Current position: used for the homepage meta description and the JSON-LD `affiliation`.
+description: "Theo Farrell — AI safety PhD student at Durham University, working on control and monitoring of LLMs"
 affiliations:
-  - name: Durham University
-    type: CollegeOrUniversity
+  - name: "Durham University"
+    type: "CollegeOrUniversity"
 ---
 
 Hi there! I've just started a PhD at Durham University, UK, working on control and monitoring of LLMs. It's also where I did my MSci Natural Sciences (Computer Science & Philosophy) and founded [Durham AI Safety Initiative](https://durhamaisafety.uk/).

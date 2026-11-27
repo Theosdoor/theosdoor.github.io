@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Content Manager</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <!-- Remember that this browser has opened the CMS, so the site footer shows
+         an "Admin" link here (Footer.astro); visitors who never come here never see it. -->
+    <script>try { localStorage.setItem('cms-admin', '1'); } catch {}</script>
+    <!-- Pinned on purpose (Sveltia's docs suggest an unversioned URL); bump deliberately. -->
+    <script src="https://unpkg.com/@sveltia/cms@5.0.2/dist/sveltia-cms.js"></script>
+  </body>
+</html>

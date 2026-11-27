@@ -1,0 +1,149 @@
+# Sveltia CMS. Field names, enums and required/optional mirror src/content-schemas.ts;
+# tests/cms-config.test.mjs fails if they drift.
+backend:
+  name: github
+  repo: Theosdoor/theosdoor.github.io
+  branch: main
+
+# Saves commit straight to main (which deploys); no editorial workflow.
+publish_mode: simple
+site_url: https://theosdoor.github.io
+display_url: https://theosdoor.github.io
+
+# Images live in src/assets/images/ but content references them as /images/... site paths.
+# Sveltia saves a blank optional field as "" by default, which fails the
+# optional z.url() fields in src/content-schemas.ts; omit them instead.
+output:
+  omit_empty_optional_fields: true
+
+media_folder: src/assets/images
+public_folder: /images
+
+collections:
+  - name: intro
+    label: Intro
+    files:
+      - name: intro
+        label: Intro and current position
+        file: content/intro.md
+        format: frontmatter
+        fields:
+          - { name: name, label: Name, widget: string }
+          - { name: subtitle, label: Subtitle, widget: string }
+          - { name: description, label: Meta description (search results), widget: text }
+          - name: affiliations
+            label: Current affiliations
+            widget: list
+            min: 1
+            fields:
+              - { name: name, label: Name, widget: string }
+              - name: type
+                label: Type (schema.org)
+                widget: select
+                options: [CollegeOrUniversity, ResearchOrganization, Organization, Corporation]
+          - { name: body, label: Bio, widget: markdown }
+
+  - name: projects
+    label: Projects
+    media_folder: src/assets/images/projects
+    public_folder: /images/projects
+    files:
+      - name: projects
+        label: Projects
+        file: content/projects.yaml
+        fields:
+          - name: projects
+            label: Projects
+            widget: list
+            label_singular: project
+            summary: "{{fields.title}}"
+            fields:
+              - { name: title, label: Title, widget: string }
+              - { name: description, label: Description, widget: text }
+              - { name: url, label: URL, widget: string, required: false }
+              - { name: image, label: Image (stills only; videos and GIFs go in public/), widget: image, required: false }
+              - { name: role, label: Role, widget: select, options: [lead, contributor] }
+              - { name: category, label: Category, widget: select, options: [research, side-project, coursework] }
+              - { name: highlight, label: "Highlight (1 = first; leave blank for the rest; numbers must be unique)", widget: number, value_type: int, min: 1, required: false }
+              - { name: year, label: Year, widget: number, value_type: int, required: false }
+              - { name: languages, label: Languages, widget: list, field: { name: language, widget: string }, required: false }
+              - { name: tools, label: Tools, widget: list, field: { name: tool, widget: string }, required: false }
+              - { name: venue, label: Venue, widget: string, required: false }
+              - { name: ais, label: AI safety, widget: boolean, required: false }
+
+  - name: talks
+    label: Talks
+    files:
+      - name: talks
+        label: Talks
+        file: content/talks.yaml
+        fields:
+          - name: talks
+            label: Talks
+            widget: list
+            label_singular: talk
+            summary: "{{fields.date}} {{fields.event}}"
+            fields:
+              - { name: date, label: Date (YYYY-MM-DD), widget: string }
+              - { name: event, label: Event, widget: string }
+              - { name: venue, label: Venue, widget: string }
+              - { name: topic, label: Topic, widget: select, options: [research, other] }
+              - { name: description, label: Description (markdown links allowed), widget: text }
+
+  - name: publications
+    label: Publications
+    media_folder: src/assets/images/pubs
+    public_folder: /images/pubs
+    files:
+      - name: publications
+        label: Publications
+        file: content/pubs.yaml
+        fields:
+          - name: publications
+            label: Publications
+            widget: list
+            label_singular: publication
+            summary: "{{fields.year}} {{fields.title}}"
+            fields:
+              - { name: title, label: Title, widget: string }
+              - { name: key-role, label: Key role (shown on the homepage), widget: boolean }
+              - { name: authors, label: Authors (write your name as in constants.ts), widget: list, field: { name: author, widget: string } }
+              - { name: venue, label: Venue, widget: string }
+              - { name: year, label: Year, widget: number, value_type: int }
+              - { name: url, label: URL, widget: string }
+              - { name: link_label, label: Link label, widget: string, required: false }
+              - { name: thumbnail, label: Thumbnail, widget: image, required: false }
+
+  - name: reviewing
+    label: Reviewing
+    files:
+      - name: reviewing
+        label: Reviewing venues
+        file: content/reviewing.yaml
+        fields:
+          - name: reviewing
+            label: Venues
+            widget: list
+            field: { name: name, label: Venue, widget: string }
+
+  - name: field_building
+    label: Field-building
+    folder: content/field-building
+    extension: md
+    format: frontmatter
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { name: projectName, label: Project name, widget: string }
+      - { name: headline, label: Headline, widget: string }
+      - name: roles
+        label: Roles (newest are shown first)
+        widget: list
+        min: 1
+        fields:
+          - { name: title, label: Title, widget: string }
+          - { name: startDate, label: Start (YYYY-MM), widget: string }
+          - { name: endDate, label: End (YYYY-MM or ongoing), widget: string }
+      - { name: url, label: URL, widget: string, required: false }
+      - { name: summary, label: Homepage summary, widget: text, required: false }
+      - { name: body, label: Body, widget: markdown }

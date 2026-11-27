@@ -8,24 +8,26 @@ import { Content as IntroContent, frontmatter as introFrontmatter } from '../../
 import { Image } from 'astro:assets';
 import profilePic from '../assets/images/theocool.jpeg';
 import { cvUrl, socialLinks } from '../utils/constants';
+import { introSchema } from '../content-schemas';
+
+// Fails the build if the front matter loses a field.
+const intro = introSchema.parse(introFrontmatter);
 
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  name: introFrontmatter.name,
+  name: intro.name,
   url: new URL('/', Astro.site).href,
   image: new URL('/images/og.jpg', Astro.site).href,
-  jobTitle: introFrontmatter.subtitle,
-  affiliation: [
-    { '@type': 'CollegeOrUniversity', name: 'Durham University' },
-  ],
+  jobTitle: intro.subtitle,
+  affiliation: intro.affiliations.map(({ name, type }) => ({ '@type': type, name })),
   sameAs: socialLinks.map((s) => s.href),
 };
 ---
 
 <Base
   title="Theo Farrell"
-  description="Theo Farrell — AI safety PhD student at Durham University, working on control and monitoring of LLMs"
+  description={intro.description}
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(personSchema)} is:inline />
   <main id="main" class="w-full px-5 py-16 sm:px-8" tabindex="-1">

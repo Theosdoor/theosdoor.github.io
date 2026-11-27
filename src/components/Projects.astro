@@ -19,7 +19,7 @@ const rawProjects = await getCollection("projects");
 // Server-rendered in curated order; non-highlights start hidden behind the
 // "Show N more" divider (projects.ts takes over from here).
 const projects = rawProjects.map((p) => p.data).sort(curatedCompare);
-const restCount = projects.filter((p) => p.highlight === undefined).length;
+const restCount = projects.filter((p) => p.highlight == null).length;
 
 // Filter buttons are toggles: projects.ts flips aria-pressed and the
 // aria-pressed: variants restyle them, so state and styling cannot drift apart.
@@ -262,7 +262,7 @@ const allTools = [
               data-role={p.role}
               data-category={p.category}
               data-highlight={p.highlight ?? ""}
-              hidden={p.highlight === undefined}
+              hidden={p.highlight == null}
               data-year={String(p.year ?? 0)}
               data-languages={(p.languages ?? [])
                 .map((l) => l.toLowerCase())

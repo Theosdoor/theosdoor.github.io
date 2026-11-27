@@ -1,7 +1,14 @@
 import { defineCollection } from 'astro:content';
-import { z } from 'astro/zod';
 import { glob, file } from 'astro/loaders';
 import { load as loadYaml } from 'js-yaml';
+import {
+  yamlKeys,
+  projectSchema,
+  fieldBuildingSchema,
+  talkSchema,
+  pubSchema,
+  reviewingSchema,
+} from './content-schemas';
 
 // Helper to safely slugify text for unique content collection IDs
 function slugify(text: string): string {
@@ -25,83 +32,36 @@ function yamlList<T extends object>(path: string, key: string, idOf: (item: T) =
 }
 
 const projects = defineCollection({
-  loader: yamlList<{ title: string }>('content/projects.yaml', 'projects', (p) => slugify(p.title)),
-  schema: z.object({
-    id: z.string(),
-    title: z.string(),
-    description: z.string(),
-    url: z.url().optional(),
-    image: z.string().nullable().optional(),
-    role: z.enum(['lead', 'contributor']),
-    category: z.enum(['research', 'side-project', 'coursework']),
-    highlight: z.number().int().positive().optional(),
-    year: z.number().nullable().optional(),
-    languages: z.array(z.string()).optional(),
-    tools: z.array(z.string()).optional(),
-    venue: z.string().optional(),
-    ais: z.boolean().optional(),
-  }),
+  loader: yamlList<{ title: string }>('content/projects.yaml', yamlKeys.projects, (p) => slugify(p.title)),
+  schema: projectSchema,
 });
 
 const fieldBuilding = defineCollection({
   loader: glob({ pattern: '*.md', base: 'content/field-building' }),
-  schema: z.object({
-    projectName: z.string(),
-    headline: z.string(),
-    // A project can span several roles; they are displayed newest first.
-    roles: z
-      .array(
-        z.object({
-          title: z.string(),
-          startDate: z.string(),
-          endDate: z.string(),
-        })
-      )
-      .min(1),
-    url: z.url().optional(),
-    // Short blurb for the homepage; entries without one are not highlighted there.
-    summary: z.string().optional(),
-  }),
+  schema: fieldBuildingSchema,
 });
 
 const talks = defineCollection({
-  loader: yamlList<{ event?: string; date: string }>('content/talks.yaml', 'talks', (t) =>
+  loader: yamlList<{ event?: string; date: string }>('content/talks.yaml', yamlKeys.talks, (t) =>
     t.event ? `${slugify(t.event)}-${t.date}` : '',
   ),
-  schema: z.object({
-    id: z.string(),
-    date: z.string(),
-    event: z.string(),
-    venue: z.string(),
-    topic: z.enum(['research', 'other']),
-    description: z.string(),
-  }),
+  schema: talkSchema,
 });
 
 const pubs = defineCollection({
-  loader: yamlList<{ title: string }>('content/pubs.yaml', 'publications', (p) => slugify(p.title)),
-  schema: z.object({
-    id: z.string(),
-    title: z.string(),
-    'key-role': z.boolean(),
-    authors: z.array(z.string()),
-    venue: z.string(),
-    year: z.number(),
-    url: z.url(),
-    link_label: z.string().optional(),
-    thumbnail: z.string().optional(),
-  }),
+  loader: yamlList<{ title: string }>('content/pubs.yaml', yamlKeys.pubs, (p) => slugify(p.title)),
+  schema: pubSchema,
 });
 
 // Plain strings in the YAML; wrapped as { name } so each is a collection entry.
 const reviewing = defineCollection({
   loader: file('content/reviewing.yaml', {
     parser: (text) => {
-      const parsed = loadYaml(text) as { reviewing?: string[] } | null;
-      return (parsed?.reviewing ?? []).map((name) => ({ id: slugify(name), name }));
+      const parsed = loadYaml(text) as Record<string, string[] | undefined> | null;
+      return (parsed?.[yamlKeys.reviewing] ?? []).map((name) => ({ id: slugify(name), name }));
     },
   }),
-  schema: z.object({ name: z.string() }),
+  schema: reviewingSchema,
 });
 
 export const collections = { projects, fieldBuilding, talks, pubs, reviewing };
