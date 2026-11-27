@@ -24,7 +24,7 @@ projects:
     url: "https://github.com/science-of-model-organisms/mobench"
     image: /images/projects/mobench.png
     venue: "LASR Labs"
-    role: contributor
+    role: lead
     category: research
     year: 2026
     ais: true
